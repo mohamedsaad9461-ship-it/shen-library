@@ -59,7 +59,11 @@ function renderQuotes() {
 
 function copyQuote(text) { navigator.clipboard.writeText(text); alert('تم النسخ!'); }
 function showSec(id) { document.querySelectorAll('#homeUI,#librarySection,#quotesSection').forEach(s=>s.style.display='none'); document.getElementById(id).style.display='block'; }
-function openReader(n, f) { document.getElementById('readerMode').style.display='block'; document.getElementById('readerTitle').innerText=n; document.getElementById('bookFrame').src=f; }
+function openReader(n, f) { 
+    // بنخلي الرابط يفتح صفحة الـ reader ويبعت لها اسم الملف
+    const bookFile = f.replace('.html', ''); // بياخد 'tangar' من 'tangar.html'
+    window.location.href = `reader.html?book=${bookFile}`;
+}
 function closeReader() { document.getElementById('readerMode').style.display='none'; document.getElementById('bookFrame').src=''; }
 function liveSearch() { 
     let q=document.getElementById('novelSearch').value.toLowerCase(); 
