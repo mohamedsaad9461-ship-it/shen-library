@@ -88,15 +88,23 @@ function updateGreeting() {
     let subText = "";
     
     if (hour >= 5 && hour < 12) {
-        greeting = "صباحك رواية جميلة،";
-        subText = "ابدأ يومك بكلمات تلهمك..";
+        greeting = "صباحك رواية جميلة";
+        subText = "ابدأ يومك بكلمات تلهمك";
     } else if (hour >= 12 && hour < 18) {
-        greeting = "مساء الخير،";
-        subText = "وقت مثالي لاستكمال رحلتك في الكتب..";
+        greeting = "طاب يومك يا بطل";
+        subText = "وقت مثالي لاستكمال رحلتك";
     } else {
-        greeting = "ليلة هادئة،";
-        subText = "استرخِ مع عالم شين قبل النوم..";
+        greeting = "ليلة هادئة ممتعة";
+        subText = "استرخِ مع عالم شين قبل النوم";
     }
+
+    // الربط مع الـ IDs الجديدة
+    const title = document.getElementById('mainGreeting');
+    const sub = document.getElementById('subGreeting');
+    
+    if(title) title.innerText = greeting;
+    if(sub) sub.innerText = subText + " يا محمد";
+}
 
     // بنغير النص جوه الهيدر اللي في الـ HTML
     const welcomeTitle = document.querySelector('#homeUI h1');
