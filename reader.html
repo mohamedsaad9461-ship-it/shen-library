@@ -2,103 +2,119 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قارئ شين الذكي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مكتبة شين - قارئ الروايات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #f4f1ea; --text-color: #2c3e50; --font-size: 1.3rem; }
-        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); transition: 0.3s; font-family: 'Amiri', serif; line-height: 2; overflow-x: hidden; }
-        
-        .reader-tools { position: sticky; top: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px; border-bottom: 1px solid #ddd; z-index: 1000; }
-        .tool-btn { cursor: pointer; border: 1px solid #ccc; padding: 5px 12px; border-radius: 20px; font-family: 'Cairo'; font-size: 12px; background: white; }
+        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.25rem; }
+        body.dark-mode { --bg: #1a1a1b; --text: #d5d5d5; }
+        body.sepia-mode { --bg: #f4f1ea; --text: #433422; }
 
-        /* نظام الأعمدة (التقليب الجانبي) */
-        #contentHolder {
-            column-width: 100vw;
-            column-gap: 40px;
-            height: 80vh;
-            padding: 20px 5vw;
-            box-sizing: border-box;
-            text-align: justify;
-            transition: transform 0.5s ease-in-out;
+        body { 
+            margin: 0; padding: 0; background: var(--bg); color: var(--text); 
+            font-family: 'Amiri', serif; transition: 0.3s; overflow: hidden; 
         }
 
-        .dark-mode { --bg-color: #121212; --text-color: #d1d1d1; }
-        .sepia-mode { --bg-color: #f4f1ea; --text-color: #433422; }
+        /* شريط الأدوات العلوي */
+        .toolbar { 
+            height: 60px; display: flex; align-items: center; justify-content: space-around;
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.1); position: fixed; top: 0; width: 100%; z-index: 10;
+        }
+        .btn { cursor: pointer; padding: 8px 15px; border-radius: 12px; font-family: 'Cairo'; font-size: 12px; border: 1px solid #ccc; background: white; color: #333; }
+
+        /* منطقة القراءة بنظام الأعمدة (الإيفكت اللي سألت عنه) */
+        #book-viewport {
+            margin-top: 70px;
+            height: calc(100vh - 120px);
+            padding: 0 5%;
+            column-width: 90vw; /* بيخلي كل "صفحة" بعرض الشاشة */
+            column-gap: 10vw;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: justify;
+        }
+
+        #content {
+            font-size: var(--size);
+            line-height: 2.2;
+            white-space: pre-line;
+        }
+
+        /* إيفكت الفقرات الاحترافي */
+        #content p { margin-bottom: 1.5em; text-indent: 1.5em; }
+
+        /* شريط التحكم السفلي والتقدم */
+        .bottom-bar {
+            position: fixed; bottom: 0; width: 100%; height: 50px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Cairo'; font-size: 14px; background: rgba(0,0,0,0.05);
+        }
+        #progress { position: absolute; top: 0; left: 0; height: 3px; background: #e67e22; transition: 0.3s; }
     </style>
 </head>
 <body class="sepia-mode">
 
-    <div class="reader-tools">
-        <div class="tool-btn" onclick="toggleMode('dark')">🌙 ليلي</div>
-        <div class="tool-btn" onclick="toggleMode('sepia')">📜 ورقي</div>
-        <div class="tool-btn" onclick="changeSize(0.1)">A+</div>
-        <div class="tool-btn" onclick="changeSize(-0.1)">A-</div>
+    <div class="toolbar">
+        <div class="btn" onclick="location.href='index.html'">🏠 خروج</div>
+        <div class="btn" onclick="setMode('dark')">🌙</div>
+        <div class="btn" onclick="setMode('sepia')">📜</div>
+        <div class="btn" onclick="changeFontSize(0.1)">A+</div>
+        <div class="btn" onclick="changeFontSize(-0.1)">A-</div>
     </div>
 
-    <div id="contentHolder">جاري تحميل الرواية...</div>
-<script>
-        async function loadNovel() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const fileName = urlParams.get('book'); 
-            const container = document.getElementById('contentHolder');
+    <div id="book-viewport">
+        <div id="content">جاري تحضير صفحات الرواية...</div>
+    </div>
+
+    <div class="bottom-bar">
+        <div id="progress"></div>
+        <span id="page-info">جاري الحساب...</span>
+    </div>
+
+    <script>
+        async function loadBook() {
+            const params = new URLSearchParams(window.location.search);
+            const book = params.get('book');
+            if(!book) return;
+
+            try {
+                const res = await fetch(`${book}.txt`);
+                const text = await res.text();
+                // وضع النص داخل فقرات ليعمل التنسيق الاحترافي
+                document.getElementById('content').innerHTML = text.split('\n').map(p => `<p>${p}</p>`).join('');
+                document.getElementById('page-info').innerText = "تم التحميل - اسحب لليمين أو اليسار";
+            } catch(e) {
+                document.getElementById('content').innerText = "خطأ في تحميل الملف.";
+            }
+        }
+
+        function setMode(m) { document.body.className = m + '-mode'; }
+        
+        let sz = 1.25;
+        function changeFontSize(d) {
+            sz += d;
+            document.documentElement.style.setProperty('--size', sz + 'rem');
+        }
+
+        // إيفكت التنقل باللمس (Swipe)
+        let startX = 0;
+        let currentPos = 0;
+        window.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+        window.addEventListener('touchend', e => {
+            let endX = e.changedTouches[0].clientX;
+            let diff = startX - endX;
+            let view = document.getElementById('book-viewport');
             
-            if (!fileName) {
-                container.innerText = "خطأ: لم يتم تحديد رواية.";
-                return;
-            }
-
-            try {
-                // بنحاول نجيب الملف بملحق .txt
-                const response = await fetch(fileName + '.txt');
-                if (!response.ok) throw new Error('File not found');
-                const text = await response.text();
+            if(Math.abs(diff) > 50) { // لو السحبة كافية
+                if(diff > 0) currentPos -= 100; // لليسار
+                else currentPos += 100; // لليمين
                 
-                // تنظيف النص وعرضه بشكل جميل
-                container.innerText = text;
-                
-                // تحديث عنوان الصفحة باسم الرواية
-                document.title = "قراءة: " + fileName;
-            } catch (err) {
-                container.innerHTML = `<div style="text-align:center; padding:50px;">
-                    <h3>عذراً، تعذر تحميل الرواية</h3>
-                    <p>تأكد من وجود ملف باسم <b>${fileName}.txt</b> في مستودعك</p>
-                    <button onclick="window.location.href='index.html'" class="tool-btn">العودة للمكتبة</button>
-                </div>`;
+                if(currentPos > 0) currentPos = 0;
+                view.style.transform = `translateX(${currentPos}vw)`;
             }
-        }
+        });
 
-        function toggleMode(mode) { document.body.className = mode + '-mode'; }
-        
-        let currentSize = 1.3;
-        function changeSize(delta) {
-            currentSize += delta;
-            if(currentSize < 0.8) currentSize = 0.8;
-            if(currentSize > 2.5) currentSize = 2.5;
-            document.body.style.setProperty('--font-size', currentSize + 'rem');
-        }
-
-        window.onload = loadNovel;
-    </script>
-
-            try {
-                const response = await fetch(fileName + '.txt');
-                const text = await response.text();
-                document.getElementById('contentHolder').innerText = text;
-            } catch (err) {
-                document.getElementById('contentHolder').innerText = "عذراً، تعذر تحميل نص الرواية.";
-            }
-        }
-
-        function toggleMode(mode) { document.body.className = mode + '-mode'; }
-        
-        let currentSize = 1.3;
-        function changeSize(delta) {
-            currentSize += delta;
-            document.body.style.setProperty('--font-size', currentSize + 'rem');
-        }
-
-        window.onload = loadNovel;
+        window.onload = loadBook;
     </script>
 </body>
 </html>
