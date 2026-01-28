@@ -43,8 +43,26 @@ function renderQuotes() {
     if (!container) return;
     container.innerHTML = quotesData.map(q => {
         const v = appState.qVotes[q.id];
-        return `<div class="quote-card"><div class="author-info"><div class="author-img" style="background-image:url('${q.img}')"></div><div class="author-name">${q.name}</div></div><div class="quote-text">"${q.text}"</div><div class="q-actions"><span class="${v==='like'?'active-like':''}" onclick="voteQuote(${q.id},'like')">👍 أعجبني</span><span class="${v==='dislike'?'active-dislike':''}" onclick="voteQuote(${q.id},'dislike')">👎 لم يعجبني</span></div></div>`;
+        return `
+        <div class="quote-card">
+            <div class="author-info">
+                <div class="author-img" style="background-image:url('${q.img}')"></div>
+                <div class="author-name">${q.name}</div>
+            </div>
+            <div class="quote-text" style="font-style: italic; line-height: 1.6;">"${q.text}"</div>
+            <div class="q-actions">
+                <span class="${v === 'like' ? 'active-like' : ''}" onclick="voteQuote(${q.id}, 'like')">👍</span>
+                <span class="${v === 'dislike' ? 'active-dislike' : ''}" onclick="voteQuote(${q.id}, 'dislike')">👎</span>
+                <span onclick="copyQuote('${q.text}')">📋 نسخ</span>
+            </div>
+        </div>`;
     }).join('');
+}
+
+// دالة نسخ النص السحرية
+function copyQuote(text) {
+    navigator.clipboard.writeText(text);
+    alert('تم نسخ الاقتباس بنجاح! جاهز للمشاركة 🖋️');
 }
 
 function rateNovel(id, s) { appState.ratings[id] = s; save(); }
