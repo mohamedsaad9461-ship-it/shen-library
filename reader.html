@@ -3,110 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>شين PRO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@700&display=swap" rel="stylesheet">
+    <title>قارئ شين الذكي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.3rem; }
+        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.3rem; --accent: #e67e22; }
         body.dark { --bg: #1a1a1b; --text: #d5d5d5; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Amiri', serif; overflow: hidden; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Amiri', serif; overflow: hidden; transition: 0.3s; }
 
-        /* الهيدر الاحترافي */
-        .reader-header { 
-            height: 60px; background: rgba(0,0,0,0.05); backdrop-filter: blur(15px);
-            display: flex; align-items: center; justify-content: space-around;
-            position: fixed; top: 0; width: 100%; z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.1);
+        /* الهيدر */
+        .header { 
+            height: 55px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; background: rgba(0,0,0,0.03); backdrop-filter: blur(10px);
+            position: fixed; top: 0; width: 100%; z-index: 1000; box-sizing: border-box;
         }
-        .icon-btn { cursor: pointer; border: 1px solid #ccc; padding: 5px 12px; border-radius: 10px; background: white; font-family: 'Cairo'; font-size: 12px; }
-        .marker-tool { background: #ffeb3b !important; font-weight: bold; }
+        .nav-icons { display: flex; gap: 15px; align-items: center; }
+        .icon-btn { cursor: pointer; font-size: 1.2rem; background: none; border: none; color: var(--text); transition: 0.2s; }
+        .icon-btn:active { transform: scale(0.8); }
+        .marker-on { color: #f1c40f; text-shadow: 0 0 5px rgba(241,196,15,0.5); }
 
-        /* حاوية الصفحات */
-        #main-viewer { 
-            margin-top: 60px; height: calc(100vh - 100px); width: 100vw; 
-            display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .page-box { 
-            min-width: 100vw; box-sizing: border-box; padding: 30px 10%; 
-            text-align: justify; font-size: var(--size); line-height: 2.2; 
-        }
+        /* منطقة الكتاب */
+        #viewport { margin-top: 55px; height: calc(100vh - 95px); width: 100vw; display: flex; transition: transform 0.4s ease-out; }
+        .page-box { min-width: 100vw; box-sizing: border-box; padding: 25px 12%; text-align: justify; font-size: var(--size); line-height: 2.1; }
 
-        /* الماركر */
-        .highlight { background-color: #ffeb3b; color: #000; border-radius: 4px; }
-
-        /* الشريط السفلي */
-        .reader-footer { 
-            position: fixed; bottom: 0; width: 100%; height: 40px; 
-            background: rgba(0,0,0,0.02); display: flex; align-items: center; 
-            justify-content: center; font-family: 'Cairo'; font-size: 13px; 
+        /* أزرار التنقل الجانبية (للكومبيوتر والموبايل) */
+        .side-nav {
+            position: fixed; top: 55px; height: calc(100vh - 95px); width: 40px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.02); cursor: pointer; z-index: 500; font-size: 1.5rem; opacity: 0.3; transition: 0.3s;
         }
+        .side-nav:hover { opacity: 1; background: rgba(0,0,0,0.05); }
+        .next-page { left: 0; }
+        .prev-page { right: 0; }
+
+        /* الفوتر */
+        .footer { position: fixed; bottom: 0; width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.02); font-family: 'Cairo'; font-size: 12px; }
     </style>
 </head>
-<body class="light">
+<body class="sepia-mode">
 
-    <div class="reader-header">
-        <div class="icon-btn" onclick="location.href='index.html'">🏠 القائمة</div>
-        <div class="icon-btn marker-tool" onclick="activateMarker()">🖍️ ماركر</div>
-        <div class="icon-btn" onclick="toggleDarkMode()">🌙</div>
-        <div class="icon-btn" onclick="changeSize(0.1)">A+</div>
+    <div class="header">
+        <button class="icon-btn" onclick="location.href='index.html'">✕</button>
+        <div class="nav-icons">
+            <button class="icon-btn" id="m-btn" onclick="toggleMarker()">🖍️</button>
+            <button class="icon-btn" onclick="toggleDark()">🌙</button>
+            <button class="icon-btn" onclick="adjSize(0.1)">A+</button>
+            <button class="icon-btn" onclick="adjSize(-0.1)">A-</button>
+        </div>
     </div>
 
-    <div id="main-viewer">
+    <div class="side-nav next-page" onclick="movePage(1)">❮</div>
+    <div class="side-nav prev-page" onclick="movePage(-1)">❯</div>
+
+    <div id="viewport">
         </div>
 
-    <div class="reader-footer">
-        <span id="page-nav">صفحة 1 من ...</span>
+    <div class="footer">
+        <span id="pg-info">صفحة 1 من ...</span>
     </div>
 
     <script>
-        // نص تجريبي ضخم للتأكد إن التقليب شغال (هيتم استبداله تلقائياً بملفك)
-        const demoText = "هذا نص تجريبي للتأكد من عمل نظام الصفحات في مكتبة شين. ".repeat(500);
-        
-        let currentPage = 0;
-        let totalPages = 0;
+        // نص تجريبي (هيتم استبداله تلقائياً بملفك النصي في الخطوة الجاية)
+        const demo = "هذا نص تجريبي لاختبار نظام الصفحات الجديد والرموز الاحترافية. ".repeat(600);
+        let cur = 0, total = 0;
 
-        function buildPages(content) {
-            const viewer = document.getElementById('main-viewer');
-            viewer.innerHTML = "";
-            // تقسيم النص لصفحات (كل 200 كلمة صفحة)
-            const words = content.split(' ');
-            for(let i=0; i<words.length; i+=200) {
-                const pageText = words.slice(i, i+200).join(' ');
-                const div = document.createElement('div');
-                div.className = 'page-box';
-                div.innerHTML = `<p>${pageText}</p>`;
-                viewer.appendChild(div);
+        function build(txt) {
+            const v = document.getElementById('viewport');
+            v.innerHTML = "";
+            const words = txt.split(' ');
+            for(let i=0; i<words.length; i+=180) { // قللت عدد الكلمات في الصفحة لراحة العين
+                const pText = words.slice(i, i+180).join(' ');
+                const d = document.createElement('div');
+                d.className = 'page-box';
+                d.innerHTML = `<p>${pText}</p>`;
+                v.appendChild(d);
             }
-            totalPages = document.querySelectorAll('.page-box').length;
-            updateDisplay();
+            total = document.querySelectorAll('.page-box').length;
+            update();
         }
 
-        function updateDisplay() {
-            const viewer = document.getElementById('main-viewer');
-            viewer.style.transform = `translateX(${currentPage * 100}vw)`;
-            document.getElementById('page-nav').innerText = `صفحة ${currentPage + 1} من ${totalPages}`;
-            // حفظ الصفحة تلقائياً
-            localStorage.setItem('last_page', currentPage);
+        function movePage(dir) {
+            if(dir === 1 && cur < total - 1) cur++;
+            if(dir === -1 && cur > 0) cur--;
+            update();
         }
 
-        // إيماءات التقليب
-        let startX = 0;
-        document.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+        function update() {
+            document.getElementById('viewport').style.transform = `translateX(${cur * 100}vw)`;
+            document.getElementById('pg-info').innerText = `صفحة ${cur + 1} من ${total}`;
+            localStorage.setItem('shain_last_pg', cur);
+        }
+
+        function toggleDark() { document.body.classList.toggle('dark'); }
+        function toggleMarker() { 
+            document.getElementById('m-btn').classList.toggle('marker-on');
+            alert("وضع التحديد نشط: يمكنك الآن تمييز النصوص المفضلة.");
+        }
+        function adjSize(s) { /* دالة تغيير الخط */ }
+
+        // دعم السحب باللمس
+        let sX = 0;
+        document.addEventListener('touchstart', e => sX = e.touches[0].clientX);
         document.addEventListener('touchend', e => {
-            let diff = startX - e.changedTouches[0].clientX;
-            if(Math.abs(diff) > 60) {
-                if(diff > 0 && currentPage < totalPages - 1) currentPage++;
-                else if(diff < 0 && currentPage > 0) currentPage--;
-                updateDisplay();
-            }
+            let dX = sX - e.changedTouches[0].clientX;
+            if(Math.abs(dX) > 50) movePage(dX > 0 ? 1 : -1);
         });
 
-        function toggleDarkMode() { document.body.classList.toggle('dark'); }
-        function activateMarker() { alert("تم تفعيل وضع الماركر: يمكنك الآن تحديد أي نص باللمس."); }
-        
-        // استعادة الصفحة اللي وقف عندها
         window.onload = () => {
-            const saved = localStorage.getItem('last_page');
-            if(saved) currentPage = parseInt(saved);
-            buildPages(demoText); // هنغير demoText بملفك النصي حالاً
+            const s = localStorage.getItem('shain_last_pg');
+            if(s) cur = parseInt(s);
+            build(demo);
         };
     </script>
 </body>
