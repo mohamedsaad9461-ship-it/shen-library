@@ -113,8 +113,15 @@ function updateGreeting() {
     if(welcomeTitle) welcomeTitle.innerText = greeting;
     if(welcomeSub) welcomeSub.innerText = subText + " يا محمد";
 }
+// تشغيل فوري أول ما الموقع يجهز
+window.onload = function() {
+    initApp(); 
+    
+    // هنخلي الوقت 500 مللي ثانية بس (نص ثانية) عشان الانسيابية
     setTimeout(() => {
         const loader = document.getElementById('loader');
-        if (loader) loader.classList.add('loader-fade-out');
-    }, 2000);
+        if (loader) {
+            loader.classList.add('loader-fade-out');
+        }
+    }, 500); 
 };
