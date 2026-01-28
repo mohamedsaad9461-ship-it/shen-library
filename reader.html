@@ -37,17 +37,49 @@
     </div>
 
     <div id="contentHolder">جاري تحميل الرواية...</div>
-
-    <script>
-        // دالة سحب النص من الملف الخارجي
+<script>
         async function loadNovel() {
             const urlParams = new URLSearchParams(window.location.search);
-            const fileName = urlParams.get('book'); // بياخد اسم الملف من الرابط
+            const fileName = urlParams.get('book'); 
+            const container = document.getElementById('contentHolder');
             
             if (!fileName) {
-                document.getElementById('contentHolder').innerText = "خطأ: لم يتم تحديد رواية.";
+                container.innerText = "خطأ: لم يتم تحديد رواية.";
                 return;
             }
+
+            try {
+                // بنحاول نجيب الملف بملحق .txt
+                const response = await fetch(fileName + '.txt');
+                if (!response.ok) throw new Error('File not found');
+                const text = await response.text();
+                
+                // تنظيف النص وعرضه بشكل جميل
+                container.innerText = text;
+                
+                // تحديث عنوان الصفحة باسم الرواية
+                document.title = "قراءة: " + fileName;
+            } catch (err) {
+                container.innerHTML = `<div style="text-align:center; padding:50px;">
+                    <h3>عذراً، تعذر تحميل الرواية</h3>
+                    <p>تأكد من وجود ملف باسم <b>${fileName}.txt</b> في مستودعك</p>
+                    <button onclick="window.location.href='index.html'" class="tool-btn">العودة للمكتبة</button>
+                </div>`;
+            }
+        }
+
+        function toggleMode(mode) { document.body.className = mode + '-mode'; }
+        
+        let currentSize = 1.3;
+        function changeSize(delta) {
+            currentSize += delta;
+            if(currentSize < 0.8) currentSize = 0.8;
+            if(currentSize > 2.5) currentSize = 2.5;
+            document.body.style.setProperty('--font-size', currentSize + 'rem');
+        }
+
+        window.onload = loadNovel;
+    </script>
 
             try {
                 const response = await fetch(fileName + '.txt');
