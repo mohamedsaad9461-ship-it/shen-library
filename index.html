@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مكتبة شين - النسخة الاحترافية</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=Cairo:wght@600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=Cairo:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=1.2">
 </head>
 <body>
 
@@ -24,7 +22,6 @@
             <h1 style="font-family: 'Almarai'; margin: 0;">مكتبة شين</h1>
             <p style="opacity: 0.8;">مرحباً بك يا محمد</p>
         </div>
-
         <div class="slider-container">
             <div class="slides">
                 <div class="slide" style="background-image: url('https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png');"></div>
@@ -33,19 +30,18 @@
                 <div class="slide" style="background-image: url('https://i.ibb.co/5xnfF4MH/Screenshot-2026-01-28-012305.png');"></div>
             </div>
         </div>
-
         <div class="menu-container">
             <div class="glass-btn" onclick="showSec('librarySection')">✨ تابع الدخول للمكتبة</div>
             <div class="glass-btn" onclick="showSec('quotesSection')">🖋️ اقتباسات أدبية</div>
             <div class="glass-btn" onclick="alert('قريباً')">💡 معلومة من رواية</div>
-            <div class="glass-btn" onclick="alert('تواصل معنا عبر فيسبوك')">👥 من نحن / تواصل معنا</div>
+            <div class="glass-btn" onclick="alert('تواصل معنا')">👥 من نحن / تواصل معنا</div>
         </div>
     </div>
 
     <div id="librarySection">
         <div class="top-bar">
             <div class="back-circle" onclick="showSec('homeUI')">➔</div>
-            <input type="text" id="novelSearch" placeholder="ابحث عن روايتك..." onkeyup="liveSearch()">
+            <input type="text" id="novelSearch" placeholder="ابحث..." onkeyup="liveSearch()">
         </div>
         <div id="novelsContainer"></div>
     </div>
@@ -60,12 +56,12 @@
 
     <div id="readerMode">
         <div class="top-bar" style="background:#fff; color:#333;">
-            <div class="back-circle" onclick="closeReader()" style="color:#333;">➔</div>
+            <div class="back-circle" onclick="closeReader()">➔</div>
             <div id="readerTitle" style="flex-grow:1; text-align:center; font-weight:bold;"></div>
         </div>
         <iframe id="bookFrame" src=""></iframe>
     </div>
 
-    <script src="script.js?v=1.1"></script>
+    <script src="script.js?v=1.2"></script>
 </body>
 </html>
