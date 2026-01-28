@@ -92,13 +92,13 @@
 </div>
 
 <script>
-    const novelsData = [
-        { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", available: true, file: "tangar.html" },
-        { id: 1, name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false },
-        { id: 2, name: "ممالك القيران", img: "https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png", available: false },
-        { id: 3, name: "وباء", img: "https://i.ibb.co/xqfBbZjf/Screenshot-2026-01-28-014331.png", available: false },
-        { id: 4, name: "قصص من مصدر", img: "https://i.ibb.co/BHgP5YC6/Screenshot-2026-01-28-014426.png", available: false }
-    ];
+   const novelsData = [
+    { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", available: true, file: "tangar.html", likes: 0, dislikes: 0, rating: 0, comments: [] },
+    { id: 1, name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false, likes: 0, dislikes: 0, rating: 0, comments: [] },
+    { id: 2, name: "ممالك القيران", img: "https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png", available: false, likes: 0, dislikes: 0, rating: 0, comments: [] },
+    { id: 3, name: "وباء", img: "https://i.ibb.co/xqfBbZjf/Screenshot-2026-01-28-014331.png", available: false, likes: 0, dislikes: 0, rating: 0, comments: [] },
+    { id: 4, name: "قصص من مصدر", img: "https://i.ibb.co/BHgP5YC6/Screenshot-2026-01-28-014426.png", available: false, likes: 0, dislikes: 0, rating: 0, comments: [] }
+];
 
     function initApp() {
         // إدارة الاسم
@@ -112,23 +112,17 @@
         renderNovels();
     }
 
-    function renderNovels() {
-        const container = document.getElementById('novelsContainer');
-        container.innerHTML = novelsData.map(novel => `
-            <div class="novel-card" data-name="${novel.name}">
-                <div style="display:flex; gap:15px; align-items:center;">
-                    <img src="${novel.img}" width="80" style="border-radius:12px;">
-                    <div>
-                        <div style="font-weight:800; font-size:18px;">${novel.name}</div>
-                        <div style="color:#FFD700">⭐⭐⭐⭐⭐</div>
-                    </div>
-                </div>
-                <div class="glass-btn" style="margin-top:10px; padding:10px;" onclick="${novel.available ? `openReader('${novel.name}', '${novel.file}')` : 'alert(\'قريباً\')'}">
-                    ${novel.available ? '📖 اقرأ الآن' : '⏳ قريباً'}
-                </div>
-            </div>
-        `).join('');
-    }
+    <div class="interaction-bar" style="display:flex; gap:10px; margin-top:10px; align-items:center;">
+    <span onclick="handleLike(${novel.id}, 'like')" style="cursor:pointer;">👍 <small id="l-${novel.id}">${novel.likes}</small></span>
+    <span onclick="handleLike(${novel.id}, 'dislike')" style="cursor:pointer;">👎 <small id="d-${novel.id}">${novel.dislikes}</small></span>
+    <div class="stars-container" style="color:#ccc;">
+        ${[1,2,3,4,5].map(s => <span onclick="setRate(${novel.id}, ${s})" style="cursor:pointer; color: ${novel.rating >= s ? '#FFD700' : '#fff'}">★</span>).join('')}
+    </div>
+</div>
+<div style="margin-top:10px;">
+    <input type="text" id="comm-input-${novel.id}" placeholder="أضف تعليقك..." style="width:70%; border-radius:10px; border:none; padding:5px;">
+    <button onclick="addComment(${novel.id})" style="border-radius:10px; border:none; padding:5px 10px; cursor:pointer;">نشر</button>
+</div>}
 
     function openReader(name, file) {
         document.getElementById('readerMode').style.display = 'block';
@@ -157,3 +151,28 @@
 </script>
 </body>
 </html>
+// منع تكرار التفاعل (قفل التحكم)
+let userActions = JSON.parse(localStorage.getItem('user_actions')) || {};
+
+function handleLike(id, type) {
+    if (userActions[id]?.voted) return alert("لقد قمت بالتفاعل مع هذه الرواية مسبقاً");
+    
+    if (type === 'like') novelsData[id].likes++;
+    else novelsData[id].dislikes++;
+    
+    userActions[id] = { voted: true };
+    localStorage.setItem('user_actions', JSON.stringify(userActions));
+    renderNovels(); // تحديث فوري للشكل
+}
+
+function setRate(id, star) {
+    novelsData[id].rating = star;
+    renderNovels();
+}
+
+function addComment(id) {
+    let input = document.getElementById(comm-input-${id});
+    if (input.value.trim() === "") return;
+    alert("تم إرسال تعليقك للمراجعة: " + input.value);
+    input.value = "";
+}
