@@ -5,38 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مكتبة شين</title>
     <style>
-        body { margin: 0; font-family: sans-serif; background: #0f0c29; color: white; text-align: center; }
-        .header { padding: 20px; background: #1a1a2e; border-bottom: 2px solid #e73c7e; }
-        .book-card { background: #1a1a2e; margin: 15px; padding: 20px; border-radius: 15px; border: 1px solid #302b63; }
-        button { background: #e73c7e; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        body { margin: 0; padding: 0; background: #0f0c29; font-family: sans-serif; color: white; }
+        .header { padding: 20px; text-align: center; background: linear-gradient(45deg, #1a1a2e, #302b63); border-bottom: 2px solid #e73c7e; }
         
-        /* القارئ السحري اللي بيحل مشكلة التقطيع */
-        #readerMode { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a2e; z-index: 1000; }
-        .close-btn { background: #ff4b2b; color: white; border: none; padding: 15px; width: 100%; font-weight: bold; cursor: pointer; font-size: 18px; }
-        iframe { width: 100%; height: calc(100% - 60px); border: none; }
+        /* واجهة العناصر (الأيقونات والقوائم) */
+        .container { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .menu-item { background: #1a1a2e; padding: 20px; border-radius: 15px; text-align: center; border: 1px solid #e73c7e; cursor: pointer; }
+        .menu-item i { font-size: 30px; display: block; margin-bottom: 10px; }
+
+        /* القارئ (بيكون مخفي ومبيظهرش إلا لما تدوس على الرواية) */
+        #readerMode { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a2e; z-index: 9999; }
+        .close-bar { background: #ff4b2b; color: white; padding: 15px; text-align: center; font-weight: bold; cursor: pointer; }
+        iframe { width: 100%; height: calc(100% - 55px); border: none; }
     </style>
 </head>
 <body>
 
 <div class="header">
     <h1>مكتبة شين</h1>
-    <p>أهلاً بك يا محمد في عالم الروايات</p>
+    <p>واجهتك المفضلة يا محمد</p>
 </div>
 
-<div class="book-card">
-    <h2 style="color: #e73c7e;">حلم طنجار</h2>
-    <p>للكاتب: محمد فكري</p>
-    <button onclick="openBook('tangar.html')">اقرأ الرواية الآن</button>
-</div>
+<div class="container">
+    <div class="menu-item" onclick="openBook('tangar.html')">
+        <span>📖</span>
+        <h3>حلم طنجار</h3>
+    </div>
+    <div class="menu-item">
+        <span>📂</span>
+        <h3>المكتبة</h3>
+    </div>
+    </div>
 
 <div id="readerMode">
-    <button class="close-btn" onclick="closeBook()">إغلاق القارئ [ X ]</button>
+    <div class="close-bar" onclick="closeBook()">إغلاق والعودة للواجهة ×</div>
     <iframe id="bookFrame" src=""></iframe>
 </div>
 
 <script>
     function openBook(url) {
-        // بنخلي الإطار يفتح ملف الرواية اللي رفعناه
         document.getElementById('bookFrame').src = url;
         document.getElementById('readerMode').style.display = 'block';
     }
