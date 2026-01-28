@@ -3,23 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مكتبة شين - 9.3</title>
+    <title>مكتبة شين - الإصدار المستقر</title>
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=Cairo:wght@600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* الخلفية المتحركة */
         body { margin: 0; padding: 0; overflow-x: hidden; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; font-family: 'Cairo', sans-serif; }
         @keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        /* حاوي الصور المتحركة */
         .slider-container { width: 92%; margin: 20px auto; height: 180px; max-width: 600px; border-radius: 25px; overflow: hidden; border: 2px solid rgba(255,255,255,0.4); position: relative; }
         .slides { display: flex; width: 900%; height: 100%; animation: slideAction 36s infinite ease-in-out; }
         .slide { width: 11.11%; background-size: cover; background-position: center; }
         @keyframes slideAction { 0%, 9% { transform: translateX(0%); } 11%, 20% { transform: translateX(11.11%); } 22%, 31% { transform: translateX(22.22%); } 33%, 42% { transform: translateX(33.33%); } 44%, 53% { transform: translateX(44.44%); } 55%, 64% { transform: translateX(55.55%); } 66%, 75% { transform: translateX(66.66%); } 77%, 86% { transform: translateX(77.77%); } 88%, 100% { transform: translateX(88.88%); } }
+
+        /* القائمة الرئيسية */
         .menu-container { padding: 10px 20px; display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; }
         .glass-btn { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border: 2px solid rgba(255, 255, 255, 0.4); color: white; padding: 18px; border-radius: 20px; text-align: center; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        
+        /* الأقسام المخفية */
         #librarySection, #quotesSection, #readerMode { display: none; }
+        
+        /* شريط التحكم العلوي */
         .top-bar { display: flex; align-items: center; padding: 12px 15px; gap: 10px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; color: white; }
         .back-circle { width: 35px; height: 35px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.4); }
+
+        /* كروت الروايات */
         .novel-card { background: rgba(255,255,255,0.18); margin: 15px; padding: 20px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.3); color: white; max-width: 500px; margin: 15px auto; }
-        .star { cursor: pointer; font-size: 20px; color: white; }
+        .star { cursor: pointer; font-size: 20px; color: white; transition: 0.3s; }
         .star.active { color: #FFD700; }
+
+        /* كروت الاقتباسات (طولية) */
         .quote-card { background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); border-radius: 25px; padding: 25px; margin: 15px auto; border: 1px solid rgba(255,255,255,0.4); color: white; max-width: 500px; }
         .author-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         .author-img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #FFD700; background-size: cover; }
@@ -27,6 +40,8 @@
         .q-actions { display: flex; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
         .active-like { color: #00ff88; font-weight: bold; }
         .active-dislike { color: #ff4d4d; font-weight: bold; }
+
+        /* وضع القراءة */
         #readerMode { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #fff; }
         iframe { width: 100%; height: calc(100% - 60px); border: none; }
     </style>
@@ -38,6 +53,7 @@
         <h1 style="font-family: 'Almarai'; margin: 0;">مكتبة شين</h1>
         <p style="opacity: 0.8;">مرحباً بك يا محمد</p>
     </div>
+
     <div class="slider-container">
         <div class="slides">
             <div class="slide" style="background-image: url('https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png');"></div>
@@ -46,6 +62,7 @@
             <div class="slide" style="background-image: url('https://i.ibb.co/5xnfF4MH/Screenshot-2026-01-28-012305.png');"></div>
         </div>
     </div>
+
     <div class="menu-container">
         <div class="glass-btn" onclick="showSec('librarySection')">✨ تابع الدخول للمكتبة</div>
         <div class="glass-btn" onclick="showSec('quotesSection')">🖋️ اقتباسات أدبية</div>
@@ -55,21 +72,31 @@
 </div>
 
 <div id="librarySection">
-    <div class="top-bar"><div class="back-circle" onclick="showSec('homeUI')">➔</div><input type="text" id="novelSearch" placeholder="ابحث..." onkeyup="liveSearch()" style="background:none; border:none; color:white; flex-grow:1; outline:none;"></div>
+    <div class="top-bar">
+        <div class="back-circle" onclick="showSec('homeUI')">➔</div>
+        <input type="text" id="novelSearch" placeholder="ابحث عن روايتك..." onkeyup="liveSearch()" style="background:none; border:none; color:white; flex-grow:1; outline:none;">
+    </div>
     <div id="novelsContainer"></div>
 </div>
 
 <div id="quotesSection">
-    <div class="top-bar"><div class="back-circle" onclick="showSec('homeUI')">➔</div><div style="flex-grow:1; text-align:center;">اقتباسات الأصدقاء</div></div>
-    <div id="quotesList" style="padding:10px;"></div>
+    <div class="top-bar">
+        <div class="back-circle" onclick="showSec('homeUI')">➔</div>
+        <div style="flex-grow:1; text-align:center;">اقتباسات الأصدقاء</div>
+    </div>
+    <div id="quotesList"></div>
 </div>
 
 <div id="readerMode">
-    <div class="top-bar" style="background:#fff; color:#333;"><div class="back-circle" onclick="closeReader()" style="color:#333;">➔</div><div id="readerTitle" style="flex-grow:1; text-align:center; font-weight:bold;"></div></div>
+    <div class="top-bar" style="background:#fff; color:#333;">
+        <div class="back-circle" onclick="closeReader()" style="color:#333;">➔</div>
+        <div id="readerTitle" style="flex-grow:1; text-align:center; font-weight:bold;"></div>
+    </div>
     <iframe id="bookFrame" src=""></iframe>
 </div>
 
 <script>
+    // بيانات الروايات
     const novelsData = [
         { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", file: "tangar.html", available: true },
         { id: 1, name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false },
@@ -78,13 +105,14 @@
         { id: 4, name: "قصص من مصدر", img: "https://i.ibb.co/BHgP5YC6/Screenshot-2026-01-28-014426.png", available: false }
     ];
 
+    // بيانات الاقتباسات
     const quotesData = [
         { id: 101, name: "محمد سعد", img: "https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png", text: "هناك، يُنسج لك ثوب أمنياتك، تماماً كما تمنيته، ملائماً لجسدك." },
-        { id: 102, name: "اقتباس جديد", img: "https://via.placeholder.com/60", text: "هنا يوضع الاقتباس الأول من أصدقاء الجروب بشكل طولي وأنيق." },
-        { id: 103, name: "اقتباس جديد", img: "https://via.placeholder.com/60", text: "التصميم الطولي يسمح للجميع برؤية الاقتباسات بوضوح وسهولة." }
+        { id: 102, name: "اقتباس جديد", img: "https://via.placeholder.com/60", text: "القائمة الطولية تجعل قراءة الاقتباسات أسهل وأكثر متعة." }
     ];
 
-    let appState = JSON.parse(localStorage.getItem('shain_v93')) || { ratings: {}, votes: {}, qVotes: {} };
+    // نظام التخزين
+    let appState = JSON.parse(localStorage.getItem('shain_final_fixed')) || { ratings: {}, votes: {}, qVotes: {} };
 
     function initApp() {
         renderNovels();
@@ -128,11 +156,28 @@
     function rateNovel(id, s) { appState.ratings[id] = s; save(); }
     function voteNovel(id, t) { appState.votes[id] = (appState.votes[id]===t)?null:t; save(); }
     function voteQuote(id, t) { appState.qVotes[id] = (appState.qVotes[id]===t)?null:t; save(); }
-    function save() { localStorage.setItem('shain_v93', JSON.stringify(appState)); renderNovels(); renderQuotes(); }
-    function showSec(id) { document.querySelectorAll('#homeUI,#librarySection,#quotesSection').forEach(s=>s.style.display='none'); document.getElementById(id).style.display='block'; }
-    function openReader(n, f) { document.getElementById('readerMode').style.display='block'; document.getElementById('readerTitle').innerText=n; document.getElementById('bookFrame').src=f; }
-    function closeReader() { document.getElementById('readerMode').style.display='none'; document.getElementById('bookFrame').src=''; }
-    function liveSearch() { let q=document.getElementById('novelSearch').value.toLowerCase(); document.querySelectorAll('.novel-card').forEach(c=>c.style.display=c.getAttribute('data-name').toLowerCase().includes(q)?'block':'none'); }
+    function save() { localStorage.setItem('shain_final_fixed', JSON.stringify(appState)); renderNovels(); renderQuotes(); }
+    
+    function showSec(id) { 
+        document.querySelectorAll('#homeUI,#librarySection,#quotesSection').forEach(s=>s.style.display='none'); 
+        document.getElementById(id).style.display='block'; 
+    }
+
+    function openReader(n, f) { 
+        document.getElementById('readerMode').style.display='block'; 
+        document.getElementById('readerTitle').innerText=n; 
+        document.getElementById('bookFrame').src=f; 
+    }
+    
+    function closeReader() { 
+        document.getElementById('readerMode').style.display='none'; 
+        document.getElementById('bookFrame').src=''; 
+    }
+
+    function liveSearch() { 
+        let q=document.getElementById('novelSearch').value.toLowerCase(); 
+        document.querySelectorAll('.novel-card').forEach(c=>c.style.display=c.getAttribute('data-name').toLowerCase().includes(q)?'block':'none'); 
+    }
 </script>
 </body>
 </html>
