@@ -6,33 +6,32 @@
     <title>مكتبة شين</title>
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=Cairo:wght@600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* [قفل] الهوية البصرية والثوابت */
+        /* 1. الثوابت والهوية البصرية */
         body { margin: 0; padding: 0; overflow-x: hidden; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; font-family: 'Cairo', sans-serif; }
         @keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
+        /* 2. البانر المنضبط (ويب وموبايل) */
         .slider-container { width: 92%; margin: 20px auto; height: 180px; max-width: 600px; border-radius: 25px; overflow: hidden; border: 2px solid rgba(255,255,255,0.4); position: relative; }
         .slides { display: flex; width: 900%; height: 100%; animation: slideAction 36s infinite ease-in-out; }
         .slide { width: 11.11%; background-size: cover; background-position: center; }
         @keyframes slideAction { 0%, 9% { transform: translateX(0%); } 11%, 20% { transform: translateX(11.11%); } 22%, 31% { transform: translateX(22.22%); } 33%, 42% { transform: translateX(33.33%); } 44%, 53% { transform: translateX(44.44%); } 55%, 64% { transform: translateX(55.55%); } 66%, 75% { transform: translateX(66.66%); } 77%, 86% { transform: translateX(77.77%); } 88%, 100% { transform: translateX(88.88%); } }
 
+        /* 3. القوائم والأزرار */
         .menu-container { padding: 10px 20px; display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; }
         .glass-btn { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border: 2px solid rgba(255, 255, 255, 0.4); color: white; padding: 18px; border-radius: 20px; text-align: center; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .glass-btn:active { transform: scale(0.95); }
 
+        /* 4. الأقسام الداخلية */
         #librarySection, #quotesSection, #readerMode { display: none; }
         .top-bar { display: flex; align-items: center; padding: 12px 15px; gap: 10px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; }
         .back-circle { width: 35px; height: 35px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; border: 1px solid rgba(255,255,255,0.4); }
         .novel-card { background: rgba(255,255,255,0.2); margin: 15px; padding: 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); color: white; max-width: 600px; margin-left: auto; margin-right: auto; }
 
-        /* تنسيق التفاعلات والنجوم */
-        .interaction-bar { display: flex; gap: 15px; margin-top: 10px; align-items: center; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 12px; }
-        .star-gold { color: #FFD700; cursor: pointer; }
-        .star-white { color: #fff; cursor: pointer; }
-        .comm-input { width: 70%; border-radius: 10px; border: none; padding: 8px; background: rgba(255,255,255,0.9); margin-top: 10px; }
-
+        /* 5. القارئ */
         #readerMode { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #fff; }
         iframe { width: 100%; height: calc(100% - 60px); border: none; }
 
+        /* 6. الاقتباسات */
         .quote-card { background: rgba(255,255,255,0.2); backdrop-filter: blur(20px); border-radius: 30px; padding: 40px 30px 30px; border: 2px solid #fff; position: relative; text-align: center; margin: 50px 20px; color: white; max-width: 600px; margin-left: auto; margin-right: auto; }
         .author-img { width: 75px; height: 75px; border-radius: 50%; border: 3px solid #FFD700; position: absolute; top: -40px; right: 20px; background-image: url('https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png'); background-size: cover; }
     </style>
@@ -93,19 +92,16 @@
 </div>
 
 <script>
-    // 1. البيانات
     const novelsData = [
-        { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", available: true, file: "tangar.html", likes: 0, dislikes: 0, rating: 0 },
-        { id: 1, name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false, likes: 0, dislikes: 0, rating: 0 },
-        { id: 2, name: "ممالك القيران", img: "https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png", available: false, likes: 0, dislikes: 0, rating: 0 },
-        { id: 3, name: "وباء", img: "https://i.ibb.co/xqfBbZjf/Screenshot-2026-01-28-014331.png", available: false, likes: 0, dislikes: 0, rating: 0 },
-        { id: 4, name: "قصص من مصدر", img: "https://i.ibb.co/BHgP5YC6/Screenshot-2026-01-28-014426.png", available: false, likes: 0, dislikes: 0, rating: 0 }
+        { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", available: true, file: "tangar.html" },
+        { id: 1, name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false },
+        { id: 2, name: "ممالك القيران", img: "https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png", available: false },
+        { id: 3, name: "وباء", img: "https://i.ibb.co/xqfBbZjf/Screenshot-2026-01-28-014331.png", available: false },
+        { id: 4, name: "قصص من مصدر", img: "https://i.ibb.co/BHgP5YC6/Screenshot-2026-01-28-014426.png", available: false }
     ];
 
-    let userVotes = JSON.parse(localStorage.getItem('user_votes')) || {};
-
-    // 2. التشغيل الأول
     function initApp() {
+        // إدارة الاسم
         let name = localStorage.getItem('shain_name');
         if (!name) {
             name = prompt("مرحباً بك في شين.. ما هو اسمك؟");
@@ -116,66 +112,22 @@
         renderNovels();
     }
 
-    // 3. بناء واجهة الروايات
     function renderNovels() {
         const container = document.getElementById('novelsContainer');
         container.innerHTML = novelsData.map(novel => `
             <div class="novel-card" data-name="${novel.name}">
                 <div style="display:flex; gap:15px; align-items:center;">
                     <img src="${novel.img}" width="80" style="border-radius:12px;">
-                    <div style="flex-grow:1;">
+                    <div>
                         <div style="font-weight:800; font-size:18px;">${novel.name}</div>
-                        <div class="stars-container">
-                            ${[1,2,3,4,5].map(s => `<span onclick="setRate(${novel.id}, ${s})" class="${novel.rating >= s ? 'star-gold' : 'star-white'}">★</span>`).join('')}
-                        </div>
+                        <div style="color:#FFD700">⭐⭐⭐⭐⭐</div>
                     </div>
                 </div>
-                
-                <div class="interaction-bar">
-                    <span onclick="handleLike(${novel.id}, 'like')" style="cursor:pointer;">👍 <small>${novel.likes}</small></span>
-                    <span onclick="handleLike(${novel.id}, 'dislike')" style="cursor:pointer;">👎 <small>${novel.dislikes}</small></span>
-                </div>
-
-                <div style="margin-top:10px; display:flex; gap:5px;">
-                    <input type="text" id="comm-input-${novel.id}" class="comm-input" placeholder="أضف تعليقك...">
-                    <button onclick="addComment(${novel.id})" style="border:none; background:#FFD700; border-radius:10px; padding:5px 10px; margin-top:10px; cursor:pointer; font-weight:bold;">نشر</button>
-                </div>
-
-                <div class="glass-btn" style="margin-top:15px; padding:10px;" onclick="${novel.available ? `openReader('${novel.name}', '${novel.file}')` : 'alert(\'قريباً\')'}">
+                <div class="glass-btn" style="margin-top:10px; padding:10px;" onclick="${novel.available ? `openReader('${novel.name}', '${novel.file}')` : 'alert(\'قريباً\')'}">
                     ${novel.available ? '📖 اقرأ الآن' : '⏳ قريباً'}
                 </div>
             </div>
         `).join('');
-    }
-
-    // 4. التفاعلات
-    function handleLike(id, type) {
-        if (userVotes[id]) return alert("لقد تفاعلت مسبقاً مع هذه الرواية!");
-        if (type === 'like') novelsData[id].likes++;
-        else novelsData[id].dislikes++;
-        userVotes[id] = type;
-        localStorage.setItem('user_votes', JSON.stringify(userVotes));
-        renderNovels();
-    }
-
-    function setRate(id, star) {
-        novelsData[id].rating = star;
-        renderNovels();
-    }
-
-    function addComment(id) {
-        let input = document.getElementById(`comm-input-${id}`);
-        if (input.value.trim() === "") return;
-        alert("شكراً! تم إرسال تعليقك للمراجعة.");
-        input.value = "";
-    }
-
-    // 5. التنقل والبحث
-    function showSec(id) {
-        document.getElementById('homeUI').style.display = 'none';
-        document.getElementById('librarySection').style.display = 'none';
-        document.getElementById('quotesSection').style.display = 'none';
-        document.getElementById(id).style.display = 'block';
     }
 
     function openReader(name, file) {
@@ -187,6 +139,13 @@
     function closeReader() {
         document.getElementById('readerMode').style.display = 'none';
         document.getElementById('bookFrame').src = '';
+    }
+
+    function showSec(id) {
+        document.getElementById('homeUI').style.display = 'none';
+        document.getElementById('librarySection').style.display = 'none';
+        document.getElementById('quotesSection').style.display = 'none';
+        document.getElementById(id).style.display = 'block';
     }
 
     function liveSearch() {
