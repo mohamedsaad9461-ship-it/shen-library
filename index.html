@@ -123,7 +123,7 @@
                         <div style="color:#FFD700">⭐⭐⭐⭐⭐</div>
                     </div>
                 </div>
-                <div class="glass-btn" style="margin-top:10px; padding:10px;" onclick="${novel.available ? openReader('${novel.name}', '${novel.file}') : 'alert(\'قريباً\')'}">
+                <div class="glass-btn" style="margin-top:10px; padding:10px;" onclick="${novel.available ? `openReader('${novel.name}', '${novel.file}')` : 'alert(\'قريباً\')'}">
                     ${novel.available ? '📖 اقرأ الآن' : '⏳ قريباً'}
                 </div>
             </div>
