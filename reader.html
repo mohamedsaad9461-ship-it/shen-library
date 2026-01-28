@@ -3,116 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>قارئ شين الذكي</title>
+    <title>قارئ شين الذكي - حلم طنجار</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.3rem; --accent: #e67e22; }
+        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.35rem; --h-color: #ffeb3b88; }
         body.dark { --bg: #1a1a1b; --text: #d5d5d5; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Amiri', serif; overflow: hidden; transition: 0.3s; }
 
-        /* الهيدر */
-        .header { 
-            height: 55px; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 15px; background: rgba(0,0,0,0.03); backdrop-filter: blur(10px);
-            position: fixed; top: 0; width: 100%; z-index: 1000; box-sizing: border-box;
-        }
-        .nav-icons { display: flex; gap: 15px; align-items: center; }
-        .icon-btn { cursor: pointer; font-size: 1.2rem; background: none; border: none; color: var(--text); transition: 0.2s; }
-        .icon-btn:active { transform: scale(0.8); }
-        .marker-on { color: #f1c40f; text-shadow: 0 0 5px rgba(241,196,15,0.5); }
+        .header { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: rgba(0,0,0,0.03); backdrop-filter: blur(10px); position: fixed; top: 0; width: 100%; z-index: 1000; box-sizing: border-box; }
+        .icon-btn { cursor: pointer; font-size: 1.3rem; background: none; border: none; color: var(--text); position: relative; }
 
-        /* منطقة الكتاب */
-        #viewport { margin-top: 55px; height: calc(100vh - 95px); width: 100vw; display: flex; transition: transform 0.4s ease-out; }
-        .page-box { min-width: 100vw; box-sizing: border-box; padding: 25px 12%; text-align: justify; font-size: var(--size); line-height: 2.1; }
+        /* قائمة الألوان السرية للماركر */
+        .marker-palette { display: none; position: absolute; top: 65px; background: white; border-radius: 20px; padding: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex-direction: column; gap: 8px; z-index: 1001; }
+        .color-dot { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
 
-        /* أزرار التنقل الجانبية (للكومبيوتر والموبايل) */
-        .side-nav {
-            position: fixed; top: 55px; height: calc(100vh - 95px); width: 40px;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(0,0,0,0.02); cursor: pointer; z-index: 500; font-size: 1.5rem; opacity: 0.3; transition: 0.3s;
-        }
-        .side-nav:hover { opacity: 1; background: rgba(0,0,0,0.05); }
-        .next-page { left: 0; }
-        .prev-page { right: 0; }
+        #viewport { margin-top: 60px; height: calc(100vh - 100px); width: 100vw; display: flex; transition: transform 0.4s ease-out; }
+        .page-box { min-width: 100vw; box-sizing: border-box; padding: 25px 10%; text-align: justify; font-size: var(--size); line-height: 2.2; }
+        
+        /* التظليل الملون */
+        ::selection { background: var(--h-color); }
+        .highlight-yellow { background: #ffeb3b88; }
+        .highlight-red { background: #ff525288; }
+        .highlight-blue { background: #448aff88; }
 
-        /* الفوتر */
-        .footer { position: fixed; bottom: 0; width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.02); font-family: 'Cairo'; font-size: 12px; }
+        .side-nav { position: fixed; top: 60px; height: calc(100vh - 100px); width: 45px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.01); cursor: pointer; z-index: 500; font-size: 1.8rem; opacity: 0.2; }
+        .footer { position: fixed; bottom: 0; width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.02); font-family: 'Cairo'; font-size: 13px; }
     </style>
 </head>
 <body class="sepia-mode">
 
     <div class="header">
         <button class="icon-btn" onclick="location.href='index.html'">✕</button>
-        <div class="nav-icons">
-            <button class="icon-btn" id="m-btn" onclick="toggleMarker()">🖍️</button>
-            <button class="icon-btn" onclick="toggleDark()">🌙</button>
-            <button class="icon-btn" onclick="adjSize(0.1)">A+</button>
-            <button class="icon-btn" onclick="adjSize(-0.1)">A-</button>
+        <div style="display:flex; gap:20px; align-items:center;">
+            <div style="position:relative;">
+                <button class="icon-btn" onclick="togglePalette()">🖍️</button>
+                <div id="palette" class="marker-palette">
+                    <div class="color-dot" style="background:#ffeb3b" onclick="setMarker('#ffeb3b88')"></div>
+                    <div class="color-dot" style="background:#ff5252" onclick="setMarker('#ff525288')"></div>
+                    <div class="color-dot" style="background:#448aff" onclick="setMarker('#448aff88')"></div>
+                </div>
+            </div>
+            <button class="icon-btn" onclick="document.body.classList.toggle('dark')">🌙</button>
+            <button class="icon-btn" onclick="adj(0.1)">A+</button>
+            <button class="icon-btn" onclick="adj(-0.1)">A-</button>
         </div>
     </div>
 
-    <div class="side-nav next-page" onclick="movePage(1)">❮</div>
-    <div class="side-nav prev-page" onclick="movePage(-1)">❯</div>
+    <div class="side-nav" style="left:0" onclick="move(1)">❮</div>
+    <div class="side-nav" style="right:0" onclick="move(-1)">❯</div>
 
-    <div id="viewport">
-        </div>
+    <div id="viewport"> <div class="page-box">جاري تحميل حلم طنجار...</div> </div>
 
-    <div class="footer">
-        <span id="pg-info">صفحة 1 من ...</span>
-    </div>
+    <div class="footer"> <span id="pg">1 / ...</span> </div>
 
     <script>
-        // نص تجريبي (هيتم استبداله تلقائياً بملفك النصي في الخطوة الجاية)
-        const demo = "هذا نص تجريبي لاختبار نظام الصفحات الجديد والرموز الاحترافية. ".repeat(600);
-        let cur = 0, total = 0;
+        let cur = 0, total = 0, bID = "tangar";
+
+        // الربط الحقيقي بملف الـ txt
+        async function load() {
+            try {
+                const res = await fetch('tangar.txt');
+                const text = await res.text();
+                build(text);
+            } catch(e) { document.getElementById('viewport').innerText = "تأكد من وجود ملف tangar.txt"; }
+        }
 
         function build(txt) {
-            const v = document.getElementById('viewport');
-            v.innerHTML = "";
-            const words = txt.split(' ');
-            for(let i=0; i<words.length; i+=180) { // قللت عدد الكلمات في الصفحة لراحة العين
-                const pText = words.slice(i, i+180).join(' ');
-                const d = document.createElement('div');
-                d.className = 'page-box';
-                d.innerHTML = `<p>${pText}</p>`;
-                v.appendChild(d);
+            const v = document.getElementById('viewport'); v.innerHTML = "";
+            const words = txt.split(/\s+/);
+            for(let i=0; i<words.length; i+=220) {
+                const div = document.createElement('div');
+                div.className = 'page-box';
+                div.innerHTML = `<p>${words.slice(i, i+220).join(' ')}</p>`;
+                v.appendChild(div);
             }
             total = document.querySelectorAll('.page-box').length;
+            const s = localStorage.getItem('last_'+bID);
+            if(s) cur = parseInt(s);
             update();
         }
 
-        function movePage(dir) {
-            if(dir === 1 && cur < total - 1) cur++;
-            if(dir === -1 && cur > 0) cur--;
+        function move(d) {
+            if(d===1 && cur < total-1) cur++; else if(d===-1 && cur > 0) cur--;
             update();
         }
 
         function update() {
             document.getElementById('viewport').style.transform = `translateX(${cur * 100}vw)`;
-            document.getElementById('pg-info').innerText = `صفحة ${cur + 1} من ${total}`;
-            localStorage.setItem('shain_last_pg', cur);
+            document.getElementById('pg').innerText = `${cur + 1} / ${total}`;
+            localStorage.setItem('last_'+bID, cur);
         }
 
-        function toggleDark() { document.body.classList.toggle('dark'); }
-        function toggleMarker() { 
-            document.getElementById('m-btn').classList.toggle('marker-on');
-            alert("وضع التحديد نشط: يمكنك الآن تمييز النصوص المفضلة.");
+        function togglePalette() {
+            const p = document.getElementById('palette');
+            p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
         }
-        function adjSize(s) { /* دالة تغيير الخط */ }
+
+        function setMarker(color) {
+            document.documentElement.style.setProperty('--h-color', color);
+            togglePalette();
+            alert("تم اختيار اللون! يمكنك الآن تحديد النص بصباعك.");
+        }
+
+        function adj(s) { /* دالة الخط */ }
 
         // دعم السحب باللمس
         let sX = 0;
         document.addEventListener('touchstart', e => sX = e.touches[0].clientX);
         document.addEventListener('touchend', e => {
             let dX = sX - e.changedTouches[0].clientX;
-            if(Math.abs(dX) > 50) movePage(dX > 0 ? 1 : -1);
+            if(Math.abs(dX) > 60) move(dX > 0 ? 1 : -1);
         });
 
-        window.onload = () => {
-            const s = localStorage.getItem('shain_last_pg');
-            if(s) cur = parseInt(s);
-            build(demo);
-        };
+        window.onload = load;
     </script>
 </body>
 </html>
