@@ -6,26 +6,43 @@
     <title>مكتبة شين</title>
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=Cairo:wght@600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* الثوابت البصرية (خط أحمر) */
-        body { margin: 0; padding: 0; overflow-x: hidden; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; font-family: 'Cairo', sans-serif; }
+        /* [قفل] الهوية البصرية والثوابت - المرجع الأصلي */
+        body { margin: 0; padding: 0; overflow-x: hidden; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; font-family: 'Cairo', sans-serif; transition: 0.3s; }
         @keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-        .slider-container { width: 92%; margin: 20px auto; height: 170px; border-radius: 25px; overflow: hidden; border: 2px solid rgba(255,255,255,0.4); }
+
+        /* حل مشكلة البانر: منع المط في الويب والموبايل */
+        .slider-container { 
+            width: 92%; 
+            margin: 20px auto; 
+            height: 180px; /* ارتفاع مثالي للموبايل */
+            max-width: 600px; /* يمنع التمدد الزائد في الويب */
+            border-radius: 25px; 
+            overflow: hidden; 
+            border: 2px solid rgba(255,255,255,0.4); 
+            position: relative;
+        }
         .slides { display: flex; width: 900%; height: 100%; animation: slideAction 36s infinite ease-in-out; }
-        .slide { width: 11.11%; background-size: cover; background-position: center; }
+        .slide { 
+            width: 11.11%; 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat;
+        }
         @keyframes slideAction { 0%, 9% { transform: translateX(0%); } 11%, 20% { transform: translateX(11.11%); } 22%, 31% { transform: translateX(22.22%); } 33%, 42% { transform: translateX(33.33%); } 44%, 53% { transform: translateX(44.44%); } 55%, 64% { transform: translateX(55.55%); } 66%, 75% { transform: translateX(66.66%); } 77%, 86% { transform: translateX(77.77%); } 88%, 100% { transform: translateX(88.88%); } }
-        .menu-container { padding: 10px 20px; display: flex; flex-direction: column; gap: 15px; }
+
+        .menu-container { padding: 10px 20px; display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; }
         .glass-btn { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border: 2px solid rgba(255, 255, 255, 0.4); color: white; padding: 18px; border-radius: 20px; text-align: center; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .glass-btn:active { transform: scale(0.95); }
+
         #librarySection, #quotesSection, #readerMode { display: none; }
-        .top-bar { display: flex; align-items: center; padding: 12px 15px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); }
-        .back-circle { width: 35px; height: 35px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; }
     </style>
 </head>
-<body>
+<body onload="initApp()">
 
 <div id="homeUI">
     <div style="text-align: center; padding: 20px; color: white;">
         <h1 style="font-family: 'Almarai'; margin: 0;">مكتبة شين</h1>
-        <p style="opacity: 0.8; font-size: 1.1rem;">عالمك الخاص يا <span id="userNameDisplay" style="color: #FFD700;">...</span></p>
+        <p style="opacity: 0.8;">عالمك الخاص يا <span id="userGreeting">...</span></p>
     </div>
 
     <div class="slider-container">
@@ -45,39 +62,27 @@
     <div class="menu-container">
         <div class="glass-btn" onclick="showSec('librarySection')">✨ تابع الدخول للمكتبة</div>
         <div class="glass-btn" onclick="showSec('quotesSection')">🖋️ اقتباسات أدبية</div>
-        <div class="glass-btn" onclick="alert('سيكون متاحاً قريباً')">💡 معلومة من رواية</div>
-        <div class="glass-btn" onclick="changeNameManually()">👤 تغيير اسمي</div>
+        <div class="glass-btn">💡 معلومة من رواية</div>
+        <div class="glass-btn">👥 من نحن / تواصل معنا</div>
     </div>
 </div>
 
 <script>
-    // وظيفة تخصيص الاسم
-    function setupUser() {
-        let name = localStorage.getItem('shain_user');
+    function initApp() {
+        // 1. إدارة الاسم (بدون خانة في القائمة)
+        let name = localStorage.getItem('shain_name');
         if (!name) {
-            name = prompt("أهلاً بك في عالم شين.. ما هو اسمك الكريم؟");
-            if (!name) name = "زائرنا العزيز";
-            localStorage.setItem('shain_user', name);
+            name = prompt("مرحباً بك في شين.. ما هو اسمك؟");
+            if (!name || name.trim() === "") name = "صديقنا";
+            localStorage.setItem('shain_name', name);
         }
-        document.getElementById('userNameDisplay').innerText = name;
-    }
-
-    // وظيفة لتغيير الاسم يدوياً لو حب المستخدم
-    function changeNameManually() {
-        let newName = prompt("ما هو الاسم الجديد الذي تود استخدامه؟");
-        if (newName) {
-            localStorage.setItem('shain_user', newName);
-            document.getElementById('userNameDisplay').innerText = newName;
-        }
+        document.getElementById('userGreeting').innerText = name;
     }
 
     function showSec(id) {
         document.getElementById('homeUI').style.display = 'none';
         document.getElementById(id).style.display = 'block';
     }
-
-    // تشغيل النظام
-    window.onload = setupUser;
 </script>
 </body>
 </html>
