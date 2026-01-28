@@ -1,100 +1,136 @@
-/* script.js - نسخة الربط السريع */
+/* style.css - ملف الألوان والتنسيق */
 
-const novelsData = [
-    { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", file: "tangar.html", available: true },
-    { id: 1, name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false },
-    { id: 2, name: "ممالك القيران", img: "https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png", available: false },
-    { id: 3, name: "وباء", img: "https://i.ibb.co/xqfBbZjf/Screenshot-2026-01-28-014331.png", available: false },
-    { id: 4, name: "قصص من مصدر", img: "https://i.ibb.co/BHgP5YC6/Screenshot-2026-01-28-014426.png", available: false }
-];
-
-const quotesData = [
-    { id: 101, name: "محمد سعد", img: "https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png", text: "هناك، يُنسج لك ثوب أمنياتك، تماماً كما تمنيته، ملائماً لجسدك." },
-    { id: 102, name: "اقتباس جديد", img: "https://via.placeholder.com/60", text: "هنا يوضع الاقتباس الأول بشكل طولي وأنيق." }
-];
-
-let appState = JSON.parse(localStorage.getItem('shain_pro_v1')) || { ratings: {}, votes: {}, qVotes: {} };
-
-// الدالة الأساسية لتشغيل التطبيق
-function initApp() {
-    console.log("App Initialized"); // للتأكد في الـ F12 إن الكود اشتغل
-    renderNovels();
-    renderQuotes();
+body { 
+    margin: 0; 
+    padding: 0; 
+    overflow-x: hidden; 
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); 
+    background-size: 400% 400%; 
+    animation: gradientBG 15s ease infinite; 
+    font-family: 'Cairo', sans-serif; 
 }
 
-function renderNovels() {
-    const container = document.getElementById('novelsContainer');
-    if (!container) return;
-    
-    container.innerHTML = novelsData.map(n => {
-        const r = appState.ratings[n.id] || 0;
-        const v = appState.votes[n.id];
-        return `
-        <div class="novel-card" data-name="${n.name}">
-            <div style="display:flex; gap:15px; align-items:center;">
-                <img src="${n.img}" width="80" style="border-radius:15px;">
-                <div>
-                    <b style="font-size:18px;">${n.name}</b><br>
-                    ${[1,2,3,4,5].map(s => `<span class="star ${r >= s ? 'active' : ''}" onclick="rateNovel(${n.id},${s})">★</span>`).join('')}
-                </div>
-            </div>
-            <div class="q-actions">
-                <span class="${v === 'like' ? 'active-like' : ''}" onclick="voteNovel(${n.id},'like')">👍 لايك</span>
-                <span class="${v === 'dislike' ? 'active-dislike' : ''}" onclick="voteNovel(${n.id},'dislike')">👎 ديسك لايك</span>
-            </div>
-            <div class="glass-btn" style="margin-top:10px; padding:12px; font-size:14px; background:rgba(255,255,255,0.2);" 
-                 onclick="${n.available ? `openReader('${n.name}','${n.file}')` : `alert('قريباً')`}">
-                 اقرأ الآن
-            </div>
-        </div>`;
-    }).join('');
+@keyframes gradientBG { 
+    0%, 100% { background-position: 0% 50%; } 
+    50% { background-position: 100% 50%; } 
 }
 
-// باقي الدوال (Quotes, Rate, Vote, ShowSec, Reader)
-function renderQuotes() {
-    const container = document.getElementById('quotesList');
-    if (!container) return;
-    container.innerHTML = quotesData.map(q => {
-        const v = appState.qVotes[q.id];
-        return `
-        <div class="quote-card">
-            <div class="author-info"><div class="author-img" style="background-image:url('${q.img}')"></div><div class="author-name">${q.name}</div></div>
-            <div class="quote-text">"${q.text}"</div>
-            <div class="q-actions">
-                <span class="${v === 'like' ? 'active-like' : ''}" onclick="voteQuote(${q.id}, 'like')">👍 أعجبني</span>
-                <span class="${v === 'dislike' ? 'active-dislike' : ''}" onclick="voteQuote(${q.id}, 'dislike')">👎 لم يعجبني</span>
-            </div>
-        </div>`;
-    }).join('');
+.slider-container { 
+    width: 92%; 
+    margin: 20px auto; 
+    height: 180px; 
+    max-width: 600px; 
+    border-radius: 25px; 
+    overflow: hidden; 
+    border: 2px solid rgba(255,255,255,0.4); 
+    position: relative; 
 }
 
-function rateNovel(id, s) { appState.ratings[id] = s; save(); }
-function voteNovel(id, t) { appState.votes[id] = (appState.votes[id] === t) ? null : t; save(); }
-function voteQuote(id, t) { appState.qVotes[id] = (appState.qVotes[id] === t) ? null : t; save(); }
-function save() { localStorage.setItem('shain_pro_v1', JSON.stringify(appState)); renderNovels(); renderQuotes(); }
-
-function showSec(id) { 
-    document.querySelectorAll('#homeUI,#librarySection,#quotesSection').forEach(s => s.style.display = 'none'); 
-    document.getElementById(id).style.display = 'block'; 
+.slides { 
+    display: flex; 
+    width: 900%; 
+    height: 100%; 
+    animation: slideAction 36s infinite ease-in-out; 
 }
 
-function openReader(n, f) { 
-    document.getElementById('readerMode').style.display = 'block'; 
-    document.getElementById('readerTitle').innerText = n; 
-    document.getElementById('bookFrame').src = f; 
+.slide { 
+    width: 11.11%; 
+    background-size: cover; 
+    background-position: center; 
 }
 
-function closeReader() { 
-    document.getElementById('readerMode').style.display = 'none'; 
-    document.getElementById('bookFrame').src = ''; 
+@keyframes slideAction { 
+    0%, 9% { transform: translateX(0%); } 
+    11%, 20% { transform: translateX(11.11%); } 
+    22%, 31% { transform: translateX(22.22%); } 
+    33%, 42% { transform: translateX(33.33%); } 
+    44%, 53% { transform: translateX(44.44%); } 
+    55%, 64% { transform: translateX(55.55%); } 
+    66%, 75% { transform: translateX(66.66%); } 
+    77%, 86% { transform: translateX(77.77%); } 
+    88%, 100% { transform: translateX(88.88%); } 
 }
 
-function liveSearch() { 
-    let q = document.getElementById('novelSearch').value.toLowerCase(); 
-    document.querySelectorAll('.novel-card').forEach(c => {
-        c.style.display = c.getAttribute('data-name').toLowerCase().includes(q) ? 'block' : 'none';
-    });
+.menu-container { 
+    padding: 10px 20px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    max-width: 600px; 
+    margin: 0 auto; 
 }
 
-// تشغيل التطبيق فور التحميل
-window.onload = initApp;
+.glass-btn { 
+    background: rgba(255, 255, 255, 0.15); 
+    backdrop-filter: blur(12px); 
+    border: 2px solid rgba(255, 255, 255, 0.4); 
+    color: white; 
+    padding: 18px; 
+    border-radius: 20px; 
+    text-align: center; 
+    font-weight: 800; 
+    cursor: pointer; 
+    transition: 0.3s; 
+}
+
+#librarySection, #quotesSection, #readerMode { display: none; }
+
+.top-bar { 
+    display: flex; 
+    align-items: center; 
+    padding: 12px 15px; 
+    gap: 10px; 
+    background: rgba(255,255,255,0.2); 
+    backdrop-filter: blur(10px); 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+    color: white; 
+}
+
+.back-circle { 
+    width: 35px; 
+    height: 35px; 
+    background: rgba(255,255,255,0.3); 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    border: 1px solid rgba(255,255,255,0.4); 
+}
+
+.novel-card { 
+    background: rgba(255,255,255,0.18); 
+    margin: 15px; 
+    padding: 20px; 
+    border-radius: 25px; 
+    border: 1px solid rgba(255,255,255,0.3); 
+    color: white; 
+    max-width: 500px; 
+    margin: 15px auto; 
+}
+
+.star { cursor: pointer; font-size: 20px; color: white; transition: 0.3s; }
+.star.active { color: #FFD700; }
+
+.quote-card { 
+    background: rgba(255,255,255,0.15); 
+    backdrop-filter: blur(20px); 
+    border-radius: 25px; 
+    padding: 25px; 
+    margin: 15px auto; 
+    border: 1px solid rgba(255,255,255,0.4); 
+    color: white; 
+    max-width: 500px; 
+}
+
+.author-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+.author-img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #FFD700; background-size: cover; }
+.author-name { font-weight: bold; color: #FFD700; }
+.q-actions { display: flex; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+.active-like { color: #00ff88; font-weight: bold; }
+.active-dislike { color: #ff4d4d; font-weight: bold; }
+
+#readerMode { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #fff; }
+iframe { width: 100%; height: calc(100% - 60px); border: none; }
