@@ -76,7 +76,35 @@ function liveSearch() { let q=document.getElementById('novelSearch').value.toLow
 
 // إخفاء شاشة التحميل
 window.onload = function() {
-    initApp();
+   function initApp() {
+    updateGreeting(); // تحديث الترحيب حسب الوقت
+    renderNovels();
+    renderQuotes();
+}
+
+function updateGreeting() {
+    const hour = new Date().getHours();
+    let greeting = "";
+    let subText = "";
+    
+    if (hour >= 5 && hour < 12) {
+        greeting = "صباحك رواية جميلة،";
+        subText = "ابدأ يومك بكلمات تلهمك..";
+    } else if (hour >= 12 && hour < 18) {
+        greeting = "مساء الخير،";
+        subText = "وقت مثالي لاستكمال رحلتك في الكتب..";
+    } else {
+        greeting = "ليلة هادئة،";
+        subText = "استرخِ مع عالم شين قبل النوم..";
+    }
+
+    // بنغير النص جوه الهيدر اللي في الـ HTML
+    const welcomeTitle = document.querySelector('#homeUI h1');
+    const welcomeSub = document.querySelector('#homeUI p');
+    
+    if(welcomeTitle) welcomeTitle.innerText = greeting;
+    if(welcomeSub) welcomeSub.innerText = subText + " يا محمد";
+}
     setTimeout(() => {
         const loader = document.getElementById('loader');
         if (loader) loader.classList.add('loader-fade-out');
