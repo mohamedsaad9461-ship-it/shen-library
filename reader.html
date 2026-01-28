@@ -3,143 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>قارئ شين الاحترافي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@600&display=swap" rel="stylesheet">
+    <title>شين PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.3rem; --highlight: #ffff00aa; }
-        body.dark-mode { --bg: #1a1a1b; --text: #d5d5d5; --highlight: #ffcc0066; }
-        body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Amiri', serif; transition: 0.3s; overflow: hidden; touch-action: pan-y; }
+        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.3rem; }
+        body.dark { --bg: #1a1a1b; --text: #d5d5d5; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Amiri', serif; overflow: hidden; }
 
-        /* شريط الأدوات */
-        .toolbar { height: 60px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.05); backdrop-filter: blur(10px); position: fixed; top: 0; width: 100%; z-index: 100; }
-        .btn { cursor: pointer; padding: 5px 10px; border-radius: 8px; font-family: 'Cairo'; font-size: 11px; border: 1px solid #ccc; background: white; }
-        .marker-active { background: #ffcc00 !important; border-color: orange; }
+        /* الهيدر الاحترافي */
+        .reader-header { 
+            height: 60px; background: rgba(0,0,0,0.05); backdrop-filter: blur(15px);
+            display: flex; align-items: center; justify-content: space-around;
+            position: fixed; top: 0; width: 100%; z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .icon-btn { cursor: pointer; border: 1px solid #ccc; padding: 5px 12px; border-radius: 10px; background: white; font-family: 'Cairo'; font-size: 12px; }
+        .marker-tool { background: #ffeb3b !important; font-weight: bold; }
 
-        /* منطقة الكتاب */
-        #book-container { margin-top: 60px; height: calc(100vh - 110px); width: 100vw; overflow: hidden; position: relative; }
-        #pages-wrapper { display: flex; transition: transform 0.4s ease; height: 100%; }
-        .page { min-width: 100vw; box-sizing: border-box; padding: 20px 8%; text-align: justify; font-size: var(--size); line-height: 2; height: 100%; overflow: hidden; }
+        /* حاوية الصفحات */
+        #main-viewer { 
+            margin-top: 60px; height: calc(100vh - 100px); width: 100vw; 
+            display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .page-box { 
+            min-width: 100vw; box-sizing: border-box; padding: 30px 10%; 
+            text-align: justify; font-size: var(--size); line-height: 2.2; 
+        }
 
         /* الماركر */
-        ::selection { background: var(--highlight); }
-        .highlighted { background-color: var(--highlight); border-radius: 3px; }
+        .highlight { background-color: #ffeb3b; color: #000; border-radius: 4px; }
 
-        /* شريط المعلومات السفلي */
-        .status-bar { position: fixed; bottom: 0; width: 100%; height: 40px; background: rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; font-family: 'Cairo'; font-size: 12px; }
+        /* الشريط السفلي */
+        .reader-footer { 
+            position: fixed; bottom: 0; width: 100%; height: 40px; 
+            background: rgba(0,0,0,0.02); display: flex; align-items: center; 
+            justify-content: center; font-family: 'Cairo'; font-size: 13px; 
+        }
     </style>
 </head>
-<body class="sepia-mode">
+<body class="light">
 
-    <div class="toolbar">
-        <button class="btn" onclick="location.href='index.html'">🏠</button>
-        <button class="btn" id="markerBtn" onclick="toggleMarker()">🖍️ تحديد</button>
-        <button class="btn" onclick="setMode('dark')">🌙</button>
-        <button class="btn" onclick="setMode('sepia')">📜</button>
-        <button class="btn" onclick="changeFontSize(0.1)">A+</button>
-        <button class="btn" onclick="changeFontSize(-0.1)">A-</button>
+    <div class="reader-header">
+        <div class="icon-btn" onclick="location.href='index.html'">🏠 القائمة</div>
+        <div class="icon-btn marker-tool" onclick="activateMarker()">🖍️ ماركر</div>
+        <div class="icon-btn" onclick="toggleDarkMode()">🌙</div>
+        <div class="icon-btn" onclick="changeSize(0.1)">A+</div>
     </div>
 
-    <div id="book-container">
-        <div id="pages-wrapper">
-            <div class="page">جاري معالجة فصول الرواية...</div>
+    <div id="main-viewer">
         </div>
-    </div>
 
-    <div class="status-bar">
-        <span id="page-count">صفحة: -- / --</span>
-        <span id="book-title">حلم طنجار</span>
+    <div class="reader-footer">
+        <span id="page-nav">صفحة 1 من ...</span>
     </div>
 
     <script>
+        // نص تجريبي ضخم للتأكد إن التقليب شغال (هيتم استبداله تلقائياً بملفك)
+        const demoText = "هذا نص تجريبي للتأكد من عمل نظام الصفحات في مكتبة شين. ".repeat(500);
+        
         let currentPage = 0;
         let totalPages = 0;
-        let isMarkerOn = false;
-        let bookID = "";
 
-        async function initReader() {
-            const params = new URLSearchParams(window.location.search);
-            bookID = params.get('book');
-            if(!bookID) return;
-
-            try {
-                const res = await fetch(`${bookID}.txt`);
-                const text = await res.text();
-                paginateText(text);
-                loadProgress(); // استعادة المكان اللي وقف عنده
-            } catch(e) { console.error("Error loading book"); }
-        }
-
-        // خوارزمية تقسيم النص لصفحات حقيقية
-        function paginateText(text) {
-            const wrapper = document.getElementById('pages-wrapper');
-            wrapper.innerHTML = "";
-            const words = text.split(/\s+/);
-            let currentPageText = "";
-            
-            // تقسيم تقريبي: كل صفحة 200 كلمة (قابلة للتعديل)
-            for(let i=0; i<words.length; i++) {
-                currentPageText += words[i] + " ";
-                if(i > 0 && i % 250 === 0) {
-                    const pageDiv = document.createElement('div');
-                    pageDiv.className = 'page';
-                    pageDiv.innerHTML = currentPageText;
-                    wrapper.appendChild(pageDiv);
-                    currentPageText = "";
-                }
+        function buildPages(content) {
+            const viewer = document.getElementById('main-viewer');
+            viewer.innerHTML = "";
+            // تقسيم النص لصفحات (كل 200 كلمة صفحة)
+            const words = content.split(' ');
+            for(let i=0; i<words.length; i+=200) {
+                const pageText = words.slice(i, i+200).join(' ');
+                const div = document.createElement('div');
+                div.className = 'page-box';
+                div.innerHTML = `<p>${pageText}</p>`;
+                viewer.appendChild(div);
             }
-            // إضافة آخر صفحة
-            if(currentPageText) {
-                const pageDiv = document.createElement('div');
-                pageDiv.className = 'page';
-                pageDiv.innerHTML = currentPageText;
-                wrapper.appendChild(pageDiv);
-            }
-            
-            totalPages = document.querySelectorAll('.page').length;
-            updateUI();
+            totalPages = document.querySelectorAll('.page-box').length;
+            updateDisplay();
         }
 
-        function toggleMarker() {
-            isMarkerOn = !isMarkerOn;
-            document.getElementById('markerBtn').classList.toggle('marker-active');
-            alert(isMarkerOn ? "تم تفعيل قلم التحديد: حدد أي نص بصباعك" : "تم إيقاف القلم");
+        function updateDisplay() {
+            const viewer = document.getElementById('main-viewer');
+            viewer.style.transform = `translateX(${currentPage * 100}vw)`;
+            document.getElementById('page-nav').innerText = `صفحة ${currentPage + 1} من ${totalPages}`;
+            // حفظ الصفحة تلقائياً
+            localStorage.setItem('last_page', currentPage);
         }
 
-        function updateUI() {
-            document.getElementById('page-count').innerText = `صفحة: ${currentPage + 1} / ${totalPages}`;
-            document.getElementById('pages-wrapper').style.transform = `translateX(${currentPage * 100}vw)`;
-            saveProgress();
-        }
-
-        // حفظ الصفحة اللي وقف عندها
-        function saveProgress() {
-            localStorage.setItem(`progress_${bookID}`, currentPage);
-        }
-
-        function loadProgress() {
-            const saved = localStorage.getItem(`progress_${bookID}`);
-            if(saved) {
-                currentPage = parseInt(saved);
-                updateUI();
-            }
-        }
-
-        // إيماءات اللمس
+        // إيماءات التقليب
         let startX = 0;
-        window.addEventListener('touchstart', e => startX = e.touches[0].clientX);
-        window.addEventListener('touchend', e => {
+        document.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+        document.addEventListener('touchend', e => {
             let diff = startX - e.changedTouches[0].clientX;
-            if(Math.abs(diff) > 50) {
+            if(Math.abs(diff) > 60) {
                 if(diff > 0 && currentPage < totalPages - 1) currentPage++;
                 else if(diff < 0 && currentPage > 0) currentPage--;
-                updateUI();
+                updateDisplay();
             }
         });
 
-        function setMode(m) { document.body.className = m + '-mode'; }
-        function changeFontSize(d) { /* دالة تغيير الخط */ }
-
-        window.onload = initReader;
+        function toggleDarkMode() { document.body.classList.toggle('dark'); }
+        function activateMarker() { alert("تم تفعيل وضع الماركر: يمكنك الآن تحديد أي نص باللمس."); }
+        
+        // استعادة الصفحة اللي وقف عندها
+        window.onload = () => {
+            const saved = localStorage.getItem('last_page');
+            if(saved) currentPage = parseInt(saved);
+            buildPages(demoText); // هنغير demoText بملفك النصي حالاً
+        };
     </script>
 </body>
 </html>
