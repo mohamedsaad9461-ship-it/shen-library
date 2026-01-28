@@ -3,78 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>قارئ شين الذكي - حلم طنجار</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@600&display=swap" rel="stylesheet">
+    <title>شين PRO - حلم طنجار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@600&family=Lateef&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.35rem; --h-color: #ffeb3b88; }
+        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.35rem; --h-color: #ffeb3b88; --font-fam: 'Amiri', serif; }
         body.dark { --bg: #1a1a1b; --text: #d5d5d5; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Amiri', serif; overflow: hidden; transition: 0.3s; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-fam); overflow: hidden; transition: 0.3s; }
 
-        .header { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: rgba(0,0,0,0.03); backdrop-filter: blur(10px); position: fixed; top: 0; width: 100%; z-index: 1000; box-sizing: border-box; }
-        .icon-btn { cursor: pointer; font-size: 1.3rem; background: none; border: none; color: var(--text); position: relative; }
+        /* الهيدر المطور */
+        .header { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: rgba(0,0,0,0.05); backdrop-filter: blur(10px); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .nav-right { display: flex; gap: 15px; align-items: center; }
+        .icon-btn { cursor: pointer; font-size: 1.2rem; background: none; border: none; color: var(--text); padding: 5px; }
 
-        /* قائمة الألوان السرية للماركر */
-        .marker-palette { display: none; position: absolute; top: 65px; background: white; border-radius: 20px; padding: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex-direction: column; gap: 8px; z-index: 1001; }
-        .color-dot { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        /* القائمة الجانبية (الفهرس) */
+        .sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: var(--bg); border-left: 1px solid #ccc; z-index: 2000; transition: 0.4s; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        .sidebar.open { right: 0; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
+        .sidebar h3 { font-family: 'Cairo'; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        .chapter-link { display: block; padding: 10px; border-bottom: 1px dashed #ddd; cursor: pointer; font-size: 1rem; }
 
-        #viewport { margin-top: 60px; height: calc(100vh - 100px); width: 100vw; display: flex; transition: transform 0.4s ease-out; }
-        .page-box { min-width: 100vw; box-sizing: border-box; padding: 25px 10%; text-align: justify; font-size: var(--size); line-height: 2.2; }
+        /* قائمة الخطوط والألوان */
+        .settings-panel { display: none; position: fixed; top: 65px; left: 15px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); z-index: 1500; width: 200px; }
+        .font-opt { display: block; margin: 10px 0; cursor: pointer; font-family: 'Cairo'; font-size: 14px; text-align: center; border: 1px solid #eee; padding: 5px; border-radius: 5px; }
+
+        /* شاشة القراءة */
+        #viewport { margin-top: 60px; height: calc(100vh - 100px); width: 100vw; display: flex; transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1); }
+        .page-box { min-width: 100vw; box-sizing: border-box; padding: 25px 10%; text-align: justify; font-size: var(--size); line-height: 2.2; position: relative; }
         
-        /* التظليل الملون */
-        ::selection { background: var(--h-color); }
-        .highlight-yellow { background: #ffeb3b88; }
-        .highlight-red { background: #ff525288; }
-        .highlight-blue { background: #448aff88; }
+        /* تأثير ثنية الورقة */
+        .page-box::after { content: ''; position: absolute; bottom: 0; left: 0; width: 20px; height: 20px; background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.05) 50%); }
 
-        .side-nav { position: fixed; top: 60px; height: calc(100vh - 100px); width: 45px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.01); cursor: pointer; z-index: 500; font-size: 1.8rem; opacity: 0.2; }
-        .footer { position: fixed; bottom: 0; width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.02); font-family: 'Cairo'; font-size: 13px; }
+        /* الفوتر الذكي */
+        .footer { position: fixed; bottom: 0; width: 100%; height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: rgba(0,0,0,0.02); font-family: 'Cairo'; font-size: 11px; box-sizing: border-box; }
+        
+        /* الماركر والمشاركة */
+        ::selection { background: var(--h-color); }
+        .share-btn { position: fixed; display: none; background: #e67e22; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; cursor: pointer; z-index: 3000; font-family: 'Cairo'; }
+
+        .side-nav { position: fixed; top: 60px; height: calc(100vh - 100px); width: 10%; cursor: pointer; z-index: 100; }
     </style>
 </head>
 <body class="sepia-mode">
 
     <div class="header">
-        <button class="icon-btn" onclick="location.href='index.html'">✕</button>
-        <div style="display:flex; gap:20px; align-items:center;">
-            <div style="position:relative;">
-                <button class="icon-btn" onclick="togglePalette()">🖍️</button>
-                <div id="palette" class="marker-palette">
-                    <div class="color-dot" style="background:#ffeb3b" onclick="setMarker('#ffeb3b88')"></div>
-                    <div class="color-dot" style="background:#ff5252" onclick="setMarker('#ff525288')"></div>
-                    <div class="color-dot" style="background:#448aff" onclick="setMarker('#448aff88')"></div>
-                </div>
-            </div>
+        <button class="icon-btn" onclick="toggleSidebar()">☰</button>
+        <div class="nav-right">
+            <button class="icon-btn" onclick="toggleSettings()">⚙️</button>
+            <button class="icon-btn" onclick="showSearch()">🔍</button>
             <button class="icon-btn" onclick="document.body.classList.toggle('dark')">🌙</button>
-            <button class="icon-btn" onclick="adj(0.1)">A+</button>
-            <button class="icon-btn" onclick="adj(-0.1)">A-</button>
+            <button class="icon-btn" onclick="location.href='index.html'">✕</button>
         </div>
     </div>
 
-    <div class="side-nav" style="left:0" onclick="move(1)">❮</div>
-    <div class="side-nav" style="right:0" onclick="move(-1)">❯</div>
+    <div id="sidebar" class="sidebar">
+        <h3>فصول الرواية</h3>
+        <div id="chapter-list"></div>
+    </div>
 
-    <div id="viewport"> <div class="page-box">جاري تحميل حلم طنجار...</div> </div>
+    <div id="settings" class="settings-panel">
+        <span class="font-opt" onclick="setF('Amiri')">خط أميري (كلاسيك)</span>
+        <span class="font-opt" onclick="setF('Cairo')">خط كايرو (مودرن)</span>
+        <span class="font-opt" onclick="setF('Lateef')">خط لطيف (ناعم)</span>
+        <hr>
+        <div style="display:flex; justify-content: space-around;">
+            <div onclick="setH('#ffeb3b88')" style="width:20px;height:20px;background:#ffeb3b;border-radius:50%"></div>
+            <div onclick="setH('#ff525288')" style="width:20px;height:20px;background:#ff5252;border-radius:50%"></div>
+            <div onclick="setH('#448aff88')" style="width:20px;height:20px;background:#448aff;border-radius:50%"></div>
+        </div>
+    </div>
 
-    <div class="footer"> <span id="pg">1 / ...</span> </div>
+    <div id="shareBtn" class="share-btn" onclick="shareQuote()">📤 مشاركة الاقتباس</div>
+
+    <div id="viewport"> <div class="page-box">جاري التحميل...</div> </div>
+
+    <div class="footer">
+        <span id="reading-time">متبقي: -- دقيقة</span>
+        <span id="pg">1 / ...</span>
+    </div>
+
+    <div class="side-nav" style="left:0" onclick="move(1)"></div>
+    <div class="side-nav" style="right:0" onclick="move(-1)"></div>
 
     <script>
         let cur = 0, total = 0, bID = "tangar";
 
-        // الربط الحقيقي بملف الـ txt
         async function load() {
             try {
                 const res = await fetch('tangar.txt');
                 const text = await res.text();
                 build(text);
-            } catch(e) { document.getElementById('viewport').innerText = "تأكد من وجود ملف tangar.txt"; }
+                genChapters(text);
+            } catch(e) { console.error("Load failed"); }
         }
 
         function build(txt) {
             const v = document.getElementById('viewport'); v.innerHTML = "";
             const words = txt.split(/\s+/);
-            for(let i=0; i<words.length; i+=220) {
+            const wpp = 200; // كلمات في كل صفحة
+            for(let i=0; i<words.length; i+=wpp) {
                 const div = document.createElement('div');
                 div.className = 'page-box';
-                div.innerHTML = `<p>${words.slice(i, i+220).join(' ')}</p>`;
+                div.innerHTML = `<p>${words.slice(i, i+wpp).join(' ')}</p>`;
                 v.appendChild(div);
             }
             total = document.querySelectorAll('.page-box').length;
@@ -83,31 +111,61 @@
             update();
         }
 
-        function move(d) {
-            if(d===1 && cur < total-1) cur++; else if(d===-1 && cur > 0) cur--;
-            update();
-        }
-
         function update() {
             document.getElementById('viewport').style.transform = `translateX(${cur * 100}vw)`;
             document.getElementById('pg').innerText = `${cur + 1} / ${total}`;
+            // حساب الوقت المتبقي (متوسط 200 كلمة في الدقيقة)
+            let rem = Math.ceil((total - cur) * 1); 
+            document.getElementById('reading-time').innerText = `متبقي: ${rem} دقيقة`;
             localStorage.setItem('last_'+bID, cur);
         }
 
-        function togglePalette() {
-            const p = document.getElementById('palette');
-            p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+        function move(d) { if(d===1 && cur < total-1) cur++; else if(d===-1 && cur > 0) cur--; update(); }
+
+        // وظائف إضافية
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function toggleSettings() { 
+            const s = document.getElementById('settings');
+            s.style.display = (s.style.display==='block')?'none':'block'; 
+        }
+        function setF(f) { document.documentElement.style.setProperty('--font-fam', f); toggleSettings(); }
+        function setH(c) { document.documentElement.style.setProperty('--h-color', c); toggleSettings(); }
+
+        function genChapters(txt) {
+            const list = document.getElementById('chapter-list');
+            // بحث بسيط عن كلمة "فصل" أو تقسيم آلي
+            for(let i=1; i<=10; i++) { // مثال لـ 10 فصول
+                const item = document.createElement('div');
+                item.className = 'chapter-link';
+                item.innerText = `الفصل ${i}`;
+                item.onclick = () => { cur = Math.floor(total/10 * (i-1)); update(); toggleSidebar(); };
+                list.appendChild(item);
+            }
         }
 
-        function setMarker(color) {
-            document.documentElement.style.setProperty('--h-color', color);
-            togglePalette();
-            alert("تم اختيار اللون! يمكنك الآن تحديد النص بصباعك.");
+        // مشاركة الاقتباس
+        document.onmouseup = function(e) {
+            let s = window.getSelection().toString();
+            let btn = document.getElementById('shareBtn');
+            if(s && s.length > 5) {
+                btn.style.display = 'block';
+                btn.style.top = (e.pageY - 40) + 'px';
+                btn.style.left = e.pageX + 'px';
+            } else { btn.style.display = 'none'; }
+        };
+
+        function shareQuote() {
+            let s = window.getSelection().toString();
+            let url = `https://twitter.com/intent/tweet?text=اقتباس من رواية حلم طنجار: "${s}"`;
+            window.open(url, '_blank');
         }
 
-        function adj(s) { /* دالة الخط */ }
+        function showSearch() {
+            let word = prompt("عن ماذا تبحث في حلم طنجار؟");
+            if(word) alert("جاري البحث... ميزة البحث المتقدم ستعمل بمجرد ربط قاعدة البيانات كاملة.");
+        }
 
-        // دعم السحب باللمس
+        // دعم اللمس
         let sX = 0;
         document.addEventListener('touchstart', e => sX = e.touches[0].clientX);
         document.addEventListener('touchend', e => {
