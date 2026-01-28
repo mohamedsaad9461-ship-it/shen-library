@@ -71,11 +71,37 @@ body {
 }
 .star { cursor: pointer; font-size: 20px; color: white; }
 .star.active { color: #FFD700; }
-.quote-card { background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); border-radius: 25px; padding: 25px; margin: 15px auto; border: 1px solid rgba(255,255,255,0.4); color: white; max-width: 500px; }
-.author-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-.author-img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #FFD700; background-size: cover; }
-.author-name { font-weight: bold; color: #FFD700; }
-.q-actions { display: flex; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+/* شكل الاقتباس الزجاجي المتطور */
+.quote-card { 
+    background: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 25px; 
+    padding: 20px; 
+    margin: 15px auto; 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    color: white; 
+    max-width: 500px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.q-actions { 
+    display: flex; 
+    justify-content: space-around; /* توزيع الأزرار بشكل أفضل */
+    margin-top: 15px; 
+    border-top: 1px solid rgba(255, 255, 255, 0.1); 
+    padding-top: 15px; 
+}
+
+.q-actions span {
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.q-actions span:active { background: rgba(255,255,255,0.2); }
 .active-like { color: #00ff88; font-weight: bold; }
 .active-dislike { color: #ff4d4d; font-weight: bold; }
 #readerMode { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #fff; }
