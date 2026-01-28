@@ -3,34 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>شين PRO | حلم طنجار</title>
+    <title>شين PRO | قارئ حلم طنجار</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=Lateef&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@600&family=Lateef&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.3rem; --h-color: #ffeb3b88; --font-f: 'Amiri'; }
+        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.35rem; --h-color: #ffeb3b88; --font-f: 'Amiri'; }
         body.dark { --bg: #1a1a1b; --text: #d5d5d5; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-f), serif; overflow: hidden; transition: 0.3s; }
 
-        /* الهيدر */
-        .header { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: rgba(0,0,0,0.05); backdrop-filter: blur(10px); position: fixed; top: 0; width: 100%; z-index: 1000; }
-        .icon-btn { cursor: pointer; font-size: 1.2rem; background: none; border: none; color: var(--text); }
+        /* هيدر منظم وأنيق */
+        .header { 
+            height: 60px; display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 10px; background: rgba(0,0,0,0.05); backdrop-filter: blur(10px);
+            position: fixed; top: 0; width: 100%; z-index: 1000; box-sizing: border-box;
+        }
+        .tool-group { display: flex; gap: 8px; align-items: center; }
+        .icon-btn { cursor: pointer; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: var(--text); font-size: 1.1rem; border-radius: 8px; transition: 0.2s; }
+        .icon-btn:hover { background: rgba(0,0,0,0.1); }
+        .active-tool { color: #e67e22; background: rgba(230,126,34,0.1); }
 
-        /* القائمة الجانبية (الفهرس) */
-        .sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: var(--bg); z-index: 2000; transition: 0.4s; padding: 20px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); overflow-y: auto; }
+        /* الفهرس (مخفي تماماً) */
+        .sidebar { position: fixed; top: 0; right: -300px; width: 300px; height: 100%; background: var(--bg); z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px; box-shadow: -10px 0 30px rgba(0,0,0,0.2); }
         .sidebar.open { right: 0; }
-        .chapter-item { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.1); cursor: pointer; font-family: 'Cairo'; font-size: 14px; }
 
-        /* منطقة القراءة والتقليب */
-        #viewport { margin-top: 60px; height: calc(100vh - 100px); width: 100vw; display: flex; transition: transform 0.5s ease-in-out; }
-        .page { min-width: 100vw; box-sizing: border-box; padding: 25px 10%; text-align: justify; font-size: var(--size); line-height: 2.2; }
+        /* بوب-أب الألوان والخطوط */
+        .pop-panel { display: none; position: fixed; top: 65px; background: var(--bg); padding: 15px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 1500; border: 1px solid rgba(0,0,0,0.1); }
 
-        /* الماركر (التظليل) */
-        .page p span.hl { background-color: var(--h-color); border-radius: 4px; }
-        ::selection { background: var(--h-color); }
-
-        /* لوحة التحكم */
-        .settings { display: none; position: fixed; top: 70px; left: 15px; background: var(--bg); padding: 15px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); z-index: 1500; }
-        .f-btn { display: block; width: 100%; margin: 5px 0; padding: 8px; font-family: 'Cairo'; cursor: pointer; border: 1px solid #ddd; border-radius: 8px; background: white; }
+        /* منطقة القراءة (ملء الشاشة) */
+        #viewport { margin-top: 60px; height: calc(100vh - 100px); width: 100vw; display: flex; transition: transform 0.5s ease; }
+        .page { min-width: 100vw; box-sizing: border-box; padding: 30px 8%; text-align: justify; font-size: var(--size); line-height: 2.3; position: relative; }
+        
+        .hl { background-color: var(--h-color); border-radius: 3px; cursor: pointer; }
 
         .footer { position: fixed; bottom: 0; width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.02); font-family: 'Cairo'; font-size: 12px; }
         #toast { position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 8px 20px; border-radius: 20px; display: none; z-index: 5000; font-family: 'Cairo'; }
@@ -41,27 +44,35 @@
     <div id="toast"></div>
 
     <div class="header">
-        <button class="icon-btn" onclick="toggleS()"><i class="fas fa-bars"></i></button>
-        <div style="display:flex; gap:15px">
-            <button class="icon-btn" onclick="toggleSet()"><i class="fas fa-cog"></i></button>
+        <div class="tool-group">
+            <button class="icon-btn" onclick="toggleS()"><i class="fas fa-bars"></i></button>
+            <button class="icon-btn" onclick="openPanel('p-color')"><i class="fas fa-pen-nib"></i></button>
+            <button class="icon-btn" onclick="clearHL()"><i class="fas fa-eraser"></i></button>
+            <button class="icon-btn" onclick="openPanel('p-font')"><i class="fas fa-font"></i></button>
+        </div>
+        
+        <div class="tool-group">
             <button class="icon-btn" onclick="document.body.classList.toggle('dark')"><i class="fas fa-moon"></i></button>
             <button class="icon-btn" onclick="location.href='index.html'"><i class="fas fa-times"></i></button>
         </div>
     </div>
 
-    <div id="sidebar" class="sidebar">
-        <h3 style="font-family:'Cairo'">الفصول</h3>
-        <div id="cap-list"></div>
-    </div>
-
-    <div id="settings" class="settings">
-        <div style="display:flex; gap:10px; margin-bottom:15px">
+    <div id="p-color" class="pop-panel" style="right: 50px;">
+        <div style="display:flex; gap:12px;">
             <div onclick="setH('#ffeb3b88')" style="width:25px;height:25px;background:#ffeb3b;border-radius:50%;cursor:pointer"></div>
             <div onclick="setH('#ff525288')" style="width:25px;height:25px;background:#ff5252;border-radius:50%;cursor:pointer"></div>
             <div onclick="setH('#448aff88')" style="width:25px;height:25px;background:#448aff;border-radius:50%;cursor:pointer"></div>
         </div>
-        <button class="f-btn" onclick="setF('Amiri')">خط أميري</button>
-        <button class="f-btn" onclick="setF('Cairo')">خط كايرو</button>
+    </div>
+
+    <div id="p-font" class="pop-panel" style="right: 140px;">
+        <button style="display:block; width:100%; margin-bottom:5px; font-family:'Cairo';" onclick="setF('Cairo')">خط كايرو</button>
+        <button style="display:block; width:100%; font-family:'Amiri';" onclick="setF('Amiri')">خط أميري</button>
+    </div>
+
+    <div id="sidebar" class="sidebar">
+        <h3 style="font-family:'Cairo'"><i class="fas fa-list"></i> الفصول</h3>
+        <div id="cap-list"></div>
     </div>
 
     <div id="viewport"> <div class="page">جاري التحميل...</div> </div>
@@ -77,45 +88,53 @@
                 const text = await res.text();
                 build(text);
                 genCaps(text);
-            } catch(e) { showT("خطأ في التحميل"); }
+            } catch(e) { showT("تأكد من وجود ملف tangar.txt"); }
         }
 
         function build(txt) {
             const v = document.getElementById('viewport'); v.innerHTML = "";
             const words = txt.split(/\s+/);
-            for(let i=0; i<words.length; i+=200) {
+            for(let i=0; i<words.length; i+=210) {
                 const div = document.createElement('div');
                 div.className = 'page';
-                div.innerHTML = `<p>${words.slice(i, i+200).join(' ')}</p>`;
+                div.innerHTML = `<p>${words.slice(i, i+210).join(' ')}</p>`;
                 v.appendChild(div);
             }
             total = document.querySelectorAll('.page').length;
+            const s = localStorage.getItem('last_tangar');
+            if(s) cur = parseInt(s);
             update();
-        }
-
-        function genCaps(txt) {
-            const list = document.getElementById('cap-list');
-            for(let i=1; i<=10; i++) {
-                let div = document.createElement('div');
-                div.className = 'chapter-item';
-                div.innerText = "الفصل " + i;
-                div.onclick = () => { cur = Math.floor((total/10)*(i-1)); update(); toggleS(); };
-                list.appendChild(div);
-            }
         }
 
         function update() {
             document.getElementById('viewport').style.transform = `translateX(${cur * 100}vw)`;
             document.getElementById('pg-info').innerText = `صفحة ${cur + 1} من ${total}`;
+            localStorage.setItem('last_tangar', cur);
         }
 
-        function setF(f) { document.documentElement.style.setProperty('--font-f', f); toggleSet(); showT("تم تغيير الخط"); }
-        function setH(c) { document.documentElement.style.setProperty('--h-color', c); toggleSet(); showT("تم اختيار لون الماركر"); }
+        function openPanel(id) {
+            document.querySelectorAll('.pop-panel').forEach(p => { if(p.id !== id) p.style.display = 'none'; });
+            const el = document.getElementById(id);
+            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function setH(c) { document.documentElement.style.setProperty('--h-color', c); openPanel('p-color'); showT("تم تغيير لون القلم"); }
+        function setF(f) { document.documentElement.style.setProperty('--font-f', f); openPanel('p-font'); showT("تم تغيير الخط"); }
         function showT(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(()=>t.style.display='none',2000); }
         function toggleS() { document.getElementById('sidebar').classList.toggle('open'); }
-        function toggleSet() { const s = document.getElementById('settings'); s.style.display = (s.style.display==='block')?'none':'block'; }
 
-        // الماركر الفعلي (التظليل باللمس)
+        // الممحاة (Eraser) - تمسح آخر تظليل تم لمسه
+        function clearHL() {
+            showT("اضغط على أي نص ملون لمسحه");
+            document.addEventListener('click', function(e) {
+                if(e.target.className === 'hl') {
+                    e.target.replaceWith(...e.target.childNodes);
+                    showT("تم مسح التظليل");
+                }
+            }, {once: true});
+        }
+
+        // التظليل باللمس
         document.addEventListener('mouseup', () => {
             const sel = window.getSelection();
             if (sel.rangeCount && sel.toString().length > 0) {
@@ -123,11 +142,20 @@
                 const span = document.createElement('span');
                 span.className = 'hl';
                 range.surroundContents(span);
-                showT("تم حفظ التظليل");
             }
         });
 
-        // التقليب
+        function genCaps(txt) {
+            const list = document.getElementById('cap-list');
+            for(let i=1; i<=12; i++) {
+                let d = document.createElement('div');
+                d.style.padding = "10px"; d.style.borderBottom = "1px solid #ddd"; d.style.cursor="pointer";
+                d.innerText = "الفصل " + i;
+                d.onclick = () => { cur = Math.floor((total/12)*(i-1)); update(); toggleS(); };
+                list.appendChild(d);
+            }
+        }
+
         let sX = 0;
         document.addEventListener('touchstart', e => sX = e.touches[0].clientX);
         document.addEventListener('touchend', e => {
