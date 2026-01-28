@@ -7,33 +7,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #f4f1ea; --text: #2c3e50; --size: 1.35rem; --h-color: #ffeb3b88; --font-f: 'Amiri'; }
+        :root { --bg: #f4f1ea; --text: #2c3e50; --accent: #e67e22; --h-color: #ffeb3b88; --font-f: 'Amiri'; }
         body.dark { --bg: #1a1a1b; --text: #d5d5d5; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-f), serif; overflow: hidden; transition: 0.3s; position: relative; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-f), serif; overflow: hidden; transition: 0.3s; }
 
-        /* هيدر منظم */
+        /* الهيدر المطور */
         .header { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: rgba(0,0,0,0.05); backdrop-filter: blur(10px); position: fixed; top: 0; width: 100%; z-index: 1000; box-sizing: border-box; }
-        .tool-group { display: flex; gap: 10px; }
-        .icon-btn { cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: var(--text); font-size: 1.2rem; border-radius: 50%; transition: 0.2s; }
-        .icon-btn.active { background: var(--h-color); color: #000; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-
-        /* الفهرس الذكي */
-        .sidebar { position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: var(--bg); z-index: 2000; transition: 0.5s ease; padding: 30px 20px; box-shadow: -10px 0 30px rgba(0,0,0,0.2); }
-        .sidebar.open { right: 0; }
-        .chapter-link { padding: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; font-family: 'Cairo'; transition: 0.2s; }
-        .chapter-link:hover { background: rgba(0,0,0,0.03); }
-
-        /* منطقة القراءة والأسهم */
-        #viewport { margin-top: 60px; height: calc(100vh - 100px); width: 100vw; display: flex; transition: transform 0.5s ease; }
-        .page { min-width: 100vw; box-sizing: border-box; padding: 30px 10%; text-align: justify; font-size: var(--size); line-height: 2.3; }
         
-        /* أسهم الكمبيوتر */
-        .pc-nav { position: fixed; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background: rgba(0,0,0,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 800; transition: 0.3s; }
-        .pc-nav:hover { background: rgba(0,0,0,0.2); transform: translateY(-50%) scale(1.1); }
-        .nav-next { left: 20px; } .nav-prev { right: 20px; }
+        /* شريط تقدم القراءة العلوي */
+        .progress-container { position: fixed; top: 60px; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.05); z-index: 999; }
+        .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: 0.3s; }
 
-        .pop-panel { display: none; position: fixed; top: 65px; background: var(--bg); padding: 15px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 1500; border: 1px solid rgba(0,0,0,0.1); }
-        #toast { position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 25px; border-radius: 30px; display: none; z-index: 5000; font-family: 'Cairo'; font-size: 13px; }
+        /* البحث */
+        .search-box { display: none; position: fixed; top: 65px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--bg); padding: 10px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1500; }
+        .search-box input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; outline: none; }
+
+        /* منطقة القراءة */
+        #viewport { margin-top: 60px; height: calc(100vh - 100px); width: 100vw; display: flex; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+        .page { min-width: 100vw; box-sizing: border-box; padding: 30px 10%; text-align: justify; font-size: 1.35rem; line-height: 2.3; }
+        
+        /* الفهرس */
+        .sidebar { position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: var(--bg); z-index: 2000; transition: 0.5s ease; padding: 30px 20px; box-shadow: -10px 0 30px rgba(0,0,0,0.2); overflow-y: auto; }
+        .sidebar.open { right: 0; }
+        .chapter-link { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; font-family: 'Cairo'; }
+
+        .icon-btn { cursor: pointer; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: var(--text); font-size: 1.1rem; border-radius: 50%; }
+        .icon-btn.active { color: var(--accent); background: rgba(230,126,34,0.1); }
+        
+        #toast { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 8px 20px; border-radius: 20px; display: none; z-index: 5000; font-family: 'Cairo'; font-size: 12px; }
         .hl { background-color: var(--h-color); border-radius: 3px; }
     </style>
 </head>
@@ -42,62 +43,60 @@
     <div id="toast"></div>
 
     <div class="header">
-        <div class="tool-group">
-            <button class="icon-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-            <button class="icon-btn" id="markerBtn" onclick="toggleMarkerMode()"><i class="fas fa-pen-nib"></i></button>
-            <button class="icon-btn" onclick="openPanel('p-color')"><i class="fas fa-palette"></i></button>
-            <button class="icon-btn" onclick="clearLastHL()"><i class="fas fa-eraser"></i></button>
+        <div style="display:flex; gap:8px">
+            <button class="icon-btn" onclick="toggleSidebar()"><i class="fas fa-list-ul"></i></button>
+            <button class="icon-btn" id="mBtn" onclick="toggleMarker()"><i class="fas fa-highlighter"></i></button>
+            <button class="icon-btn" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
         </div>
-        <div class="tool-group">
-            <button class="icon-btn" onclick="document.body.classList.toggle('dark')"><i class="fas fa-moon"></i></button>
-            <button class="icon-btn" onclick="location.href='index.html'"><i class="fas fa-times"></i></button>
+        <div style="display:flex; gap:8px">
+            <button class="icon-btn" onclick="document.body.classList.toggle('dark')"><i class="fas fa-adjust"></i></button>
+            <button class="icon-btn" onclick="location.href='index.html'"><i class="fas fa-home"></i></button>
         </div>
+    </div>
+
+    <div class="progress-container"><div id="pBar" class="progress-bar"></div></div>
+
+    <div id="searchBox" class="search-box">
+        <input type="text" id="searchInput" placeholder="ابحث عن كلمة في حلم طنجار..." oninput="doSearch()">
+        <div id="searchResults" style="max-height: 200px; overflow-y: auto; font-family: 'Cairo'; font-size: 12px; margin-top: 10px;"></div>
     </div>
 
     <div id="sidebar" class="sidebar">
-        <h3 style="font-family:'Cairo'; border-bottom: 2px solid #e67e22; padding-bottom:10px;">فصول حلم طنجار</h3>
+        <h3 style="font-family:'Cairo'">فصول الرواية</h3>
         <div id="cap-list"></div>
-    </div>
-
-    <div class="pc-nav nav-next" onclick="move(1)"><i class="fas fa-chevron-left"></i></div>
-    <div class="pc-nav nav-prev" onclick="move(-1)"><i class="fas fa-chevron-right"></i></div>
-
-    <div id="p-color" class="pop-panel" style="right: 100px;">
-        <div style="display:flex; gap:12px;">
-            <div onclick="setH('#ffeb3b88')" style="width:25px;height:25px;background:#ffeb3b;border-radius:50%;cursor:pointer"></div>
-            <div onclick="setH('#ff525288')" style="width:25px;height:25px;background:#ff5252;border-radius:50%;cursor:pointer"></div>
-            <div onclick="setH('#448aff88')" style="width:25px;height:25px;background:#448aff;border-radius:50%;cursor:pointer"></div>
-        </div>
     </div>
 
     <div id="viewport"> <div class="page">جاري التحميل...</div> </div>
 
-    <div class="footer" style="position:fixed; bottom:0; width:100%; height:40px; display:flex; align-items:center; justify-content:center; font-family:'Cairo'; font-size:12px; background:rgba(0,0,0,0.02);">
-        <span id="pg-info">صفحة 1 من --</span>
+    <div class="footer" style="position:fixed; bottom:0; width:100%; height:40px; display:flex; align-items:center; justify-content:center; font-family:'Cairo'; font-size:11px; opacity:0.7;">
+        <span id="pg-info">صفحة 1</span>
     </div>
 
     <script>
-        let cur = 0, total = 0, markerActive = false;
+        let cur = 0, total = 0, mActive = false, pagesData = [];
 
         async function load() {
             try {
                 const res = await fetch('tangar.txt');
                 const text = await res.text();
                 build(text);
-                genCaps(text);
-            } catch(e) { showT("تأكد من وجود ملف tangar.txt"); }
+                genCaps();
+            } catch(e) { console.error("Error loading text"); }
         }
 
         function build(txt) {
             const v = document.getElementById('viewport'); v.innerHTML = "";
             const words = txt.split(/\s+/);
-            for(let i=0; i<words.length; i+=210) {
+            pagesData = [];
+            for(let i=0; i<words.length; i+=220) {
+                let content = words.slice(i, i+220).join(' ');
+                pagesData.push(content);
                 const div = document.createElement('div');
                 div.className = 'page';
-                div.innerHTML = `<p>${words.slice(i, i+210).join(' ')}</p>`;
+                div.innerHTML = `<p>${content}</p>`;
                 v.appendChild(div);
             }
-            total = document.querySelectorAll('.page').length;
+            total = pagesData.length;
             const saved = localStorage.getItem('last_tangar');
             if(saved) cur = parseInt(saved);
             update();
@@ -106,43 +105,44 @@
         function update() {
             document.getElementById('viewport').style.transform = `translateX(${cur * 100}vw)`;
             document.getElementById('pg-info').innerText = `صفحة ${cur + 1} من ${total}`;
+            document.getElementById('pBar').style.width = ((cur + 1) / total * 100) + '%';
             localStorage.setItem('last_tangar', cur);
         }
 
         function move(d) { if(d===1 && cur < total-1) cur++; else if(d===-1 && cur > 0) cur--; update(); }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-
-        function genCaps(txt) {
-            const list = document.getElementById('cap-list');
-            for(let i=1; i<=15; i++) {
-                let d = document.createElement('div');
-                d.className = 'chapter-link';
-                d.innerText = "الفصل " + i;
-                d.onclick = () => { 
-                    cur = Math.floor((total/15)*(i-1)); 
-                    update(); 
-                    toggleSidebar(); // يختفي فوراً بعد الاختيار
-                };
-                list.appendChild(d);
-            }
+        // البحث الذكي
+        function toggleSearch() { 
+            const s = document.getElementById('searchBox');
+            s.style.display = (s.style.display === 'block') ? 'none' : 'block';
+            if(s.style.display === 'block') document.getElementById('searchInput').focus();
         }
 
-        // الماركر المشروط
-        function toggleMarkerMode() {
-            markerActive = !markerActive;
-            const btn = document.getElementById('markerBtn');
-            if(markerActive) {
-                btn.classList.add('active');
-                showT("قلم التحديد نشط الآن");
-            } else {
-                btn.classList.remove('active');
-                showT("تم إيقاف قلم التحديد");
-            }
+        function doSearch() {
+            const val = document.getElementById('searchInput').value;
+            const resDiv = document.getElementById('searchResults');
+            resDiv.innerHTML = "";
+            if(val.length < 3) return;
+
+            pagesData.forEach((p, idx) => {
+                if(p.includes(val)) {
+                    let item = document.createElement('div');
+                    item.style.padding = "5px"; item.style.cursor = "pointer"; item.style.borderBottom = "1px solid #eee";
+                    item.innerText = `موجود في صفحة ${idx + 1}...`;
+                    item.onclick = () => { cur = idx; update(); toggleSearch(); };
+                    resDiv.appendChild(item);
+                }
+            });
+        }
+
+        function toggleMarker() { 
+            mActive = !mActive; 
+            document.getElementById('mBtn').classList.toggle('active');
+            showT(mActive ? "الماركر نشط" : "الماركر متوقف");
         }
 
         document.addEventListener('mouseup', () => {
-            if(!markerActive) return; // لا يظلل إلا لو القلم نشط
+            if(!mActive) return;
             const sel = window.getSelection();
             if (sel.rangeCount && sel.toString().length > 0) {
                 const range = sel.getRangeAt(0);
@@ -152,12 +152,20 @@
             }
         });
 
-        function clearLastHL() { showT("الممحاة نشطة: اضغط على لون لمسحه"); document.addEventListener('click', (e) => { if(e.target.className === 'hl') e.target.replaceWith(...e.target.childNodes); }, {once: true}); }
-        function openPanel(id) { const el = document.getElementById(id); el.style.display = (el.style.display === 'block') ? 'none' : 'block'; }
-        function setH(c) { document.documentElement.style.setProperty('--h-color', c); openPanel('p-color'); }
-        function showT(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(()=>t.style.display='none',2500); }
+        function genCaps() {
+            const list = document.getElementById('cap-list');
+            for(let i=1; i<=15; i++) {
+                let d = document.createElement('div');
+                d.className = 'chapter-link';
+                d.innerText = "الفصل " + i;
+                d.onclick = () => { cur = Math.floor((total/15)*(i-1)); update(); toggleSidebar(); };
+                list.appendChild(d);
+            }
+        }
 
-        // لمس الموبايل
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function showT(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(()=>t.style.display='none',2000); }
+
         let sX = 0;
         document.addEventListener('touchstart', e => sX = e.touches[0].clientX);
         document.addEventListener('touchend', e => {
