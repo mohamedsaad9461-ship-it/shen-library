@@ -109,10 +109,74 @@ function renderNovels() {
             <b style="color:white; font-size:13px;">${n.name}</b>
         </div>`).join('');
 }
-// دالة "ترشيحات شين" الذكية
 function askShainAI() {
     const input = document.getElementById('userInput').value.trim().toLowerCase();
     const responseBox = document.getElementById('aiResponse');
+    const userName = localStorage.getItem('userName') || "صديقي";
+    const userGender = localStorage.getItem('userGender') || "ذكر"; 
+
+    if (!input) {
+        responseBox.innerHTML = "أنا جاهز لمساعدتك، صف لي ما تبحث عنه...";
+        return;
+    }
+
+    responseBox.innerHTML = `جاري فحص المكتبة الشاملة يا ${userName}...`;
+
+    setTimeout(() => {
+        // قاعدة بيانات شاملة (PDF + إلكتروني + ورقي)
+        const bigLibrary = [
+            {
+                name: "حلم طنجار",
+                author: "محمد فكري",
+                tags: ["صحراء", "قبيلة", "خيال", "أسطورة", "رجل", "حلم"],
+                format: "إلكتروني (تفاعلي)",
+                status: "مجانية",
+                link: "داخل المكتبة هنا"
+            },
+            {
+                name: "أرض زيكولا",
+                author: "عمرو عبد الحميد",
+                tags: ["ذكاء", "عملات", "خيال", "قانون", "أسيل"],
+                format: "PDF + ورقي",
+                status: "مدفوعة",
+                link: "مكتبة عصير الكتب / تطبيقات الـ PDF"
+            },
+            {
+                name: "الفيل الأزرق",
+                author: "أحمد مراد",
+                tags: ["غموض", "نفسي", "جريمة", "تاروت", "يحيى"],
+                format: "إلكتروني + ورقي",
+                status: "مدفوعة",
+                link: "تطبيق أبجد / دار الشروق"
+            }
+        ];
+
+        // محرك البحث المرن (الشامل)
+        let matches = bigLibrary.filter(book => {
+            return book.tags.some(t => input.includes(t)) || 
+                   input.includes(book.name.toLowerCase()) || 
+                   input.includes(book.author.toLowerCase());
+        });
+
+        if (matches.length > 0) {
+            let htmlResult = `✨ <b>وجدتها! إليك أفضل النتائج يا ${userName}:</b><br><br>`;
+            matches.forEach(book => {
+                htmlResult += `
+                    <div style="border-bottom:1px solid #444; margin-bottom:10px; padding-bottom:5px;">
+                        📖 <b>الرواية:</b> ${book.name}<br>
+                        ✍️ <b>الكاتب:</b> ${book.author}<br>
+                        📂 <b>صيغة النشر:</b> ${book.format}<br>
+                        📍 <b>الحالة:</b> ${book.status}<br>
+                        🛒 <b>المصدر:</b> ${book.link}
+                    </div>
+                `;
+            });
+            responseBox.innerHTML = htmlResult;
+        } else {
+            responseBox.innerHTML = `عفواً يا ${userName}، لم أجد تطابقاً دقيقاً في الأرشيف الحالي. جرب وصفاً مختلفاً (مثلاً: رواية خيال، أو رواية PDF).`;
+        }
+    }, 1500);
+}
     
     // جلب بيانات المستخدم (محمد مثلاً) ونوعه من ذاكرة التطبيق
     const userName = localStorage.getItem('userName') || "صديقي";
