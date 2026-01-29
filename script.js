@@ -121,6 +121,7 @@ function closeAI() {
 }
 
 // --- 2. دالة البحث الذكي المطورة ---
+// --- 1. محرك رادار شين المطور (بالأغلفة ومنع الإزاحة) ---
 function askShainAI() {
     const input = document.getElementById('userInput').value.trim().toLowerCase();
     const responseBox = document.getElementById('aiResponse');
@@ -128,76 +129,70 @@ function askShainAI() {
 
     if (!input) return;
 
-    // تثبيت الهيكل: الخانة فوق والنتائج تحتها عشان مفيش حاجة تختفي
+    // تثبيت البحث في الأعلى
     responseBox.innerHTML = `
         <div style="background: #00d2ff; color: #000; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; font-weight: bold; width: fit-content; align-self: flex-end;">
             🔍 بحثت عن: ${input}
         </div>
-        <div id="resultsContainer" style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
-            <div id="aiStatus" style="color: #00d2ff; font-size: 13px;">📡 جاري سحب الأغلفة والبيانات...</div>
+        <div id="resultsList" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+            <div id="aiStatus" style="color: #00d2ff; font-size: 13px;">📡 جاري جلب الأغلفة والبيانات يا ${userName}...</div>
         </div>
     `;
 
-    const resultsContainer = document.getElementById('resultsContainer');
-
     setTimeout(() => {
-        // قاعدة البيانات بالأغلفة (تقدر تغير الروابط دي لصورك الحقيقية)
         const megaArchive = [
-            { 
-                name: "تاكسي", auth: "خالد الخميسي", cat: "كوميدي", 
-                img: "https://m.media-amazon.com/images/I/41-v8f8Y9pL.jpg", // غلاف تاكسي
-                type: "PDF", loc: "مكتبة نور", link: "https://www.google.com/search?q=رواية+تاكسي+pdf" 
-            },
-            { 
-                name: "أرض النفاق", auth: "يوسف السباعي", cat: "كوميدي", 
-                img: "https://m.media-amazon.com/images/I/51rYy5+S1FL.jpg", 
-                type: "ورقي", loc: "عصير الكتب", link: "https://www.google.com/search?q=أرض+النفاق+pdf" 
-            },
-            { 
-                name: "قواعد العشق الأربعون", auth: "إليف شافاق", cat: "ديني", 
-                img: "https://m.media-amazon.com/images/I/41m9-T881ML.jpg", 
-                type: "PDF", loc: "منصات عالمية", link: "https://www.google.com/search?q=قواعد+العشق+الأربعون+pdf" 
-            },
-            { 
-                name: "حلم طنجار", auth: "محمد فكري", cat: "اجتماعي", 
-                img: "https://via.placeholder.com/100x150?text=Tanjar", // صورة مؤقتة لروياتك
-                type: "إلكتروني", loc: "مكتبة شين", link: "#" 
-            }
+            { name: "تاكسي", auth: "خالد الخميسي", cat: "كوميدي", img: "https://m.media-amazon.com/images/I/41-v8f8Y9pL.jpg", type: "PDF", loc: "مكتبة نور", link: "https://www.google.com/search?q=رواية+تاكسي+pdf" },
+            { name: "أرض النفاق", auth: "يوسف السباعي", cat: "كوميدي", img: "https://m.media-amazon.com/images/I/51rYy5+S1FL.jpg", type: "ورقي", loc: "عصير الكتب", link: "https://www.google.com/search?q=أرض+النفاق+pdf" },
+            { name: "قواعد العشق الأربعون", auth: "إليف شافاق", cat: "ديني", img: "https://m.media-amazon.com/images/I/41m9-T881ML.jpg", type: "PDF", loc: "منصات عالمية", link: "https://www.google.com/search?q=قواعد+العشق+الأربعون+pdf" },
+            { name: "حلم طنجار", auth: "محمد فكري", cat: "اجتماعي", img: "https://via.placeholder.com/100x150?text=Tanjar", type: "إلكتروني", loc: "مكتبة شين", link: "#" }
         ];
 
-        let matches = megaArchive.filter(book => 
-            book.cat.includes(input) || book.name.toLowerCase().includes(input)
-        );
-
+        let matches = megaArchive.filter(book => book.cat.includes(input) || book.name.toLowerCase().includes(input));
+        const list = document.getElementById('resultsList');
         document.getElementById('aiStatus').remove();
 
         if (matches.length > 0) {
             matches.forEach(book => {
-                resultsContainer.innerHTML += `
-                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; display: flex; gap: 15px; align-items: center; border: 1px solid rgba(0,210,255,0.2);">
-                    <img src="${book.img}" style="width: 70px; height: 100px; border-radius: 5px; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                list.innerHTML += `
+                <div style="background: rgba(255,255,255,0.08); padding: 10px; border-radius: 12px; display: flex; gap: 12px; align-items: center; border: 1px solid rgba(0,210,255,0.2); animation: fadeIn 0.5s;">
+                    <img src="${book.img}" style="width: 60px; height: 90px; border-radius: 4px; object-fit: cover;">
                     <div style="flex: 1;">
-                        <b style="color: #fff; display: block; font-size: 16px;">${book.name}</b>
+                        <b style="color: #fff; font-size: 15px;">${book.name}</b><br>
                         <small style="color: #00d2ff;">👤 ${book.auth}</small><br>
-                        <small style="color: #aaa;">🎭 ${book.cat} | 📍 ${book.loc}</small>
-                        ${book.link !== "#" ? `<a href="${book.link}" target="_blank" style="display:inline-block; margin-top:8px; color:#f1c40f; text-decoration:none; font-size:12px; border: 1px solid #f1c40f; padding: 2px 8px; border-radius: 4px;">تحميل PDF</a>` : ""}
+                        <small style="color: #aaa;">📍 ${book.loc}</small>
+                        ${book.link !== "#" ? `<a href="${book.link}" target="_blank" style="display:inline-block; margin-top:5px; color:#f1c40f; text-decoration:none; font-size:11px; border:1px solid #f1c40f; padding:2px 6px; border-radius:4px;">تحميل PDF</a>` : ""}
                     </div>
                 </div>`;
             });
         } else {
-            resultsContainer.innerHTML = `<div style="color: #e74c3c;">لم أجد نتائج.. جرب "كوميدي" أو "ديني"</div>`;
+            list.innerHTML = `<div style="color: #e74c3c; padding: 10px;">عذراً يا ${userName}، لم أجد نتائج.. جرب "كوميدي" أو "ديني".</div>`;
         }
-        // التمرير التلقائي لأسفل عشان النتائج الجديدة تظهر
         responseBox.scrollTop = responseBox.scrollHeight;
-    }, 1000);
+    }, 800);
 }
 
-// دالات التحكم وسطر الأمان النهائي (لا تغيرها)
+// --- 2. استعادة دالات الدخول والاقتباسات (اللي اتمسحت) ---
+function openBook(bookId) {
+    console.log("فتح الرواية: " + bookId);
+    // كود الانتقال لصفحة الرواية
+    document.getElementById('homeUI').style.display = 'none';
+    const bookPage = document.getElementById('bookPage');
+    if(bookPage) bookPage.style.display = 'block';
+}
+
+function showQuotes() {
+    const quoteBox = document.getElementById('quoteBox');
+    if(quoteBox) quoteBox.style.display = 'block';
+}
+
+// --- 3. دالات التحكم الأساسية وسطر الأمان ---
 function openShainAI() { document.getElementById('homeUI').style.display = 'none'; document.getElementById('aiSection').style.display = 'block'; }
 function closeAI() { document.getElementById('aiSection').style.display = 'none'; document.getElementById('homeUI').style.display = 'block'; }
+
 window.onload = function() {
     const loader = document.getElementById('loader');
     const homeUI = document.getElementById('homeUI');
     if (loader) loader.style.display = 'none';
     if (homeUI) homeUI.style.display = 'block';
+    console.log("تمت استعادة كل الأنظمة يا محمد!");
 };
