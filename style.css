@@ -77,3 +77,14 @@ body {
     cursor: pointer;
     backdrop-filter: blur(5px);
 }
+/* إصلاحات محمد النهائية - تضاف في آخر الملف */
+.novel-card { height: 380px !important; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+.novel-card img { width: 110px !important; height: 160px !important; object-fit: cover !important; }
+.author-info img { width: 55px !important; height: 55px !important; border-radius: 50% !important; object-fit: cover !important; border: 2px solid #00d2ff; }
+#novelSearch, #userInput { 
+    background-image: url("https://img.icons8.com/ios-filled/50/00d2ff/search--v1.png") !important;
+    background-repeat: no-repeat !important; background-position: 95% center !important;
+    background-size: 18px !important; padding-right: 45px !important; 
+}
+/* التأكد من إخفاء الأقسام في البداية */
+#librarySection, #quotesSection, #aiSection { display: none; }
