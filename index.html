@@ -86,11 +86,32 @@
         </div>
     </div>
 
-    <div id="aiSection" style="display:none;">
+   <div id="aiSection" style="display:none;">
         <div class="top-bar">
             <div class="back-circle" onclick="showSec('homeUI')"> ➔ </div>
-            <div style="flex-grow:1; text-align:center; color:white;">مساعد شين</div>
+            <div style="flex-grow:1; text-align:center; color:white; font-family: 'Almarai';">مساعد شين الذكي</div>
         </div>
+        
+        <div class="ai-container" style="padding: 20px; color: white;">
+            <div id="aiResponse" class="glass-panel" style="min-height: 150px; margin-bottom: 20px; padding: 15px; border-radius: 15px; background: rgba(255,255,255,0.1);">
+                مرحباً يا محمد، أنا مساعد شين. اسألني عن أي رواية أو اطلب ترشيحاً خاصاً...
+            </div>
+            <div class="search-box" style="display: flex; gap: 10px;">
+                <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا..." style="flex-grow: 1; padding: 12px; border-radius: 10px; border: none;">
+                <button onclick="askShinAI()" class="glass-btn" style="width: auto; padding: 10px 20px;">اسأل</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="quotesSection" style="display:none;">
+        <div class="top-bar">
+            <div class="back-circle" onclick="showSec('homeUI')"> ➔ </div>
+            <div style="flex-grow:1; text-align:center; color:white; font-family: 'Almarai';">اقتباسات أدبية</div>
+        </div>
+        <div id="quotesContainer" style="padding: 20px; text-align: center; color: white;">
+            <p class="quote-text" style="font-style: italic; font-size: 1.2rem;">"القراءة هي حياة ثانية نعيشها."</p>
+        </div>
+    </div>
         
         <div id="recommendations" style="padding:15px;">
             <h3 style="color:white;">ترشيحات شين لك:</h3>
