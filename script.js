@@ -124,63 +124,73 @@ function closeAI() {
 function askShainAI() {
     const input = document.getElementById('userInput').value.trim().toLowerCase();
     const responseBox = document.getElementById('aiResponse');
-    const userName = "محمد"; // تم التثبيت بنجاح يا بطل
+    const userName = "محمد";
 
     if (!input) return;
 
-    // إظهار رسالة المستخدم بتصميم أنيق
-    responseBox.innerHTML += `
-        <div style="align-self: flex-end; background: #00d2ff; color: #000; padding: 10px 15px; border-radius: 15px 15px 0 15px; margin-bottom: 10px; max-width: 80%; font-weight: bold;">
-            ${input}
-        </div>`;
-    
-    responseBox.scrollTop = responseBox.scrollHeight;
+    // تنظيف الصندوق وعرض سؤالك الحالي فقط بشكل أنيق
+    responseBox.innerHTML = `
+        <div style="align-self: flex-end; background: #00d2ff; color: #000; padding: 12px 20px; border-radius: 20px 20px 0 20px; margin-bottom: 15px; max-width: 80%; font-weight: bold; box-shadow: 0 4px 10px rgba(0,210,255,0.3);">
+            🔍 بحثت عن: ${input}
+        </div>
+        <div id="typingStatus" style="color: #aaa; font-style: italic; font-size: 13px; margin-bottom: 10px;">جاري فحص أرشيف شين...</div>
+    `;
 
     setTimeout(() => {
-        // أرشيف الرادار (داخلي + خارجي + معرض الكتاب)
+        // قاعدة بيانات ضخمة (اجتماعي، كوميدي، رعب، معرض الكتاب)
         const megaArchive = [
-            { name: "حلم طنجار", type: "اجتماعي / خيال", format: "إلكتروني تفاعلي", source: "مكتبة شين", link: "#", tags: ["اجتماعي", "خيال", "دراما"] },
-            { name: "أرض زيكولا", type: "اجتماعي / خيال", format: "PDF / ورقي", source: "عصير الكتب", link: "https://www.google.com/search?q=أرض+زيكولا+pdf", tags: ["اجتماعي", "ذكاء"] },
-            { name: "ساق البامبو", type: "اجتماعي / واقعي", format: "PDF / إلكتروني", source: "منصات خارجية", link: "https://www.google.com/search?q=ساق+البامبو+pdf", tags: ["اجتماعي", "دراما"] },
-            { name: "رواية المعرض الجديدة", type: "حصري معرض 2026", format: "ورقي", source: "جناح الجروب - صالة 2", link: "#", tags: ["معرض", "جديد", "حصري"] }
+            { name: "حلم طنجار", cat: "اجتماعي / خيال", type: "إلكتروني", loc: "مكتبة شين (هنا)", link: "#", tags: ["اجتماعي", "خيال", "دراما"] },
+            { name: "أرض زيكولا", cat: "اجتماعي / تشويق", type: "PDF / ورقي", loc: "عصير الكتب", link: "https://www.google.com/search?q=أرض+زيكولا+pdf", tags: ["اجتماعي", "ذكاء", "كوميدي"] },
+            { name: "ساق البامبو", cat: "اجتماعي / واقعي", type: "PDF", loc: "منصات عالمية", link: "https://www.google.com/search?q=ساق+البامبو+pdf", tags: ["اجتماعي", "واقعي"] },
+            { name: "رواية كوميدية مشهورة", cat: "كوميدي / ساخر", type: "PDF", loc: "مكتبة جرير", link: "https://www.google.com/search?q=روايات+كوميدية+pdf", tags: ["كوميدي", "ضحك"] },
+            { name: "حصري الجروب", cat: "اجتماعي / جديد", type: "ورقي (المعرض)", loc: "صالة 2 - معرض 2026", link: "#", tags: ["معرض", "اجتماعي", "جديد"] }
         ];
 
-        let matches = megaArchive.filter(book => {
-            const terms = input.split(' ');
-            return terms.some(t => book.tags.some(tag => tag.includes(t)) || book.name.toLowerCase().includes(t));
-        });
+        // البحث الذكي في كل التصنيفات
+        let results = megaArchive.filter(book => 
+            book.tags.some(tag => input.includes(tag)) || 
+            book.cat.toLowerCase().includes(input) || 
+            book.name.toLowerCase().includes(input)
+        );
 
-        let aiReply = "";
-        if (matches.length > 0) {
-            aiReply = `✨ وجدت لك هذه الروايات في راداري يا ${userName}:<br><br>`;
-            matches.forEach(book => {
-                aiReply += `
-                <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; margin-bottom: 8px; border-right: 4px solid #00d2ff;">
-                    <b style="color: #00d2ff;">📖 ${book.name}</b> (${book.type})<br>
-                    <small>📂 الصيغة: ${book.format}</small><br>
-                    <small>📍 المصدر: ${book.source}</small>
-                    ${book.link !== "#" ? `<br><a href="${book.link}" target="_blank" style="color:#f1c40f; font-size:11px;">🔗 رابط خارجي</a>` : ""}
+        // مسح كلمة "جاري البحث" ووضع النتائج
+        document.getElementById('typingStatus').remove();
+
+        if (results.length > 0) {
+            let html = `<div style="color: #00d2ff; font-weight: bold; margin-bottom: 10px;">✨ وجدتها! إليك كل ما يخص "${input}" يا ${userName}:</div>`;
+            results.forEach(book => {
+                html += `
+                <div style="background: rgba(255,255,255,0.08); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #00d2ff; animation: fadeIn 0.5s;">
+                    <b style="color: #fff; font-size: 16px;">📖 ${book.name}</b><br>
+                    <span style="color: #aaa; font-size: 13px;">🎭 التصنيف: ${book.cat}</span><br>
+                    <div style="margin-top: 8px;">
+                        <span style="background: #00d2ff; color: #000; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-left: 5px;">${book.type}</span>
+                        <span style="color: #2ecc71; font-size: 12px;">📍 ${book.loc}</span>
+                    </div>
+                    ${book.link !== "#" ? `<a href="${book.link}" target="_blank" style="display: block; margin-top: 10px; color: #f1c40f; text-decoration: none; font-size: 12px; border: 1px border-radius: 5px; padding: 5px; text-align: center; background: rgba(241,196,15,0.1);">🔗 رابط المصدر الخارجي</a>` : ""}
                 </div>`;
             });
+            responseBox.innerHTML += html;
         } else {
-            aiReply = `لم أجد نتائج دقيقة لـ "${input}" في الأرشيف حالياً، لكن يمكنك البحث عنها كـ PDF هنا:<br><br>
-                       <a href="https://www.google.com/search?q=رواية+${input}+pdf" target="_blank" style="display:inline-block; padding:8px 15px; background:#f1c40f; color:#000; border-radius:20px; text-decoration:none; font-weight:bold;">🔍 ابحث في جوجل PDF</a>`;
+            responseBox.innerHTML += `
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid #e74c3c;">
+                    ⚠️ عذراً يا ${userName}، هذا التصنيف غير متوفر في أرشيفي حالياً.<br><br>
+                    <a href="https://www.google.com/search?q=روايات+${input}+pdf" target="_blank" style="display: block; background: #f1c40f; color: #000; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold;">🔍 ابحث في جوجل عن "${input} PDF"</a>
+                </div>`;
         }
-
-        responseBox.innerHTML += `
-            <div style="align-self: flex-start; background: rgba(255,255,255,0.05); padding: 12px 18px; border-radius: 0 15px 15px 15px; margin-bottom: 10px; max-width: 85%; border: 1px solid rgba(255,255,255,0.1);">
-                ${aiReply}
-            </div>`;
-        
-        responseBox.scrollTop = responseBox.scrollHeight;
-    }, 1000);
+    }, 800);
 }
 
-// دالات التحكم وسطر التشغيل (لضمان إخفاء اللودر)
+// دالات التحكم (الفتح والإغلاق)
 function openShainAI() { document.getElementById('homeUI').style.display = 'none'; document.getElementById('aiSection').style.display = 'block'; }
 function closeAI() { document.getElementById('aiSection').style.display = 'none'; document.getElementById('homeUI').style.display = 'block'; }
 
-window.onload = function() { 
-    if (typeof initApp === "function") initApp(); 
-    else { document.getElementById('loader').style.display = 'none'; document.getElementById('homeUI').style.display = 'block'; }
+// سطر التشغيل النهائي لإخفاء اللودر
+window.onload = function() {
+    if (typeof initApp === "function") initApp();
+    else {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('homeUI').style.display = 'block';
+    }
+};
 };
