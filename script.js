@@ -109,5 +109,51 @@ function renderNovels() {
             <b style="color:white; font-size:13px;">${n.name}</b>
         </div>`).join('');
 }
+// دالة "ترشيحات شين" الذكية
+function askShainAI() {
+    const input = document.getElementById('userInput').value.trim().toLowerCase();
+    const responseBox = document.getElementById('aiResponse');
+    
+    // جلب بيانات المستخدم (محمد مثلاً) ونوعه من ذاكرة التطبيق
+    const userName = localStorage.getItem('userName') || "صديقي";
+    const userGender = localStorage.getItem('userGender') || "ذكر"; 
+
+    if (!input) {
+        responseBox.innerHTML = userGender === "أنثى" ? "اكتبي وصفاً أولاً يا عزيزتي." : "اكتب وصفاً أولاً يا صديقي.";
+        return;
+    }
+
+    // تأثير الانتظار
+    responseBox.innerHTML = `<span style="opacity:0.6;">جاري تحليل طلبك والبحث يا ${userName}...</span>`;
+
+    setTimeout(() => {
+        let result = "";
+
+        // محرك البحث (الربط بالكلمات المفتاحية)
+        if (input.includes("صحراء") || input.includes("طنجار") || input.includes("قبيلة")) {
+            result = `✨ <b>يا ${userName}، النتيجة هي:</b> "حلم طنجار"<br>📍 <b>الحالة:</b> <span style="color:#27ae60">مجانية</span><br>🛒 <b>المكان:</b> متوفرة الآن داخل مكتبتك.`;
+        } 
+        else if (input.includes("رعب") || input.includes("خوف") || input.includes("غموض")) {
+            result = `✨ <b>ترشيح شين لك ${userGender === "أنثى" ? 'عزيزتي' : 'يا صديقي'}:</b> رواية "وباء"<br>📍 <b>الحالة:</b> قيد التحضير.<br>💡 <b>بديل خارجي:</b> "الفيل الأزرق" (مدفوعة) في تطبيق أبجد.`;
+        }
+        else {
+            result = `<b>عفواً يا ${userName}:</b> لم أجد رواية تطابق هذا الوصف بدقة. جرب كلمات مثل (خيال، رعب، تاريخ).`;
+        }
+
+        responseBox.innerHTML = result;
+    }, 1500);
+}
+
+// دالة فتح قسم الترشيحات
+function openShainAI() {
+    document.getElementById('homeUI').style.display = 'none';
+    document.getElementById('aiSection').style.display = 'block';
+}
+
+// دالة العودة للرئيسية
+function closeAI() {
+    document.getElementById('aiSection').style.display = 'none';
+    document.getElementById('homeUI').style.display = 'block';
+}
 // تشغيل التطبيق
 window.onload = initApp;
