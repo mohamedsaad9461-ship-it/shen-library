@@ -1,106 +1,75 @@
+/* === [TAG: APP_DATA] === */
 const novelsData = [
     { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", file: "reader.html", available: true },
-    // ... باقي الروايات
+    { id: 1, name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false },
+    { id: 2, name: "ممالك القيران", img: "https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png", available: false },
+    { id: 3, name: "وباء", img: "https://i.ibb.co/xqfBbZjf/Screenshot-2026-01-28-014331.png", available: false },
+    { id: 4, name: "قصص من مصدر", img: "https://i.ibb.co/BHgP5YC6/Screenshot-2026-01-28-014426.png", available: false }
 ];
 
-const quotesData = [
-    { id: 101, name: "محمد سعد", img: "https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png", text: "هناك، في تلك اللحظة، أدركت أن الصمت أقوى من أي كلام..." }
-];
-
-let appState = JSON.parse(localStorage.getItem('shain_pro_v1')) || { ratings: {}, votes: {}, qVotes: {} };
+let appState = JSON.parse(localStorage.getItem('shain_pro_v1')) || { ratings: {}, votes: {} };
 /* === [END: APP_DATA] === */
 
 /* === [TAG: UI_NAVIGATION] === */
-// المسؤول عن التنقل وإخفاء المربعات الفاضية
 function showSec(id) {
+    // إخفاء كل شيء تماماً
     const sections = ['homeUI', 'librarySection', 'quotesSection', 'aiSection', 'readerMode'];
-    sections.forEach(secId => {
-        const el = document.getElementById(secId);
-        if (el) el.style.display = 'none';
+    sections.forEach(s => {
+        const el = document.getElementById(s);
+        if(el) el.style.display = 'none';
     });
 
     const target = document.getElementById(id);
-    if (target) {
+    if(target) {
         target.style.display = 'block';
-        window.scrollTo(0, 0);
-        if (id === 'librarySection') renderNovels();
-        if (id === 'quotesSection') renderQuotes();
+        if(id === 'librarySection') renderNovels();
     }
 }
-
-function openShainAI() { showSec('aiSection'); }
-function closeAI() { showSec('homeUI'); }
 /* === [END: UI_NAVIGATION] === */
 
 /* === [TAG: LIBRARY_ENGINE] === */
 function renderNovels() {
     const container = document.getElementById('novelsContainer');
     if(!container) return;
-
-    container.innerHTML = novelsData.map(n => {
-        // لو الرواية متاحة (available: true) بنحط رابط الملف، لو لأ بنطلع رسالة
-        const action = n.available 
-            ? `onclick="openReader('${n.name}', '${n.file}')"` 
-            : `onclick="alert('قريباً جداً يا محمد!')" style="opacity:0.5"`;
-
-        return `
+    
+    container.innerHTML = novelsData.map(n => `
         <div class="novel-card">
             <img src="${n.img}" alt="${n.name}">
             <h3>${n.name}</h3>
-            <button class="glass-btn" ${action}>
+            <button class="glass-btn" onclick="${n.available ? `openReader('${n.name}', '${n.file}')` : 'alert(\'قريباً!\')'}">
                 ${n.available ? 'اقرأ الآن' : 'قريباً'}
             </button>
-        </div>`;
-    }).join('');
+        </div>`).join('');
 }
 
 function openReader(name, file) {
-    const readerMode = document.getElementById('readerMode');
-    const bookFrame = document.getElementById('bookFrame');
-    const readerTitle = document.getElementById('readerTitle');
+    showSec('readerMode'); // دي اللي هتخلي القارئ يفتح في صفحة لوحده ويخفي الباقي
+    document.getElementById('bookFrame').src = file;
+    document.getElementById('readerTitle').innerText = name;
+}
 
-    if(readerMode && bookFrame) {
-        readerTitle.innerText = name;
-        bookFrame.src = file; // هنا هيربط بملف reader.html
-        readerMode.style.display = 'block';
-        document.body.style.overflow = 'hidden'; 
-    }
+function closeReader() {
+    document.getElementById('bookFrame').src = '';
+    showSec('librarySection'); // لما تقفل يرجعك للمكتبة
 }
 /* === [END: LIBRARY_ENGINE] === */
 
 /* === [TAG: SYSTEM_INIT] === */
-// دالة تحريك البانر تلقائياً
 let currentSlide = 0;
-function startBannerSlider() {
+function startBanner() {
     setInterval(() => {
         const slides = document.querySelector('.slides');
         if (slides) {
-            currentSlide = (currentSlide + 1) % 4; // حسب عدد صورك
-            slides.style.transform = `translateX(${currentSlide * 25}%)`; 
+            currentSlide = (currentSlide + 1) % 4;
+            slides.style.transform = `translateX(${currentSlide * 25}%)`;
         }
-    }, 4000);
+    }, 3000);
 }
 
-// دالة فك التعليقة وتشغيل الموقع
 window.onload = function() {
     const loader = document.getElementById('loader');
-    
-    // إخفاء اللودر فوراً
-    if (loader) {
-        loader.style.opacity = '0';
-        setTimeout(() => { loader.style.display = 'none'; }, 500);
-    }
-    
-    showSec('homeUI'); // إظهار الصفحة الرئيسية
-    startBannerSlider(); // تشغيل البانر
+    if(loader) loader.style.display = 'none';
+    showSec('homeUI');
+    startBanner();
 };
-
-// حركة أمان: لو الصفحة علقت أكتر من 3 ثواني، اخفي اللودر غصب عنه
-setTimeout(() => {
-    const loader = document.getElementById('loader');
-    if (loader && loader.style.display !== 'none') {
-        loader.style.display = 'none';
-        showSec('homeUI');
-    }
-}, 3000);
 /* === [END: SYSTEM_INIT] === */
