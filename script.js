@@ -20,19 +20,32 @@ async function askShinAI() {
     
     if (!input) return;
 
-    responseBox.innerHTML = "جاري البحث في أروقة المكتبة... ⏳";
+    responseBox.innerHTML = "جاري البحث في رفوف المكتبة... ⏳";
     
     try {
+        // حط المفتاح اللي أنت بعتهولي هنا
         const apiKey = "AIzaSyD7hYs_9VJv7wAM4_e5sAXayeZUjj9LwhE"; 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 contents: [{
-                    parts: [{ text: `أنت مساعد ذكي خبير في الروايات والأدب فقط اسمك "مساعد شين". وظيفتك ترشيح روايات لمحمد والإجابة على أسئلته الأدبية باحترافية وبلهجة مصرية خفيفة. سؤاله هو: ${input}` }]
+                    parts: [{ text: `أنت مساعد ذكي في مكتبة "شين". أجب باختصار على: ${input}` }]
                 }]
             })
         });
+
+        const data = await response.json();
+        
+        if (data.candidates && data.candidates[0].content) {
+            responseBox.innerHTML = data.candidates[0].content.parts[0].text;
+        } else {
+            responseBox.innerHTML = "عذراً، لم أستطع صياغة رد. تأكد من إعدادات الـ API Key.";
+        }
+    } catch (error) {
+        responseBox.innerHTML = "فشل الاتصال. جرب مرة أخرى.";
+    }
+}
 
         const data = await response.json();
         
