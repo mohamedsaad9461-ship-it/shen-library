@@ -3,109 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حلم طنجار | الرواية الرسمية</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>مكتبة شين - النسخة الاحترافية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=Cairo:wght@600&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=1.2">
     <style>
-        :root { --gold: #e67e22; --dark: #0f0f0f; }
-        body { margin: 0; background: var(--dark); color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
-
-        /* خلفية سينمائية */
-        .hero { 
-            height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: radial-gradient(circle, #1a1a1a 0%, #000 100%); position: relative;
+        /* إضافة ستايل الكتاب الـ 3D جوه الاندكس بدون تعارض */
+        .book-card-3d { perspective: 1000px; display: flex; justify-content: center; padding: 40px 0; }
+        .book-3d {
+            width: 160px; height: 240px; position: relative; transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;
         }
-
-        /* تصميم الكتاب الـ 3D */
-        .book-container { 
-            perspective: 1000px; margin-bottom: 50px; cursor: pointer;
+        .book-3d:hover { transform: rotateY(-25deg) rotateX(10deg); }
+        .cover-3d {
+            position: absolute; width: 100%; height: 100%; 
+            background: linear-gradient(45deg, #c0392b, #e67e22);
+            border-radius: 2px 8px 8px 2px; display: flex; align-items: center; justify-content: center;
+            color: white; text-align: center; font-family: 'Amiri'; box-shadow: 10px 10px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2); z-index: 2;
         }
-        .book {
-            width: 200px; height: 300px; background: #2c3e50; border-radius: 4px 10px 10px 4px;
-            transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 20px 20px 60px rgba(0,0,0,0.5); position: relative;
+        .spine-3d {
+            position: absolute; left: 0; top: 0; width: 35px; height: 100%; background: #962d22;
+            transform: translateX(-18px) rotateY(-90deg); border-radius: 2px; z-index: 1;
         }
-        .book:hover { transform: rotateY(-25deg) rotateX(10deg); }
-        .book-cover {
-            width: 100%; height: 100%; background: linear-gradient(45deg, #c0392b, #e67e22);
-            border-radius: 4px 10px 10px 4px; display: flex; align-items: center; justify-content: center;
-            text-align: center; font-family: 'Amiri'; border: 2px solid rgba(255,255,255,0.1);
-        }
-        .book-spine {
-            position: absolute; left: 0; top: 0; width: 40px; height: 100%; background: #962d22;
-            transform: translateX(-20px) rotateY(-90deg); border-radius: 2px;
-        }
-
-        /* نصوص الواجهة */
-        h1 { font-family: 'Amiri'; font-size: 3rem; margin: 10px 0; color: var(--gold); }
-        p.subtitle { opacity: 0.7; font-size: 1.1rem; margin-bottom: 30px; }
-
-        /* الأزرار الاحترافية */
-        .main-btn {
-            padding: 15px 40px; font-size: 1.2rem; background: var(--gold); color: white;
-            border: none; border-radius: 50px; cursor: pointer; text-decoration: none;
-            transition: 0.3s; font-weight: bold; display: flex; align-items: center; gap: 10px;
-        }
-        .main-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(230,126,34,0.4); }
-
-        /* قسم الكاتب */
-        .author-section {
-            padding: 50px 20px; text-align: center; background: #151515; border-top: 2px solid #222;
-        }
-        .author-img { width: 80px; height: 80px; background: #333; border-radius: 50%; margin-bottom: 15px; border: 2px solid var(--gold); }
-
-        footer { padding: 20px; text-align: center; opacity: 0.5; font-size: 0.8rem; }
+        .book-info-text { text-align: center; color: white; margin-top: 15px; font-family: 'Cairo'; }
     </style>
 </head>
 <body>
 
-    <section class="hero">
-        <div class="book-container" onclick="location.href='reader.html'">
-            <div class="book">
-                <div class="book-spine"></div>
-                <div class="book-cover">
-                    <div style="padding: 10px;">
-                        <h2 style="font-size: 1.5rem; margin:0">رواية</h2>
-                        <h1 style="font-size: 2rem; color:white">حلم طنجار</h1>
-                        <hr style="width:50%; border:1px solid rgba(255,255,255,0.2)">
-                        <p style="font-size: 0.9rem;">محمد فكري</p>
+    <div id="loader">
+        <div class="loader-content">
+            <h1 style="font-family: 'Almarai'; color: white; margin-bottom: 10px;">مكتبة شين</h1>
+            <div class="spinner"></div>
+            <p style="color: white; margin-top: 15px; font-size: 14px; opacity: 0.8;">جاري تحضير عالمك الخاص...</p>
+        </div>
+    </div>
+
+    <div id="homeUI">
+        <div style="text-align: center; padding: 20px; color: white;">
+            <h1 style="font-family: 'Almarai'; margin: 0;">مكتبة شين</h1>
+            <p style="opacity: 0.8;">مرحباً بك يا محمد</p>
+        </div>
+        <div class="slider-container">
+            <div class="slides">
+                <div class="slide" style="background-image: url('https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png');"></div>
+                <div class="slide" style="background-image: url('https://i.ibb.co/9mntZww9/Screenshot-2026-01-28-012416.png');"></div>
+                <div class="slide" style="background-image: url('https://i.ibb.co/tpjZ8bkf/Screenshot-2026-01-28-012315.png');"></div>
+                <div class="slide" style="background-image: url('https://i.ibb.co/5xnfF4MH/Screenshot-2026-01-28-012305.png');"></div>
+            </div>
+        </div>
+        <div class="menu-container">
+            <div class="glass-btn" onclick="showSec('librarySection')">✨تابع الدخول للمكتبة</div>
+            <div class="glass-btn" onclick="showSec('quotesSection')">🖋️اقتباسات أدبية</div>
+            <div class="glass-btn" onclick="alert('قريباً')">💡 معلومة من رواية</div>
+            <div class="glass-btn" onclick="alert('تواصل معنا')">👥 من نحن / تواصل معنا</div>
+        </div>
+    </div>
+
+    <div id="librarySection">
+        <div class="top-bar">
+            <div class="back-circle" onclick="showSec('homeUI')">➔</div>
+            <div style="flex-grow:1; text-align:center; color:white; font-family:'Almarai'">روايات مختارة</div>
+        </div>
+        
+        <div class="book-card-3d" onclick="location.href='reader.html'">
+            <div>
+                <div class="book-3d">
+                    <div class="spine-3d"></div>
+                    <div class="cover-3d">
+                        <div style="padding: 10px;">
+                            <h3 style="margin:0; font-size: 1rem;">رواية</h3>
+                            <h2 style="margin:5px 0; font-size: 1.4rem;">حلم طنجار</h2>
+                            <small>محمد فكري</small>
+                        </div>
                     </div>
+                </div>
+                <div class="book-info-text">
+                    <button class="glass-btn" style="padding: 5px 20px; font-size: 13px; margin-top: 10px;">اقرأ الآن</button>
                 </div>
             </div>
         </div>
 
-        <h1>حلم طنجار</h1>
-        <p class="subtitle">بين الواقع والخيال.. تبدأ الرحلة</p>
+        <div id="novelsContainer"></div>
+    </div>
 
-        <a href="reader.html" class="main-btn">
-            <i class="fas fa-book-open"></i> ابدأ القراءة الآن
-        </a>
-    </section>
-
-    <section class="author-section">
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <div class="author-img">
-                <i class="fas fa-user" style="font-size: 40px; margin-top: 15px; color: #555;"></i>
-            </div>
-            <h3 style="margin: 5px 0;">محمد فكري</h3>
-            <p style="max-width: 500px; opacity: 0.7; font-size: 0.9rem; line-height: 1.6;">
-                كاتب مصري، يبحر في عالم الخيال الروائي ليقدم تجربة أدبية فريدة تجمع بين الغموض والتشويق في "حلم طنجار".
-            </p>
+    <div id="quotesSection">
+        <div class="top-bar">
+            <div class="back-circle" onclick="showSec('homeUI')">➔</div>
+            <div style="flex-grow:1; text-align:center; color:white;">اقتباسات الأصدقاء</div>
         </div>
-    </section>
+        <div id="quotesList"></div>
+    </div>
 
-    <footer>
-        &copy; 2026 جميع الحقوق محفوظة للكاتب محمد فكري
-    </footer>
+    <div id="readerMode">
+        <div class="top-bar" style="background:#fff; color:#333;">
+            <div class="back-circle" onclick="closeReader()">➔</div>
+            <div id="readerTitle" style="flex-grow:1; text-align:center; font-weight:bold;"></div>
+        </div>
+        <iframe id="bookFrame" src=""></iframe>
+    </div>
 
-    <script>
-        // تأثير تحريك الكتاب مع الماوس (اختياري للكمبيوتر)
-        document.addEventListener('mousemove', (e) => {
-            const book = document.querySelector('.book');
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-            book.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
-    </script>
+    <script src="script.js?v=1.2"></script>
 </body>
 </html>
