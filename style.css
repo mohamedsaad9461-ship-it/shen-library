@@ -1,30 +1,131 @@
-/* النسخة الذهبية المصححة لمحمد */
-body { margin: 0; padding: 0; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; font-family: 'Cairo', sans-serif; }
+/* شاشة التحميل */
+#loader {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #1e3c72; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; 
+    transition: opacity 0.8s ease; 
+}
+.spinner {
+    width: 50px; height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%; border-top-color: #fff;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-fade-out { opacity: 0; pointer-events: none; }
+
+/* التنسيق العام */
+body { 
+    margin: 0; padding: 0; overflow-x: hidden; 
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); 
+    background-size: 400% 400%; animation: gradientBG 15s ease infinite; 
+    font-family: 'Cairo', sans-serif; 
+}
 @keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-
-/* إظهار الأقسام بشكل صحيح */
-#homeUI { display: block; }
-#librarySection, #quotesSection, #aiSection, #readerMode { display: none; }
-
-/* البانرات والسلايدر (استعادة الشكل الأصلي) */
-.slider-container { width: 100%; height: 200px; overflow: hidden; position: relative; border-radius: 15px; margin-bottom: 20px; }
-.slides { display: flex; transition: transform 0.5s ease; }
-.slide { min-width: 100%; height: 200px; background-size: cover; background-position: center; }
-
-/* المقاسات الموحدة للروايات */
-#novelsContainer { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
-.novel-card { background: rgba(255,255,255,0.18); padding: 15px; border-radius: 20px; text-align: center; height: 350px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; color: white; border: 1px solid rgba(255,255,255,0.3); }
-.novel-card img { width: 110px; height: 160px; object-fit: cover; border-radius: 10px; }
-
-/* صورة الاقتباس (دايرة) */
-.author-info img { width: 55px !important; height: 55px !important; border-radius: 50% !important; border: 2px solid #00d2ff; object-fit: cover; }
-
-/* العدسة في البحث */
-#novelSearch, #userInput { 
-    background-image: url("https://img.icons8.com/ios-filled/50/00d2ff/search--v1.png") !important;
-    background-repeat: no-repeat !important; background-position: 95% center !important;
-    background-size: 18px !important; padding-right: 45px !important; border-radius: 20px; border: 1px solid #00d2ff; background-color: rgba(255,255,255,0.1); color: white;
+.slider-container { width: 92%; margin: 20px auto; height: 180px; border-radius: 25px; overflow: hidden; border: 2px solid rgba(255,255,255,0.4); position: relative; }
+.slides { display: flex; width: 900%; height: 100%; animation: slideAction 36s infinite ease-in-out; }
+.slide { width: 11.11%; background-size: cover; background-position: center; }
+@keyframes slideAction { 0%, 9% { transform: translateX(0%); } 11%, 20% { transform: translateX(11.11%); } 22%, 31% { transform: translateX(22.22%); } 33%, 42% { transform: translateX(33.33%); } 44%, 53% { transform: translateX(44.44%); } 55%, 64% { transform: translateX(55.55%); } 66%, 75% { transform: translateX(66.66%); } 77%, 86% { transform: translateX(77.77%); } 88%, 100% { transform: translateX(88.88%); } }
+.menu-container { padding: 10px 20px; display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; }
+.glass-btn { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border: 2px solid rgba(255, 255, 255, 0.4); color: white; padding: 18px; border-radius: 20px; text-align: center; font-weight: 800; cursor: pointer; }
+#librarySection, #quotesSection, #readerMode { display: none; }
+.top-bar { display: flex; align-items: center; padding: 12px 15px; gap: 10px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; color: white; }
+.back-circle { width: 35px; height: 35px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+/* تنسيق المكتبة الجديد - 2 جنب بعض */
+#novelsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
 }
 
-/* زر الرجوع الشيك */
-.back-circle { background: white; color: #333; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; }
+.novel-card {
+    perspective: 1000px;
+    width: 140px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.book-3d {
+    width: 130px;
+    height: 190px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+    margin-bottom: 10px;
+}
+
+.novel-card:hover .book-3d {
+    transform: rotateY(-25deg) rotateX(5deg);
+}
+
+.book-cover-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    border-radius: 2px 5px 5px 2px;
+    z-index: 2;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+.book-spine {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 25px;
+    height: 100%;
+    background: #222;
+    transform: translateX(-12px) rotateY(-90deg);
+    z-index: 1;
+}
+
+#novelSearch {
+    flex-grow: 1;
+    margin: 0 15px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    outline: none;
+}.quote-card { 
+    background: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 25px; 
+    padding: 20px; 
+    margin: 15px auto; 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    color: white; 
+    max-width: 500px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.q-actions { 
+    display: flex; 
+    justify-content: space-around; /* توزيع الأزرار بشكل أفضل */
+    margin-top: 15px; 
+    border-top: 1px solid rgba(255, 255, 255, 0.1); 
+    padding-top: 15px; 
+}
+
+.q-actions span {
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.q-actions span:active { background: rgba(255,255,255,0.2); }
+.active-like { color: #00ff88; font-weight: bold; }
+.active-dislike { color: #ff4d4d; font-weight: bold; }
+#readerMode { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #fff; }
+iframe { width: 100%; height: calc(100% - 60px); border: none; }
