@@ -1,56 +1,66 @@
-/* === [1. المحرك الأساسي للتنقل] === */
-function showSec(id) {
-    // إخفاء كل الصفحات أولاً
-    const pages = document.querySelectorAll('section, .ui-page, div[id$="Section"], #homeUI, #readerMode');
-    pages.forEach(p => p.style.display = 'none');
+const novelsData = [
+    { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", file: "tangar.html", available: true },
+    { id: 1, name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false },
+    { id: 2, name: "ممالك القيران", img: "https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png", available: false },
+    { id: 3, name: "وباء", img: "https://i.ibb.co/xqfBbZjf/Screenshot-2026-01-28-014331.png", available: false },
+    { id: 4, name: "قصص من مصدر", img: "https://i.ibb.co/BHgP5YC6/Screenshot-2026-01-28-014426.png", available: false }
+];
 
-    // إظهار الصفحة المطلوبة
-    const target = document.getElementById(id);
-    if (target) {
-        target.style.display = 'block';
-        window.scrollTo(0,0);
-    } else {
-        console.error("الصفحة غير موجودة: " + id);
-    }
+const quotesData = [
+    { id: 101, name: "محمد سعد", img: "https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png", text: "هناك، يُنسج لك ثوب أمنياتك، تماماً كما تمنيته، ملائماً لجسدك." }
+];
+
+let appState = JSON.parse(localStorage.getItem('shain_pro_v1')) || { ratings: {}, votes: {}, qVotes: {} };
+
+function initApp() {
+    renderNovels();
+    renderQuotes();
 }
 
-/* === [2. محرك القراءة] === */
-function openReader(name, file) {
-    const reader = document.getElementById('readerMode');
-    const iframe = document.getElementById('bookFrame');
-    const title = document.getElementById('readerTitle');
-
-    if (reader && iframe) {
-        showSec('readerMode'); // إخفاء الكل وإظهار القارئ
-        iframe.src = file;
-        if(title) title.innerText = name;
-    } else {
-        // حل احتياطي لو مفيش برواز: يفتح في صفحة جديدة
-        window.location.href = file;
-    }
+function renderNovels() {
+    const container = document.getElementById('novelsContainer');
+    if (!container) return;
+    container.innerHTML = novelsData.map(n => {
+        const r = appState.ratings[n.id] || 0;
+        const v = appState.votes[n.id];
+        return `
+        <div class="novel-card" data-name="${n.name}">
+            <div style="display:flex; gap:15px; align-items:center;">
+                <img src="${n.img}" width="80" style="border-radius:15px;">
+                <div><b>${n.name}</b><br>${[1,2,3,4,5].map(s => `<span class="star ${r>=s?'active':''}" onclick="rateNovel(${n.id},${s})">★</span>`).join('')}</div>
+            </div>
+            <div class="q-actions">
+                <span class="${v==='like'?'active-like':''}" onclick="voteNovel(${n.id},'like')">👍 لايك</span>
+                <span class="${v==='dislike'?'active-dislike':''}" onclick="voteNovel(${n.id},'dislike')">👎 ديسك لايك</span>
+            </div>
+            <div class="glass-btn" style="margin-top:10px; padding:10px; font-size:13px;" onclick="${n.available?`openReader('${n.name}','${n.file}')`:`alert('قريباً')`}">اقرأ الآن</div>
+        </div>`;
+    }).join('');
 }
 
-/* === [3. محرك البانر] === */
-function startSlider() {
-    let cur = 0;
-    const s = document.querySelector('.slides');
-    if (s) {
-        setInterval(() => {
-            cur = (cur + 1) % 4; 
-            s.style.transform = `translateX(-${cur * 25}%)`;
-        }, 3000);
-    }
+function renderQuotes() {
+    const container = document.getElementById('quotesList');
+    if (!container) return;
+    container.innerHTML = quotesData.map(q => {
+        const v = appState.qVotes[q.id];
+        return `<div class="quote-card"><div class="author-info"><div class="author-img" style="background-image:url('${q.img}')"></div><div class="author-name">${q.name}</div></div><div class="quote-text">"${q.text}"</div><div class="q-actions"><span class="${v==='like'?'active-like':''}" onclick="voteQuote(${q.id},'like')">👍 أعجبني</span><span class="${v==='dislike'?'active-dislike':''}" onclick="voteQuote(${q.id},'dislike')">👎 لم يعجبني</span></div></div>`;
+    }).join('');
 }
 
-/* === [4. تشغيل كل شيء عند البداية] === */
+function rateNovel(id, s) { appState.ratings[id] = s; save(); }
+function voteNovel(id, t) { appState.votes[id] = (appState.votes[id]===t)?null:t; save(); }
+function voteQuote(id, t) { appState.qVotes[id] = (appState.qVotes[id]===t)?null:t; save(); }
+function save() { localStorage.setItem('shain_pro_v1', JSON.stringify(appState)); renderNovels(); renderQuotes(); }
+function showSec(id) { document.querySelectorAll('#homeUI,#librarySection,#quotesSection').forEach(s=>s.style.display='none'); document.getElementById(id).style.display='block'; }
+function openReader(n, f) { document.getElementById('readerMode').style.display='block'; document.getElementById('readerTitle').innerText=n; document.getElementById('bookFrame').src=f; }
+function closeReader() { document.getElementById('readerMode').style.display='none'; document.getElementById('bookFrame').src=''; }
+function liveSearch() { let q=document.getElementById('novelSearch').value.toLowerCase(); document.querySelectorAll('.novel-card').forEach(c=>c.style.display=c.getAttribute('data-name').toLowerCase().includes(q)?'block':'none'); }
+
+// إخفاء شاشة التحميل
 window.onload = function() {
-    // إخفاء اللودر لو موجود
-    const loader = document.getElementById('loader');
-    if (loader) loader.style.display = 'none';
-
-    // إظهار الصفحة الرئيسية أول ما يفتح
-    showSec('homeUI');
-
-    // تشغيل البانر
-    startSlider();
+    initApp();
+    setTimeout(() => {
+        const loader = document.getElementById('loader');
+        if (loader) loader.classList.add('loader-fade-out');
+    }, 2000);
 };
