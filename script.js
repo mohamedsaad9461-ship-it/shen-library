@@ -128,67 +128,58 @@ function askShainAI() {
 
     if (!input) return;
 
-    // مسح القديم وعرض "جاري الفحص"
+    // مسح البحث القديم فوراً عشان الخانات متزدش
     responseBox.innerHTML = `
         <div style="align-self: flex-end; background: #00d2ff; color: #000; padding: 10px 15px; border-radius: 15px 15px 0 15px; margin-bottom: 10px; max-width: 80%; font-weight: bold;">
             🔍 الرادار يبحث عن: ${input}
         </div>
-        <div id="loadingStatus" style="color: #00d2ff; font-size: 12px; margin-bottom: 10px; animation: pulse 1s infinite;">📡 جاري مسح كافة المنصات والأرشيف...</div>
+        <div id="aiStatus" style="color: #00d2ff; font-size: 12px; margin-bottom: 10px;">📡 جاري فحص أرشيف PDF ومنصات القراءة...</div>
     `;
 
     setTimeout(() => {
-        // قاعدة بيانات موسعة جداً (كوميدي، اجتماعي، رعب، ديني)
+        // قاعدة بيانات "حية" فيها كذا رواية لكل تصنيف
         const megaArchive = [
-            // --- تصنيف كوميدي ---
-            { name: "تاكسي", author: "خالد الخميسي", cat: "كوميدي / ساخر", type: "PDF / ورقي", loc: "منصات خارجية", link: "https://www.google.com/search?q=رواية+تاكسي+pdf", tags: ["كوميدي", "ضحك", "ساخر"] },
-            { name: "عايزة أتجوز", author: "غادة عبد العال", cat: "كوميدي / اجتماعي", type: "PDF", loc: "مكتبة نور", link: "https://www.google.com/search?q=عايزة+أتجوز+pdf", tags: ["كوميدي", "اجتماعي", "ضحك"] },
-            { name: "أرض النفاق", author: "يوسف السباعي", cat: "كوميدي / فلسفي", type: "PDF / ورقي", loc: "عصير الكتب", link: "https://www.google.com/search?q=أرض+النفاق+pdf", tags: ["كوميدي", "خيال", "ساخر"] },
-            
-            // --- تصنيف اجتماعي ---
-            { name: "حلم طنجار", author: "محمد فكري", cat: "اجتماعي / خيال", type: "إلكتروني تفاعلي", loc: "مكتبة شين (هنا)", link: "#", tags: ["اجتماعي", "خيال", "دراما"] },
-            { name: "ساق البامبو", author: "سعود السنعوسي", cat: "اجتماعي", type: "PDF", loc: "منصات عالمية", link: "https://www.google.com/search?q=ساق+البامبو+pdf", tags: ["اجتماعي", "واقعي"] },
-            
-            // --- تصنيف ديني / تاريخي ---
-            { name: "خوارق اللاشعور", author: "علي الوردي", cat: "ديني / فلسفي", type: "PDF", loc: "مكتبة نور", link: "https://www.google.com/search?q=خوارق+اللاشعور+pdf", tags: ["ديني", "فلسفة", "دين"] },
-            { name: "قواعد العشق الأربعون", author: "إليف شافاق", cat: "ديني / صوفي", type: "PDF / ورقي", loc: "منصات خارجية", link: "https://www.google.com/search?q=قواعد+العشق+الأربعون+pdf", tags: ["ديني", "صوفي", "اجتماعي"] }
+            { name: "تاكسي", auth: "خالد الخميسي", cat: "كوميدي / ساخر", type: "PDF", loc: "مكتبة نور", link: "https://www.google.com/search?q=رواية+تاكسي+pdf", tags: ["كوميدي", "ضحك"] },
+            { name: "عايزة أتجوز", auth: "غادة عبد العال", cat: "كوميدي / اجتماعي", type: "PDF", loc: "منصات خارجية", link: "https://www.google.com/search?q=عايزة+أتجوز+pdf", tags: ["كوميدي", "ضحك"] },
+            { name: "أرض النفاق", auth: "يوسف السباعي", cat: "كوميدي / خيال", type: "ورقي / PDF", loc: "عصير الكتب", link: "https://www.google.com/search?q=أرض+النفاق+pdf", tags: ["كوميدي", "خيال"] },
+            { name: "خوارق اللاشعور", auth: "علي الوردي", cat: "ديني / فلسفة", type: "PDF", loc: "مكتبة نور", link: "https://www.google.com/search?q=خوارق+اللاشعور+pdf", tags: ["ديني", "دين", "فلسفة"] },
+            { name: "قواعد العشق الأربعون", auth: "إليف شافاق", cat: "ديني / صوفي", type: "PDF / ورقي", loc: "منصات عالمية", link: "https://www.google.com/search?q=قواعد+العشق+الأربعون+pdf", tags: ["ديني", "دين", "صوفي"] },
+            { name: "حلم طنجار", auth: "محمد فكري", cat: "اجتماعي / خيال", type: "إلكتروني", loc: "مكتبة شين", link: "#", tags: ["اجتماعي", "خيال"] }
         ];
 
-        // محرك البحث: يدور في الاسم، التصنيف، والكلمات الدلالية
+        // محرك البحث الذكي
         let matches = megaArchive.filter(book => 
             book.tags.some(tag => input.includes(tag)) || 
             book.cat.toLowerCase().includes(input) || 
             book.name.toLowerCase().includes(input)
         );
 
-        document.getElementById('loadingStatus').remove();
+        const statusDiv = document.getElementById('aiStatus');
+        if (statusDiv) statusDiv.remove();
 
         if (matches.length > 0) {
-            let html = `<div style="color: #00d2ff; font-weight: bold; margin-bottom: 10px;">✅ إليك نتائج الرادار يا ${userName}:</div>`;
+            let html = `<div style="color: #00d2ff; font-weight: bold; margin-bottom: 10px;">✅ يا ${userName}، إليك نتائج الرادار:</div>`;
             matches.forEach(book => {
                 html += `
                 <div style="background: rgba(255,255,255,0.08); padding: 12px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #00d2ff;">
-                    <b style="color: #fff; font-size: 15px;">📖 ${book.name}</b> <small>(${book.author})</small><br>
+                    <b style="color: #fff;">📖 ${book.name}</b> <small>(${book.auth})</small><br>
                     <small style="color: #aaa;">🎭 التصنيف: ${book.cat}</small><br>
                     <div style="margin-top: 5px;">
                         <span style="background: #00d2ff; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold;">${book.type}</span>
-                        <span style="color: #2ecc71; font-size: 11px; margin-right: 8px;">📍 المصدر: ${book.loc}</span>
+                        <span style="color: #2ecc71; font-size: 11px; margin-right: 10px;">📍 المصدر: ${book.loc}</span>
                     </div>
-                    ${book.link !== "#" ? `<a href="${book.link}" target="_blank" style="display:block; margin-top:8px; color:#f1c40f; text-decoration:none; font-size:11px; text-align:center; border:1px solid #f1c40f; border-radius:5px; padding:3px;">🔍 احصل على نسخة الـ PDF</a>` : ""}
+                    ${book.link !== "#" ? `<a href="${book.link}" target="_blank" style="display:block; margin-top:8px; color:#f1c40f; text-decoration:none; font-size:11px; text-align:center; border:1px solid #f1c40f; border-radius:5px; padding:3px;">🔗 تحميل نسخة الـ PDF</a>` : ""}
                 </div>`;
             });
             responseBox.innerHTML += html;
         } else {
-            // لو مالقاش.. شين يروح جوجل يجيب النتيجة فوراً
-            responseBox.innerHTML += `
-                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; border: 1px solid #e74c3c;">
-                    ⚠️ لم أجد "${input}" في الأرشيف المباشر، لكن جاري تجهيز بحث جوجل لك:<br>
-                    <a href="https://www.google.com/search?q=روايات+${input}+pdf" target="_blank" style="display:block; background:#f1c40f; color:#000; text-align:center; padding:10px; border-radius:8px; margin-top:10px; text-decoration:none; font-weight:bold;">🔍 ابحث عن "${input}" في جوجل PDF</a>
-                </div>`;
+            responseBox.innerHTML += `<div style="border: 1px solid #e74c3c; padding: 10px; border-radius: 10px;">لم أجد نتائج لـ "${input}"، جرب كتابة (كوميدي) أو (ديني).</div>`;
         }
-    }, 1000);
+        responseBox.scrollTop = responseBox.scrollHeight;
+    }, 800);
 }
 
-// دالات التحكم وسطر الأمان (لإخفاء اللودر)
+// دالات التحكم وسطر الأمان النهائي
 function openShainAI() { document.getElementById('homeUI').style.display = 'none'; document.getElementById('aiSection').style.display = 'block'; }
 function closeAI() { document.getElementById('aiSection').style.display = 'none'; document.getElementById('homeUI').style.display = 'block'; }
 
