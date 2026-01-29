@@ -56,20 +56,30 @@ function closeReader() {
 
 /* === [TAG: SYSTEM_INIT] === */
 let currentSlide = 0;
-function startBanner() {
-    setInterval(() => {
-        const slides = document.querySelector('.slides');
-        if (slides) {
-            currentSlide = (currentSlide + 1) % 4;
+
+function startBannerSlider() {
+    // بنجيب الحاوية اللي فيها الصور
+    const slides = document.querySelector('.slides');
+    
+    // لو موجودة فعلاً في الصفحة، نبدأ نحركها
+    if (slides) {
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % 4; // رقم 4 هو عدد صورك
+            // التحريك لليسار بنسبة 25% لكل صورة
             slides.style.transform = `translateX(${currentSlide * 25}%)`;
-        }
-    }, 3000);
+        }, 3000); // 3000 مللي ثانية يعني 3 ثواني
+    }
 }
 
 window.onload = function() {
+    // 1. إخفاء اللودر
     const loader = document.getElementById('loader');
-    if(loader) loader.style.display = 'none';
+    if (loader) loader.style.display = 'none';
+    
+    // 2. إظهار الصفحة الرئيسية
     showSec('homeUI');
-    startBanner();
+    
+    // 3. تشغيل عداد الصور
+    startBannerSlider();
 };
 /* === [END: SYSTEM_INIT] === */
