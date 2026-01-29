@@ -1,23 +1,36 @@
 /* === [TAG: GLOBAL_STYLE] === */
 body { margin: 0; padding: 0; overflow-x: hidden; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; font-family: 'Cairo', sans-serif; }
 @keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-#loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1e3c72; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+#loader { position: fixed; inset: 0; background: #1e3c72; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+.spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 /* === [END: GLOBAL_STYLE] === */
 
-/* === [TAG: SLIDER_STYLE] === */
-.slider-container { width: 92%; margin: 20px auto; height: 180px; border-radius: 25px; overflow: hidden; border: 2px solid rgba(255,255,255,0.4); position: relative; }
-.slides { display: flex; width: 900%; height: 100%; animation: slideAction 36s infinite ease-in-out; }
-.slide { width: 11.11%; background-size: cover; background-position: center; }
-@keyframes slideAction { 0%, 9% { transform: translateX(0%); } 11%, 20% { transform: translateX(11.11%); } 22%, 31% { transform: translateX(22.22%); } 33%, 42% { transform: translateX(33.33%); } 44%, 53% { transform: translateX(44.44%); } 55%, 64% { transform: translateX(55.55%); } 66%, 75% { transform: translateX(66.66%); } 77%, 86% { transform: translateX(77.77%); } 88%, 100% { transform: translateX(88.88%); } }
-/* === [END: SLIDER_STYLE] === */
+/* === [TAG: HOME_UI_STYLE] === */
+.menu-container { padding: 20px; display: flex; flex-direction: column; gap: 15px; max-width: 500px; margin: 0 auto; }
+.glass-btn { 
+    background: rgba(255, 255, 255, 0.15); 
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.4); 
+    color: white; 
+    padding: 18px; 
+    border-radius: 20px; 
+    text-align: center; 
+    font-weight: 800; 
+    cursor: pointer;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+.glass-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.25); }
+/* إخفاء أي عناصر تسبب المربع الفاضي أو السهم الزائد */
+#librarySection, #quotesSection, #aiSection, #readerMode { display: none; }
+/* === [END: HOME_UI_STYLE] === */
 
 /* === [TAG: LIBRARY_STYLE] === */
 #novelsContainer { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
-.novel-card { background: rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 15px; text-align: center; color: white; border: 1px solid rgba(255,255,255,0.3); }
-.novel-card img { width: 110px; height: 160px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+.novel-card { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 15px; border: 1px solid rgba(255,255,255,0.3); text-align: center; color: white; }
+.novel-card img { width: 110px; height: 160px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+.top-bar { display: flex; align-items: center; padding: 15px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; color: white; }
+.back-circle { width: 35px; height: 35px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 /* === [END: LIBRARY_STYLE] === */
-
-/* === [TAG: QUOTES_STYLE] === */
-.quote-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); border-radius: 25px; padding: 20px; margin: 15px auto; border: 1px solid rgba(255, 255, 255, 0.2); color: white; max-width: 500px; }
-.author-info img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-left: 10px; }
-/* === [END: QUOTES_STYLE] === */
