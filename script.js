@@ -1,13 +1,17 @@
 /* === [1. محرك التنقل الثابت] === */
-function showSec(id) {
-    // بيخفي أي قسم ظاهر عشان يفتح الجديد
-    const sections = document.querySelectorAll('section, .ui-page, #homeUI, #readerMode');
-    sections.forEach(s => s.style.display = 'none');
+function showSec(sectionId) {
+    // إخفاء كل الأقسام أولاً
+    document.getElementById('homeUI').style.display = 'none';
+    document.getElementById('librarySection').style.display = 'none';
+    document.getElementById('aiSection').style.display = 'none';
+    document.getElementById('quotesSection').style.display = 'none';
+    document.getElementById('readerMode').style.display = 'none';
 
-    const target = document.getElementById(id);
+    // إظهار القسم المطلوب فقط
+    const target = document.getElementById(sectionId);
     if (target) {
         target.style.display = 'block';
-        window.scrollTo(0,0);
+        window.scrollTo(0, 0); // نطلع فوق خالص في الصفحة الجديدة
     }
 }
 
