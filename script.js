@@ -109,6 +109,18 @@ function renderNovels() {
             <b style="color:white; font-size:13px;">${n.name}</b>
         </div>`).join('');
 }
+// --- 1. دالات التحكم في واجهة الـ AI ---
+function openShainAI() {
+    document.getElementById('homeUI').style.display = 'none';
+    document.getElementById('aiSection').style.display = 'block';
+}
+
+function closeAI() {
+    document.getElementById('aiSection').style.display = 'none';
+    document.getElementById('homeUI').style.display = 'block';
+}
+
+// --- 2. دالة البحث الذكي المطورة ---
 function askShainAI() {
     const input = document.getElementById('userInput').value.trim().toLowerCase();
     const responseBox = document.getElementById('aiResponse');
@@ -138,7 +150,7 @@ function askShainAI() {
                 tags: ["ذكاء", "عملات", "خيال", "قانون", "أسيل"],
                 format: "PDF + ورقي",
                 status: "مدفوعة",
-                link: "مكتبة عصير الكتب / تطبيقات الـ PDF"
+                link: "عصير الكتب"
             }
         ];
 
@@ -149,132 +161,24 @@ function askShainAI() {
         );
 
         if (matches.length > 0) {
-            let htmlResult = `✨ <b>وجدتها! إليك النتائج يا ${userName}:</b><br><br>`;
+            let htmlResult = `✨ <b>نتائج البحث يا ${userName}:</b><br>`;
             matches.forEach(book => {
-                htmlResult += `
-                    <div style="border-bottom:1px solid #444; margin-bottom:10px; padding-bottom:5px; text-align:right; direction:rtl;">
-                        📖 <b>الرواية:</b> ${book.name}<br>
-                        📂 <b>الصيغة:</b> ${book.format}<br>
-                        📍 <b>الحالة:</b> ${book.status}<br>
-                        🛒 <b>المصدر:</b> ${book.link}
-                    </div>`;
+                htmlResult += `<div style="border-bottom:1px solid #444; padding:5px;">📖 ${book.name} - ${book.format}</div>`;
             });
             responseBox.innerHTML = htmlResult;
         } else {
-            responseBox.innerHTML = `عفواً يا ${userName}، لم أجد تطابقاً دقيقاً. جرب كلمات أبسط مثل (خيال، رعب، أو اسم الكاتب).`;
+            responseBox.innerHTML = `عفواً يا ${userName}، لم أجد تطابقاً. جرب كلمات مثل (خيال، صحراء).`;
         }
-    }, 1500);
+    }, 1000);
 }
 
-// دالتين التحكم في الواجهة (تأكد من وجودهما مرة واحدة)
-function openShainAI() {
-    document.getElementById('homeUI').style.display = 'none';
-    document.getElementById('aiSection').style.display = 'block';
-}
-
-function closeAI() {
-    document.getElementById('aiSection').style.display = 'none';
-    document.getElementById('homeUI').style.display = 'block';
-}
-
-    responseBox.innerHTML = `جاري فحص المكتبة الشاملة يا ${userName}...`;
-
-    setTimeout(() => {
-        // قاعدة بيانات شاملة (PDF + إلكتروني + ورقي)
-        const bigLibrary = [
-            {
-                name: "حلم طنجار",
-                author: "محمد فكري",
-                tags: ["صحراء", "قبيلة", "خيال", "أسطورة", "رجل", "حلم"],
-                format: "إلكتروني (تفاعلي)",
-                status: "مجانية",
-                link: "داخل المكتبة هنا"
-            },
-            {
-                name: "أرض زيكولا",
-                author: "عمرو عبد الحميد",
-                tags: ["ذكاء", "عملات", "خيال", "قانون", "أسيل"],
-                format: "PDF + ورقي",
-                status: "مدفوعة",
-                link: "مكتبة عصير الكتب / تطبيقات الـ PDF"
-            },
-            {
-                name: "الفيل الأزرق",
-                author: "أحمد مراد",
-                tags: ["غموض", "نفسي", "جريمة", "تاروت", "يحيى"],
-                format: "إلكتروني + ورقي",
-                status: "مدفوعة",
-                link: "تطبيق أبجد / دار الشروق"
-            }
-        ];
-
-        // محرك البحث المرن (الشامل)
-        let matches = bigLibrary.filter(book => {
-            return book.tags.some(t => input.includes(t)) || 
-                   input.includes(book.name.toLowerCase()) || 
-                   input.includes(book.author.toLowerCase());
-        });
-
-        if (matches.length > 0) {
-            let htmlResult = `✨ <b>وجدتها! إليك أفضل النتائج يا ${userName}:</b><br><br>`;
-            matches.forEach(book => {
-                htmlResult += `
-                    <div style="border-bottom:1px solid #444; margin-bottom:10px; padding-bottom:5px;">
-                        📖 <b>الرواية:</b> ${book.name}<br>
-                        ✍️ <b>الكاتب:</b> ${book.author}<br>
-                        📂 <b>صيغة النشر:</b> ${book.format}<br>
-                        📍 <b>الحالة:</b> ${book.status}<br>
-                        🛒 <b>المصدر:</b> ${book.link}
-                    </div>
-                `;
-            });
-            responseBox.innerHTML = htmlResult;
-        } else {
-            responseBox.innerHTML = `عفواً يا ${userName}، لم أجد تطابقاً دقيقاً في الأرشيف الحالي. جرب وصفاً مختلفاً (مثلاً: رواية خيال، أو رواية PDF).`;
-        }
-    }, 1500);
-}
-    
-    // جلب بيانات المستخدم (محمد مثلاً) ونوعه من ذاكرة التطبيق
-    const userName = localStorage.getItem('userName') || "صديقي";
-    const userGender = localStorage.getItem('userGender') || "ذكر"; 
-
-    if (!input) {
-        responseBox.innerHTML = userGender === "أنثى" ? "اكتبي وصفاً أولاً يا عزيزتي." : "اكتب وصفاً أولاً يا صديقي.";
-        return;
+// --- 3. تشغيل التطبيق (يجب أن يكون في آخر الملف دائماً) ---
+window.onload = function() {
+    if (typeof initApp === "function") {
+        initApp(); // دي الدالة اللي بتشيل اللودر وتظهر الواجهة
     }
+};
+            
+         
 
-    // تأثير الانتظار
-    responseBox.innerHTML = `<span style="opacity:0.6;">جاري تحليل طلبك والبحث يا ${userName}...</span>`;
-
-    setTimeout(() => {
-        let result = "";
-
-        // محرك البحث (الربط بالكلمات المفتاحية)
-        if (input.includes("صحراء") || input.includes("طنجار") || input.includes("قبيلة")) {
-            result = `✨ <b>يا ${userName}، النتيجة هي:</b> "حلم طنجار"<br>📍 <b>الحالة:</b> <span style="color:#27ae60">مجانية</span><br>🛒 <b>المكان:</b> متوفرة الآن داخل مكتبتك.`;
-        } 
-        else if (input.includes("رعب") || input.includes("خوف") || input.includes("غموض")) {
-            result = `✨ <b>ترشيح شين لك ${userGender === "أنثى" ? 'عزيزتي' : 'يا صديقي'}:</b> رواية "وباء"<br>📍 <b>الحالة:</b> قيد التحضير.<br>💡 <b>بديل خارجي:</b> "الفيل الأزرق" (مدفوعة) في تطبيق أبجد.`;
-        }
-        else {
-            result = `<b>عفواً يا ${userName}:</b> لم أجد رواية تطابق هذا الوصف بدقة. جرب كلمات مثل (خيال، رعب، تاريخ).`;
-        }
-
-        responseBox.innerHTML = result;
-    }, 1500);
-}
-
-// دالة فتح قسم الترشيحات
-function openShainAI() {
-    document.getElementById('homeUI').style.display = 'none';
-    document.getElementById('aiSection').style.display = 'block';
-}
-
-// دالة العودة للرئيسية
-function closeAI() {
-    document.getElementById('aiSection').style.display = 'none';
-    document.getElementById('homeUI').style.display = 'block';
-}
-// تشغيل التطبيق
-window.onload = initApp;
+       
