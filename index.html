@@ -3,90 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مكتبة شين PRO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700&family=Cairo:wght@600&display=swap" rel="stylesheet">
-    <style>
-        :root { --main-bg: #0f0f0f; --glass: rgba(255,255,255,0.1); }
-        body { margin: 0; background: var(--main-bg); color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
-        
-        /* شاشة التحميل */
-        #loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: 0.5s; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #333; border-top-color: #e67e22; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ستايل المكتبة والـ 3D */
-        #librarySection { padding: 20px; display: none; text-align: center; }
-        #novelsContainer { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding-top: 20px; }
-        
-        .novel-card { perspective: 1000px; width: 140px; cursor: pointer; }
-        .book-3d { 
-            width: 130px; height: 190px; position: relative; transform-style: preserve-3d; 
-            transition: 0.5s; margin-bottom: 10px; 
-        }
-        .novel-card:hover .book-3d { transform: rotateY(-25deg) rotateX(5deg); }
-        .book-cover { position: absolute; inset: 0; background-size: cover; border-radius: 2px 5px 5px 2px; z-index: 2; }
-        .book-spine { position: absolute; left: 0; top: 0; width: 25px; height: 100%; background: #222; transform: translateX(-12px) rotateY(-90deg); z-index: 1; }
-
-        .glass-btn { background: var(--glass); padding: 10px 20px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; display: inline-block; margin: 5px; }
-        .glass-btn:hover { background: rgba(255,255,255,0.2); }
-        
-        .top-bar { display: flex; align-items: center; padding: 15px; background: rgba(0,0,0,0.3); }
-        .back-circle { width: 35px; height: 35px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    </style>
+    <title>مكتبة شين - النسخة الاحترافية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=Cairo:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=1.2">
 </head>
 <body>
 
     <div id="loader">
-        <div class="spinner"></div>
-        <p>جاري تحميل عالمك...</p>
+        <div class="loader-content">
+            <h1 style="font-family: 'Almarai'; color: white; margin-bottom: 10px;">مكتبة شين</h1>
+            <div class="spinner"></div>
+            <p style="color: white; margin-top: 15px; font-size: 14px; opacity: 0.8;">جاري تحضير عالمك الخاص...</p>
+        </div>
     </div>
 
-    <div id="homeUI" style="text-align:center; padding: 50px 20px;">
-        <h1 style="font-family:'Almarai'">مكتبة شين</h1>
-        <p>مرحباً بك يا محمد</p>
-        <div class="glass-btn" onclick="showSec('librarySection')">✨ دخول المكتبة</div>
+    <div id="homeUI">
+        <div style="text-align: center; padding: 20px; color: white;">
+            <h1 style="font-family: 'Almarai'; margin: 0;">مكتبة شين</h1>
+            <p style="opacity: 0.8;">مرحباً بك يا محمد</p>
+        </div>
+        <div class="slider-container">
+            <div class="slides">
+                <div class="slide" style="background-image: url('https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png');"></div>
+                <div class="slide" style="background-image: url('https://i.ibb.co/9mntZww9/Screenshot-2026-01-28-012416.png');"></div>
+                <div class="slide" style="background-image: url('https://i.ibb.co/tpjZ8bkf/Screenshot-2026-01-28-012315.png');"></div>
+                <div class="slide" style="background-image: url('https://i.ibb.co/5xnfF4MH/Screenshot-2026-01-28-012305.png');"></div>
+            </div>
+        </div>
+        <div class="menu-container">
+            <div class="glass-btn" onclick="showSec('librarySection')">✨ تابع الدخول للمكتبة</div>
+            <div class="glass-btn" onclick="showSec('quotesSection')">🖋️ اقتباسات أدبية</div>
+            <div class="glass-btn" onclick="alert('قريباً')">💡 معلومة من رواية</div>
+            <div class="glass-btn" onclick="alert('تواصل معنا')">👥 من نحن / تواصل معنا</div>
+        </div>
     </div>
 
     <div id="librarySection">
         <div class="top-bar">
             <div class="back-circle" onclick="showSec('homeUI')">➔</div>
-            <h3 style="flex-grow:1; margin:0">الروايات</h3>
+            <input type="text" id="novelSearch" placeholder="ابحث..." onkeyup="liveSearch()">
         </div>
         <div id="novelsContainer"></div>
     </div>
 
-    <script>
-        const novelsData = [
-            { name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", file: "tangar.txt", available: true },
-            { name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false },
-            { name: "ممالك القيران", img: "https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png", available: false }
-        ];
+    <div id="quotesSection">
+        <div class="top-bar">
+            <div class="back-circle" onclick="showSec('homeUI')">➔</div>
+            <div style="flex-grow:1; text-align:center;">اقتباسات الأصدقاء</div>
+        </div>
+        <div id="quotesList"></div>
+    </div>
 
-        function renderNovels() {
-            const container = document.getElementById('novelsContainer');
-            container.innerHTML = novelsData.map(n => `
-                <div class="novel-card" onclick="${n.available ? `location.href='reader.html?book=tangar'` : `alert('قريباً')`}">
-                    <div class="book-3d">
-                        <div class="book-spine"></div>
-                        <div class="book-cover" style="background-image: url('${n.img}')"></div>
-                    </div>
-                    <b style="font-size:13px;">${n.name}</b>
-                </div>
-            `).join('');
-        }
+    <div id="readerMode">
+        <div class="top-bar" style="background:#fff; color:#333;">
+            <div class="back-circle" onclick="closeReader()">➔</div>
+            <div id="readerTitle" style="flex-grow:1; text-align:center; font-weight:bold;"></div>
+        </div>
+        <iframe id="bookFrame" src=""></iframe>
+    </div>
 
-        function showSec(id) {
-            document.getElementById('homeUI').style.display = 'none';
-            document.getElementById('librarySection').style.display = 'none';
-            document.getElementById(id).style.display = 'block';
-        }
-
-        window.onload = () => {
-            renderNovels();
-            setTimeout(() => { document.getElementById('loader').style.opacity = '0'; 
-            setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 500);
-            }, 1000);
-        };
-    </script>
+    <script src="script.js?v=1.2"></script>
 </body>
 </html>
