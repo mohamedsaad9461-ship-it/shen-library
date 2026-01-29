@@ -70,17 +70,32 @@ function startBannerSlider() {
     setInterval(() => {
         const slides = document.querySelector('.slides');
         if (slides) {
-            currentSlide = (currentSlide + 1) % 4; // لأن عندك 4 صور في الـ HTML
+            currentSlide = (currentSlide + 1) % 4; // حسب عدد صورك
             slides.style.transform = `translateX(${currentSlide * 25}%)`; 
         }
-    }, 4000); // يقلب كل 4 ثواني
+    }, 4000);
 }
 
+// دالة فك التعليقة وتشغيل الموقع
 window.onload = function() {
     const loader = document.getElementById('loader');
-    if (loader) loader.style.display = 'none'; [cite: 304]
     
-    showSec('homeUI'); [cite: 305]
-    startBannerSlider(); // تشغيل البانر فور التحميل
+    // إخفاء اللودر فوراً
+    if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => { loader.style.display = 'none'; }, 500);
+    }
+    
+    showSec('homeUI'); // إظهار الصفحة الرئيسية
+    startBannerSlider(); // تشغيل البانر
 };
+
+// حركة أمان: لو الصفحة علقت أكتر من 3 ثواني، اخفي اللودر غصب عنه
+setTimeout(() => {
+    const loader = document.getElementById('loader');
+    if (loader && loader.style.display !== 'none') {
+        loader.style.display = 'none';
+        showSec('homeUI');
+    }
+}, 3000);
 /* === [END: SYSTEM_INIT] === */
