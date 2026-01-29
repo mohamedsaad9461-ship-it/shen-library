@@ -33,29 +33,38 @@ function closeAI() { showSec('homeUI'); }
 /* === [END: UI_NAVIGATION] === */
 
 /* === [TAG: LIBRARY_ENGINE] === */
-// المسؤول عن عرض الروايات
 function renderNovels() {
     const container = document.getElementById('novelsContainer');
     if(!container) return;
-    container.innerHTML = novelsData.map(n => `
+
+    container.innerHTML = novelsData.map(n => {
+        // لو الرواية متاحة (available: true) بنحط رابط الملف، لو لأ بنطلع رسالة
+        const action = n.available 
+            ? `onclick="openReader('${n.name}', '${n.file}')"` 
+            : `onclick="alert('قريباً جداً يا محمد!')" style="opacity:0.5"`;
+
+        return `
         <div class="novel-card">
             <img src="${n.img}" alt="${n.name}">
             <h3>${n.name}</h3>
-            <button class="glass-btn" onclick="${n.available ? `openReader('${n.name}', '${n.file}')` : ''}" ${!n.available?'disabled style="opacity:0.5"':''}>
+            <button class="glass-btn" ${action}>
                 ${n.available ? 'اقرأ الآن' : 'قريباً'}
             </button>
-        </div>`).join('');
+        </div>`;
+    }).join('');
 }
 
-function openReader(n, f) {
-    document.getElementById('readerMode').style.display='block';
-    document.getElementById('readerTitle').innerText=n;
-    document.getElementById('bookFrame').src=f;
-}
+function openReader(name, file) {
+    const readerMode = document.getElementById('readerMode');
+    const bookFrame = document.getElementById('bookFrame');
+    const readerTitle = document.getElementById('readerTitle');
 
-function closeReader() {
-    document.getElementById('readerMode').style.display='none';
-    document.getElementById('bookFrame').src='';
+    if(readerMode && bookFrame) {
+        readerTitle.innerText = name;
+        bookFrame.src = file; // هنا هيربط بملف reader.html
+        readerMode.style.display = 'block';
+        document.body.style.overflow = 'hidden'; 
+    }
 }
 /* === [END: LIBRARY_ENGINE] === */
 
