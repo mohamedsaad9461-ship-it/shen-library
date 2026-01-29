@@ -128,54 +128,53 @@ function askShainAI() {
 
     if (!input) return;
 
-    // تنظيف الصندوق وعرض سؤالك الحالي فقط بشكل أنيق
+    // مسح المحتوى القديم عشان الخانات متزدش بشكل غريب
     responseBox.innerHTML = `
-        <div style="align-self: flex-end; background: #00d2ff; color: #000; padding: 12px 20px; border-radius: 20px 20px 0 20px; margin-bottom: 15px; max-width: 80%; font-weight: bold; box-shadow: 0 4px 10px rgba(0,210,255,0.3);">
+        <div style="align-self: flex-end; background: #00d2ff; color: #000; padding: 10px 15px; border-radius: 15px 15px 0 15px; margin-bottom: 15px; max-width: 80%; font-weight: bold;">
             🔍 بحثت عن: ${input}
         </div>
-        <div id="typingStatus" style="color: #aaa; font-style: italic; font-size: 13px; margin-bottom: 10px;">جاري فحص أرشيف شين...</div>
+        <div id="aiLoading" style="color: #aaa; font-style: italic; font-size: 13px; margin-bottom: 10px;">جاري مسح الأرشيف الشامل...</div>
     `;
 
     setTimeout(() => {
-        // قاعدة بيانات ضخمة (اجتماعي، كوميدي، رعب، معرض الكتاب)
+        // قاعدة بيانات "الرادار" - ضفت لك فيها تصنيفات متنوعة
         const megaArchive = [
             { name: "حلم طنجار", cat: "اجتماعي / خيال", type: "إلكتروني", loc: "مكتبة شين (هنا)", link: "#", tags: ["اجتماعي", "خيال", "دراما"] },
-            { name: "أرض زيكولا", cat: "اجتماعي / تشويق", type: "PDF / ورقي", loc: "عصير الكتب", link: "https://www.google.com/search?q=أرض+زيكولا+pdf", tags: ["اجتماعي", "ذكاء", "كوميدي"] },
+            { name: "أرض زيكولا", cat: "اجتماعي / تشويق", type: "PDF / ورقي", loc: "عصير الكتب", link: "https://www.google.com/search?q=أرض+زيكولا+pdf", tags: ["اجتماعي", "ذكاء", "خيال"] },
             { name: "ساق البامبو", cat: "اجتماعي / واقعي", type: "PDF", loc: "منصات عالمية", link: "https://www.google.com/search?q=ساق+البامبو+pdf", tags: ["اجتماعي", "واقعي"] },
-            { name: "رواية كوميدية مشهورة", cat: "كوميدي / ساخر", type: "PDF", loc: "مكتبة جرير", link: "https://www.google.com/search?q=روايات+كوميدية+pdf", tags: ["كوميدي", "ضحك"] },
-            { name: "حصري الجروب", cat: "اجتماعي / جديد", type: "ورقي (المعرض)", loc: "صالة 2 - معرض 2026", link: "#", tags: ["معرض", "اجتماعي", "جديد"] }
+            { name: "الفيل الأزرق", cat: "رعب / نفسي", type: "PDF / إلكتروني", loc: "تطبيق أبجد", link: "https://www.abjjad.com/", tags: ["رعب", "نفسي"] },
+            { name: "رواية جديدة", cat: "كوميدي", type: "PDF", loc: "مكتبة نور", link: "https://www.google.com/search?q=روايات+كوميدية+pdf", tags: ["كوميدي", "ضحك"] }
         ];
 
-        // البحث الذكي في كل التصنيفات
+        // المحرك بيقسم كلامك ويدور في كل حتة (شبه جوجل)
+        let terms = input.split(' ');
         let results = megaArchive.filter(book => 
-            book.tags.some(tag => input.includes(tag)) || 
-            book.cat.toLowerCase().includes(input) || 
-            book.name.toLowerCase().includes(input)
+            terms.some(t => book.tags.some(tag => tag.includes(t)) || book.cat.toLowerCase().includes(t) || book.name.toLowerCase().includes(t))
         );
 
-        // مسح كلمة "جاري البحث" ووضع النتائج
-        document.getElementById('typingStatus').remove();
+        const loadingDiv = document.getElementById('aiLoading');
+        if (loadingDiv) loadingDiv.remove();
 
         if (results.length > 0) {
-            let html = `<div style="color: #00d2ff; font-weight: bold; margin-bottom: 10px;">✨ وجدتها! إليك كل ما يخص "${input}" يا ${userName}:</div>`;
+            let html = `<div style="color: #00d2ff; font-weight: bold; margin-bottom: 10px;">✨ يا ${userName}، إليك ما وجدته في هذا التصنيف:</div>`;
             results.forEach(book => {
                 html += `
-                <div style="background: rgba(255,255,255,0.08); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid #00d2ff; animation: fadeIn 0.5s;">
-                    <b style="color: #fff; font-size: 16px;">📖 ${book.name}</b><br>
-                    <span style="color: #aaa; font-size: 13px;">🎭 التصنيف: ${book.cat}</span><br>
-                    <div style="margin-top: 8px;">
-                        <span style="background: #00d2ff; color: #000; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-left: 5px;">${book.type}</span>
-                        <span style="color: #2ecc71; font-size: 12px;">📍 ${book.loc}</span>
+                <div style="background: rgba(255,255,255,0.08); padding: 12px; border-radius: 10px; margin-bottom: 10px; border-right: 4px solid #00d2ff;">
+                    <b style="color: #fff;">📖 ${book.name}</b><br>
+                    <small style="color: #aaa;">🎭 التصنيف: ${book.cat}</small><br>
+                    <div style="margin-top: 5px;">
+                        <span style="background: #00d2ff; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">${book.type}</span>
+                        <span style="color: #2ecc71; font-size: 11px; margin-right: 10px;">📍 المصدر: ${book.loc}</span>
                     </div>
-                    ${book.link !== "#" ? `<a href="${book.link}" target="_blank" style="display: block; margin-top: 10px; color: #f1c40f; text-decoration: none; font-size: 12px; border: 1px border-radius: 5px; padding: 5px; text-align: center; background: rgba(241,196,15,0.1);">🔗 رابط المصدر الخارجي</a>` : ""}
+                    ${book.link !== "#" ? `<a href="${book.link}" target="_blank" style="display:block; margin-top:8px; color:#f1c40f; text-decoration:none; font-size:12px;">🔗 اذهب للمصدر</a>` : ""}
                 </div>`;
             });
             responseBox.innerHTML += html;
         } else {
             responseBox.innerHTML += `
-                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid #e74c3c;">
-                    ⚠️ عذراً يا ${userName}، هذا التصنيف غير متوفر في أرشيفي حالياً.<br><br>
-                    <a href="https://www.google.com/search?q=روايات+${input}+pdf" target="_blank" style="display: block; background: #f1c40f; color: #000; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold;">🔍 ابحث في جوجل عن "${input} PDF"</a>
+                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; border: 1px solid #e74c3c;">
+                    عذراً يا ${userName}، لم أجد نتائج دقيقة لـ "${input}".<br>
+                    <a href="https://www.google.com/search?q=رواية+${input}+pdf" target="_blank" style="display:block; background:#f1c40f; color:#000; text-align:center; padding:8px; border-radius:5px; margin-top:10px; text-decoration:none; font-weight:bold;">🔍 ابحث في جوجل PDF</a>
                 </div>`;
         }
     }, 800);
@@ -185,12 +184,15 @@ function askShainAI() {
 function openShainAI() { document.getElementById('homeUI').style.display = 'none'; document.getElementById('aiSection').style.display = 'block'; }
 function closeAI() { document.getElementById('aiSection').style.display = 'none'; document.getElementById('homeUI').style.display = 'block'; }
 
-// سطر التشغيل النهائي لإخفاء اللودر
+// سطر الأمان النهائي: بيجبر اللودر يختفي مهما حصل
 window.onload = function() {
+    const loader = document.getElementById('loader');
+    const homeUI = document.getElementById('homeUI');
+    
+    // إخفاء اللودر وإظهار الواجهة فوراً
+    if (loader) loader.style.display = 'none';
+    if (homeUI) homeUI.style.display = 'block';
+    
+    // تشغيل أي دالات إضافية لو موجودة
     if (typeof initApp === "function") initApp();
-    else {
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('homeUI').style.display = 'block';
-    }
-};
 };
