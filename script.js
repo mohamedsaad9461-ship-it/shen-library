@@ -64,10 +64,23 @@ function closeReader() {
 /* === [END: LIBRARY_ENGINE] === */
 
 /* === [TAG: SYSTEM_INIT] === */
-// أول حاجة بتشتغل لما الصفحة تفتح
+// دالة تحريك البانر تلقائياً
+let currentSlide = 0;
+function startBannerSlider() {
+    setInterval(() => {
+        const slides = document.querySelector('.slides');
+        if (slides) {
+            currentSlide = (currentSlide + 1) % 4; // لأن عندك 4 صور في الـ HTML
+            slides.style.transform = `translateX(${currentSlide * 25}%)`; 
+        }
+    }, 4000); // يقلب كل 4 ثواني
+}
+
 window.onload = function() {
     const loader = document.getElementById('loader');
-    if (loader) loader.style.display = 'none';
-    showSec('homeUI');
+    if (loader) loader.style.display = 'none'; [cite: 304]
+    
+    showSec('homeUI'); [cite: 305]
+    startBannerSlider(); // تشغيل البانر فور التحميل
 };
 /* === [END: SYSTEM_INIT] === */
