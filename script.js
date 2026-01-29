@@ -58,3 +58,37 @@ window.onload = function() {
     startSlider();     // يشغل البانر
     initReactions();   // يجهز التفاعلات
 };
+async function askShinAI() {
+    const input = document.getElementById('aiInput').value;
+    const responseBox = document.getElementById('aiResponse');
+    
+    if (!input) return;
+
+    responseBox.innerHTML = "جاري التفكير في عالم الروايات... ⏳";
+    
+    try {
+        // تنبيه: لازم تجيب API Key من Google AI Studio عشان يشتغل
+        const apiKey = "AIzaSyD-YOUR_ACTUAL_KEY_HERE"; 
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{ text: `أنت مساعد ذكي خبير في الروايات والأدب فقط اسمك "مساعد شين". وظيفتك ترشيح روايات لمحمد والإجابة على أسئلته الأدبية باحترافية. سؤاله هو: ${input}` }]
+                }]
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+            const aiText = data.candidates[0].content.parts[0].text;
+            responseBox.innerHTML = aiText;
+        } else {
+            responseBox.innerHTML = "لم أستطع إيجاد إجابة، حاول صياغة السؤال بشكل مختلف.";
+        }
+    } catch (error) {
+        responseBox.innerHTML = "عذراً يا محمد، حدث خطأ في الاتصال. تأكد من مفتاح الـ API.";
+        console.error(error);
+    }
+}
