@@ -69,3 +69,26 @@ window.onload = function() {
     }, 3000);
 };
 /* === [END: SYSTEM_INIT] === */
+/* === [TAG: READER_FIX] === */
+function openReader(name, file) {
+    // 1. إخفاء كل الأقسام
+    document.querySelectorAll('section, .ui-page').forEach(s => s.style.display = 'none');
+    
+    // 2. إظهار قسم القارئ
+    const reader = document.getElementById('readerMode');
+    const iframe = document.getElementById('bookFrame');
+    const title = document.getElementById('readerTitle');
+    
+    if(reader && iframe) {
+        reader.style.display = 'block';
+        title.innerText = name;
+        iframe.src = file; // هنا هيحمل ملف الـ reader.html
+        window.scrollTo(0,0);
+    }
+}
+
+function closeReader() {
+    document.getElementById('readerMode').style.display = 'none';
+    document.getElementById('bookFrame').src = '';
+    showSec('homeUI'); // يرجعك للرئيسية
+}
