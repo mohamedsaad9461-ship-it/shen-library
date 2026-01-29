@@ -121,6 +121,7 @@ function closeAI() {
 }
 
 // --- 2. دالة البحث الذكي المطورة ---
+// --- دالة رادار شين الذكي ---
 function askShainAI() {
     const input = document.getElementById('userInput').value.trim().toLowerCase();
     const responseBox = document.getElementById('aiResponse');
@@ -134,7 +135,6 @@ function askShainAI() {
     responseBox.innerHTML = `جاري فحص الأرشيف الشامل والمنصات الخارجية يا ${userName}...`;
 
     setTimeout(() => {
-        // قاعدة البيانات الكبرى (شاملة التصنيفات والمصادر الخارجية)
         const megaArchive = [
             { name: "حلم طنجار", author: "محمد فكري", type: "اجتماعي / خيال", format: "إلكتروني تفاعلي", source: "مكتبة شين (هنا)", link: "#", tags: ["اجتماعي", "خيال", "أسطورة"] },
             { name: "أرض زيكولا", author: "عمرو عبد الحميد", type: "اجتماعي / خيال", format: "PDF / ورقي", source: "عصير الكتب", link: "https://www.google.com/search?q=أرض+زيكولا+pdf", tags: ["اجتماعي", "ذكاء"] },
@@ -142,7 +142,6 @@ function askShainAI() {
             { name: "وباء", author: "محمد فكري", type: "رعب / غموض", format: "PDF (قريباً)", source: "مكتبة شين", link: "#", tags: ["رعب", "خوف"] }
         ];
 
-        // محرك البحث الذكي: يفحص الكلمات، التصنيفات، والأسماء
         let matches = megaArchive.filter(book => {
             const terms = input.split(' ');
             return terms.some(t => 
@@ -153,47 +152,43 @@ function askShainAI() {
         });
 
         if (matches.length > 0) {
-            let html = `<div style="text-align:right; direction:rtl;">✅ <b>يا ${userName}، إليك نتائج الرادار:</b><br><br>`;
+            let html = `<div style="text-align:right; direction:rtl;">✅ <b>نتائج الرادار لـ "${input}":</b><br><br>`;
             matches.forEach(book => {
                 html += `
                 <div style="background: rgba(255,255,255,0.08); padding:12px; border-radius:10px; margin-bottom:10px; border-right:4px solid #3498db;">
-                    <b style="color:#3498db; font-size:15px;">📖 ${book.name}</b> <small>(${book.type})</small><br>
+                    <b style="color:#3498db; font-size:15px;">📖 ${book.name}</b><br>
                     <span style="font-size:12px; display:block; margin:4px 0;">📂 الصيغة: <b>${book.format}</b></span>
                     <span style="font-size:12px; color:#2ecc71;">📍 المصدر: ${book.source}</span>
-                    ${book.link !== "#" ? `<br><a href="${book.link}" target="_blank" style="color:#f1c40f; font-size:11px; text-decoration:none; display:inline-block; margin-top:5px;">🔗 اذهب لمصدر الـ PDF الخارجي</a>` : ""}
+                    ${book.link !== "#" ? `<br><a href="${book.link}" target="_blank" style="color:#f1c40f; font-size:11px; text-decoration:none; display:inline-block; margin-top:5px;">🔗 اذهب لمصدر خارجي</a>` : ""}
                 </div>`;
             });
             responseBox.innerHTML = html + `</div>`;
         } else {
-            responseBox.innerHTML = `عفواً يا ${userName}، لم أجد هذا التصنيف. جرب كلمات مثل (اجتماعي، رعب، خيال).`;
+            responseBox.innerHTML = `عفواً، لم أجد هذا التصنيف. جرب (اجتماعي، رعب، خيال).`;
         }
-    }, 1500);
-}
-        let matches = bigLibrary.filter(book => 
-            book.tags.some(t => input.includes(t)) || 
-            input.includes(book.name.toLowerCase()) || 
-            input.includes(book.author.toLowerCase())
-        );
-
-        if (matches.length > 0) {
-            let htmlResult = `✨ <b>نتائج البحث يا ${userName}:</b><br>`;
-            matches.forEach(book => {
-                htmlResult += `<div style="border-bottom:1px solid #444; padding:5px;">📖 ${book.name} - ${book.format}</div>`;
-            });
-            responseBox.innerHTML = htmlResult;
-        } else {
-            responseBox.innerHTML = `عفواً يا ${userName}، لم أجد تطابقاً. جرب كلمات مثل (خيال، صحراء).`;
-        }
-    }, 1000);
+    }, 1200);
 }
 
-// --- 3. تشغيل التطبيق (يجب أن يكون في آخر الملف دائماً) ---
+// --- دالات الواجهة ---
+function openShainAI() {
+    document.getElementById('homeUI').style.display = 'none';
+    document.getElementById('aiSection').style.display = 'block';
+}
+
+function closeAI() {
+    document.getElementById('aiSection').style.display = 'none';
+    document.getElementById('homeUI').style.block = 'block';
+}
+
+// --- تشغيل التطبيق النهائي (هام جداً لإخفاء اللودر) ---
 window.onload = function() {
     if (typeof initApp === "function") {
-        initApp(); // دي الدالة اللي بتشيل اللودر وتظهر الواجهة
+        initApp();
+    } else {
+        // لو الدالة مش متعرفة، هنخفي اللودر يدوياً كأمان
+        const loader = document.getElementById('loader');
+        if (loader) loader.style.display = 'none';
+        const homeUI = document.getElementById('homeUI');
+        if (homeUI) homeUI.style.display = 'block';
     }
 };
-            
-         
-
-       
