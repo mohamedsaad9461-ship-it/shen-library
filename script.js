@@ -125,72 +125,49 @@ function askShainAI() {
     const input = document.getElementById('userInput').value.trim().toLowerCase();
     const responseBox = document.getElementById('aiResponse');
     const userName = localStorage.getItem('userName') || "صديقي";
-    const userGender = localStorage.getItem('userGender') || "ذكر"; 
 
     if (!input) {
-        responseBox.innerHTML = userGender === "أنثى" ? "اكتبي وصفاً لما تبحثين عنه..." : "اكتب وصفاً لما تبحث عنه...";
+        responseBox.innerHTML = "أنا رادار شين.. ابحث عن تصنيف (اجتماعي، رعب) أو اسم رواية..";
         return;
     }
 
-    responseBox.innerHTML = `جاري فحص أرشيف شين الشامل يا ${userName}...`;
+    responseBox.innerHTML = `جاري فحص الأرشيف الشامل والمنصات الخارجية يا ${userName}...`;
 
     setTimeout(() => {
-        // قاعدة بيانات ذكية (PDF + إلكتروني + وصف أحداث)
-        const libraryDB = [
-            {
-                name: "حلم طنجار",
-                author: "محمد فكري",
-                tags: ["صحراء", "قبيلة", "خيال", "أسطورة", "رجل", "حلم", "مغامرة"],
-                formats: ["إلكتروني تفاعلي", "تطبيق"],
-                status: "مجانية",
-                link: "متوفرة هنا"
-            },
-            {
-                name: "أرض زيكولا",
-                author: "عمرو عبد الحميد",
-                tags: ["ذكاء", "عملات", "خيال", "قانون", "أسيل", "سرد"],
-                formats: ["PDF", "ورقي"],
-                status: "مدفوعة",
-                link: "عصير الكتب / تطبيقات PDF"
-            },
-            {
-                name: "وباء",
-                author: "محمد فكري",
-                tags: ["رعب", "خوف", "مرض", "نهاية العالم", "غموض", "مستشفى"],
-                formats: ["PDF (قريباً)", "ورقي"],
-                status: "قيد التحضير",
-                link: "مكتبة شين"
-            }
+        // قاعدة البيانات الكبرى (شاملة التصنيفات والمصادر الخارجية)
+        const megaArchive = [
+            { name: "حلم طنجار", author: "محمد فكري", type: "اجتماعي / خيال", format: "إلكتروني تفاعلي", source: "مكتبة شين (هنا)", link: "#", tags: ["اجتماعي", "خيال", "أسطورة"] },
+            { name: "أرض زيكولا", author: "عمرو عبد الحميد", type: "اجتماعي / خيال", format: "PDF / ورقي", source: "عصير الكتب", link: "https://www.google.com/search?q=أرض+زيكولا+pdf", tags: ["اجتماعي", "ذكاء"] },
+            { name: "ساق البامبو", author: "سعود السنعوسي", type: "اجتماعي / واقعي", format: "PDF / إلكتروني", source: "منصات خارجية", link: "https://www.google.com/search?q=ساق+البامبو+pdf", tags: ["اجتماعي", "دراما"] },
+            { name: "وباء", author: "محمد فكري", type: "رعب / غموض", format: "PDF (قريباً)", source: "مكتبة شين", link: "#", tags: ["رعب", "خوف"] }
         ];
 
-        // محرك البحث المرن: يحلل كل كلمة في جملة المستخدم
-        let results = libraryDB.filter(book => {
-            const terms = input.split(' '); 
+        // محرك البحث الذكي: يفحص الكلمات، التصنيفات، والأسماء
+        let matches = megaArchive.filter(book => {
+            const terms = input.split(' ');
             return terms.some(t => 
                 book.tags.some(tag => tag.includes(t)) || 
-                book.name.toLowerCase().includes(t) || 
-                book.author.toLowerCase().includes(t)
+                book.type.toLowerCase().includes(t) ||
+                book.name.toLowerCase().includes(t)
             );
         });
 
-        if (results.length > 0) {
-            let html = `<div style="text-align:right; direction:rtl;">✨ <b>وجدتها! إليك التفاصيل يا ${userName}:</b><br><br>`;
-            results.forEach(book => {
+        if (matches.length > 0) {
+            let html = `<div style="text-align:right; direction:rtl;">✅ <b>يا ${userName}، إليك نتائج الرادار:</b><br><br>`;
+            matches.forEach(book => {
                 html += `
-                <div style="background: rgba(255,255,255,0.07); padding:12px; border-radius:10px; margin-bottom:12px; border-right:4px solid #e74c3c;">
-                    <b style="color:#e74c3c; font-size:16px;">📖 ${book.name}</b><br>
-                    <small>✍️ للكاتب: ${book.author}</small><br>
-                    <div style="margin-top:5px;">
-                        <span style="font-size:11px; background:#e74c3c; color:white; padding:2px 6px; border-radius:4px; margin-left:5px;">📂 ${book.formats.join(' / ')}</span>
-                        <span style="font-size:12px; color:#27ae60;">📍 ${book.status}</span>
-                    </div>
+                <div style="background: rgba(255,255,255,0.08); padding:12px; border-radius:10px; margin-bottom:10px; border-right:4px solid #3498db;">
+                    <b style="color:#3498db; font-size:15px;">📖 ${book.name}</b> <small>(${book.type})</small><br>
+                    <span style="font-size:12px; display:block; margin:4px 0;">📂 الصيغة: <b>${book.format}</b></span>
+                    <span style="font-size:12px; color:#2ecc71;">📍 المصدر: ${book.source}</span>
+                    ${book.link !== "#" ? `<br><a href="${book.link}" target="_blank" style="color:#f1c40f; font-size:11px; text-decoration:none; display:inline-block; margin-top:5px;">🔗 اذهب لمصدر الـ PDF الخارجي</a>` : ""}
                 </div>`;
             });
             responseBox.innerHTML = html + `</div>`;
         } else {
-            responseBox.innerHTML = `عفواً يا ${userName}، لم أجد رواية بهذا الوصف (بي دي اف أو إلكتروني). جرب كلمات مثل: رعب، صحراء، أو اسم الكاتب.`;
+            responseBox.innerHTML = `عفواً يا ${userName}، لم أجد هذا التصنيف. جرب كلمات مثل (اجتماعي، رعب، خيال).`;
         }
-    }, 1200);
+    }, 1500);
 }
         let matches = bigLibrary.filter(book => 
             book.tags.some(t => input.includes(t)) || 
