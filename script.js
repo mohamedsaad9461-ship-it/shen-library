@@ -77,37 +77,28 @@ function askShainAI() {
             { name: "أرض النفاق", auth: "يوسف السباعي", cat: "كوميدي", img: "https://m.media-amazon.com/images/I/51rYy5+S1FL.jpg", link: "https://www.google.com/search?q=أرض+النفاق+pdf" }
         ];
         let matches = library.filter(b => b.cat.includes(input) || b.name.toLowerCase().includes(input));
-        const list = document.getElementById('resultsList');
-        list.innerHTML = "";
-        if (matches.length > 0) {
-            matches.forEach(book => {
-                list.innerHTML += `<div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; display:flex; gap:10px; align-items:center;">
-                    <img src="${book.img}" style="width:50px; height:75px; border-radius:4px;">
-                    <div><b style="color:#fff;">${book.name}</b><br><small style="color:#00d2ff;">${book.auth}</small></div>
-                </div>`;
-            });
-        } else { list.innerHTML = `<div style="color:#ff4d4d;">لم أجد نتائج..</div>`; }
-        responseBox.scrollTop = responseBox.scrollHeight;
-    }, 500);
+       /* التنسيق الجديد الموحد للكروت */
+.novel-card { 
+    background: rgba(255,255,255,0.18); 
+    padding: 15px; 
+    border-radius: 20px; 
+    border: 1px solid rgba(255,255,255,0.3); 
+    color: white; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 350px; /* طول ثابت للكارت عشان التناسق */
+    justify-content: space-between; /* توزيع المحتوى بانتظام */
 }
 
-// 6. الدوال الأساسية (الحفظ والفتح)
-function rateNovel(id, s) { appState.ratings[id] = s; save(); }
-function voteNovel(id, t) { appState.votes[id] = (appState.votes[id]===t)?null:t; save(); }
-function voteQuote(id, t) { appState.qVotes[id] = (appState.qVotes[id]===t)?null:t; save(); }
-function save() { localStorage.setItem('shain_pro_v1', JSON.stringify(appState)); renderNovels(); renderQuotes(); }
-
-function showSec(id) {
-    document.querySelectorAll('#homeUI,#librarySection,#quotesSection').forEach(s => s.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
+.novel-card img {
+    width: 110px;
+    height: 160px; /* مقاس موحد للغلاف */
+    object-fit: cover; /* يمنع تمطيط الصورة */
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
-
-function openReader(n, f) { 
-    document.getElementById('readerMode').style.display='block'; 
-    document.getElementById('readerTitle').innerText=n; 
-    document.getElementById('bookFrame').src=f; 
-}
-function closeReader() { document.getElementById('readerMode').style.display='none'; document.getElementById('bookFrame').src=''; }
 function openShainAI() { document.getElementById('homeUI').style.display='none'; document.getElementById('aiSection').style.display='block'; }
 function closeAI() { document.getElementById('aiSection').style.display='none'; document.getElementById('homeUI').style.display='block'; }
 
