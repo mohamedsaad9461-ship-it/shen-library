@@ -68,7 +68,7 @@ async function askShinAI() {
     
     try {
         // تنبيه: لازم تجيب API Key من Google AI Studio عشان يشتغل
-        const apiKey = "AIzaSyD-YOUR_ACTUAL_KEY_HERE"; 
+        const apiKey = "AIzaSyDCJ1mSdT6DA7Ifvzmcjz7cLYYEt-Z9Ozo"; 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
