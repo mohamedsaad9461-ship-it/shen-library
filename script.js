@@ -58,28 +58,21 @@ function closeReader() {
 let currentSlide = 0;
 
 function startBannerSlider() {
-    // بنجيب الحاوية اللي فيها الصور
     const slides = document.querySelector('.slides');
-    
-    // لو موجودة فعلاً في الصفحة، نبدأ نحركها
     if (slides) {
         setInterval(() => {
-            currentSlide = (currentSlide + 1) % 4; // رقم 4 هو عدد صورك
-            // التحريك لليسار بنسبة 25% لكل صورة
-            slides.style.transform = `translateX(${currentSlide * 25}%)`;
-        }, 3000); // 3000 مللي ثانية يعني 3 ثواني
+            currentSlide = (currentSlide + 1) % 4; 
+            // التحريك بالسالب عشان يمشي صح في نظام الـ RTL العربي
+            slides.style.transform = `translateX(-${currentSlide * 25}%)`; 
+        }, 3000);
     }
 }
 
 window.onload = function() {
-    // 1. إخفاء اللودر
     const loader = document.getElementById('loader');
     if (loader) loader.style.display = 'none';
     
-    // 2. إظهار الصفحة الرئيسية
     showSec('homeUI');
-    
-    // 3. تشغيل عداد الصور
     startBannerSlider();
 };
 /* === [END: SYSTEM_INIT] === */
