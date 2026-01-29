@@ -76,3 +76,44 @@ window.onload = function() {
     startBannerSlider();
 };
 /* === [END: SYSTEM_INIT] === */
+/* === [TAG: SOCIAL_INTERACTION_LOGIC] === */
+function handleReaction(novelId, type) {
+    // حفظ التفاعل (لايك أو ديسلايك)
+    if (appState.votes[novelId] === type) {
+        appState.votes[novelId] = null; // إلغاء الضغطة لو داس تاني
+    } else {
+        appState.votes[novelId] = type;
+    }
+    saveData();
+}
+
+function handleStar(novelId, rating) {
+    appState.ratings[novelId] = rating;
+    saveData();
+}
+
+function saveData() {
+    localStorage.setItem('shain_pro_v1', JSON.stringify(appState));
+    renderNovels(); // تحديث المكتبة فوراً
+}
+
+function getSocialHTML(n) {
+    const userVote = appState.votes[n.id];
+    const userStars = appState.ratings[n.id] || 0;
+
+    let starsHTML = '<div class="stars-row">';
+    for (let i = 1; i <= 5; i++) {
+        starsHTML += `<span class="star ${i <= userStars ? 'selected' : ''}" onclick="event.stopPropagation(); handleStar(${n.id}, ${i})">★</span>`;
+    }
+    starsHTML += '</div>';
+
+    return `
+        ${starsHTML}
+        <div class="interaction-bar" onclick="event.stopPropagation();">
+            <div class="action-btn btn-like ${userVote === 'like' ? 'active' : ''}" onclick="handleReaction(${n.id}, 'like')">👍</div>
+            <div class="action-btn btn-comment" onclick="alert('قريباً: فتح سجل التعليقات')">💬</div>
+            <div class="action-btn btn-dislike ${userVote === 'dislike' ? 'active' : ''}" onclick="handleReaction(${n.id}, 'dislike')">👎</div>
+        </div>
+    `;
+}
+/* === [END: SOCIAL_INTERACTION_LOGIC] === */
