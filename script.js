@@ -1,76 +1,52 @@
-// دالة التنقل بين الأقسام - تم تعديلها لضمان فصل الصفحات تماماً
-function showSec(sectionId) {
-    const sections = ['homeUI', 'librarySection', 'aiSection', 'quotesSection', 'readerMode'];
-    sections.forEach(id => {
-        const sec = document.getElementById(id);
-        if (sec) sec.style.display = 'none';
-    });
+// إخفاء التحميل أول ما الصفحة تجهز
+window.onload = () => {
+    setTimeout(() => {
+        const loader = document.getElementById('loader');
+        if (loader) loader.style.display = 'none';
+    }, 1000);
+};
 
+function showSec(sectionId) {
+    const sections = ['homeUI', 'librarySection', 'aiSection', 'readerMode'];
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
     const target = document.getElementById(sectionId);
-    if (target) {
-        target.style.display = 'block';
-        window.scrollTo(0, 0);
-    }
+    if (target) target.style.display = 'block';
 }
 
-// دالة مساعد شين الذكي - مربوطة بالمفتاح الخاص بك
 async function askShinAI() {
-    const input = document.getElementById('aiInput').value;
+    const input = document.getElementById('aiInput');
     const responseBox = document.getElementById('aiResponse');
-    
-    if (!input) return;
+    if (!input.value) return;
 
     responseBox.innerHTML = "جاري البحث في رفوف المكتبة... ⏳";
     
     try {
-        // حط المفتاح اللي أنت بعتهولي هنا
         const apiKey = "AIzaSyD7hYs_9VJv7wAM4_e5sAXayeZUjj9LwhE"; 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: `أنت مساعد ذكي في مكتبة "شين". أجب باختصار على: ${input}` }]
-                }]
+                contents: [{ parts: [{ text: `أنت مساعد خبير روايات. أجب باختصار على: ${input.value}` }] }]
             })
         });
 
         const data = await response.json();
-        
         if (data.candidates && data.candidates[0].content) {
             responseBox.innerHTML = data.candidates[0].content.parts[0].text;
+            input.value = ""; 
         } else {
-            responseBox.innerHTML = "عذراً، لم أستطع صياغة رد. تأكد من إعدادات الـ API Key.";
+            responseBox.innerHTML = "عذراً، لم أستطع الحصول على رد. حاول مرة أخرى.";
         }
     } catch (error) {
-        responseBox.innerHTML = "فشل الاتصال. جرب مرة أخرى.";
+        responseBox.innerHTML = "خطأ في الاتصال. تأكد من الإنترنت.";
     }
 }
 
-        const data = await response.json();
-        
-        if (data.candidates && data.candidates[0].content) {
-            const aiText = data.candidates[0].content.parts[0].text;
-            responseBox.innerHTML = aiText;
-        } else {
-            responseBox.innerHTML = "عذراً يا محمد، لم أستطع صياغة رد حالياً. حاول مرة أخرى.";
-        }
-    } catch (error) {
-        responseBox.innerHTML = "حدث خطأ في الاتصال، تأكد من الإنترنت يا محمد.";
-        console.error(error);
-    }
-}
-
-// دالة فتح القارئ
 function openReader(title, url) {
     document.getElementById('readerTitle').innerText = title;
     document.getElementById('bookFrame').src = url;
     showSec('readerMode');
 }
-
-// إخفاء الـ Loader بعد التحميل
-window.onload = () => {
-    setTimeout(() => {
-        document.getElementById('loader').style.display = 'none';
-    }, 1500);
-};
