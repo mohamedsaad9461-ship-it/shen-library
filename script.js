@@ -1,10 +1,9 @@
-/* === محرك التطبيق الشامل (إصدار الحماية القصوى) === */
-
-// 1. وظيفة التنقل: بتفتح أي قسم بمجرد ما تديها اسمه
+/* === [1. محرك التنقل الثابت] === */
 function showSec(id) {
-    // بيخفي كل حاجة شاكة إنها صفحة
-    document.querySelectorAll('section, .ui-page, .tab-content').forEach(s => s.style.display = 'none');
-    
+    // بيخفي أي قسم ظاهر عشان يفتح الجديد
+    const sections = document.querySelectorAll('section, .ui-page, #homeUI, #readerMode');
+    sections.forEach(s => s.style.display = 'none');
+
     const target = document.getElementById(id);
     if (target) {
         target.style.display = 'block';
@@ -12,32 +11,23 @@ function showSec(id) {
     }
 }
 
-// 2. وظيفة القارئ: بتفتح الملف اللي بتحدده في الزرار
+/* === [2. محرك القارئ المباشر] === */
 function openReader(name, file) {
-    const reader = document.getElementById('readerMode');
-    const iframe = document.getElementById('bookFrame');
+    const frame = document.getElementById('bookFrame');
     const title = document.getElementById('readerTitle');
-
-    if (reader && iframe) {
-        showSec('readerMode'); // اخفي الكل واظهر القارئ
-        iframe.src = file;
+    
+    if (frame) {
+        showSec('readerMode'); 
+        frame.src = file;
         if(title) title.innerText = name;
     } else {
-        // لو ملقاش البرواز، يفتح الملف في صفحة جديدة كأمان
+        // لو حصل أي مشكلة في البرواز، بيفتح الملف مباشرة كأمان
         window.location.href = file;
     }
 }
 
-// 3. تشغيل النظام تلقائياً
-window.onload = function() {
-    // إخفاء اللودر
-    const loader = document.getElementById('loader');
-    if (loader) loader.style.display = 'none';
-
-    // تشغيل الصفحة الرئيسية
-    showSec('homeUI');
-
-    // تشغيل البانر (الصور اللي بتقلب)
+/* === [3. محرك البانر المستقل] === */
+function startSlider() {
     let cur = 0;
     const slides = document.querySelector('.slides');
     if (slides) {
@@ -46,4 +36,21 @@ window.onload = function() {
             slides.style.transform = `translateX(-${cur * 25}%)`;
         }, 3000);
     }
+}
+
+/* === [4. نظام الإضافات (النجوم واللايكات) - بدون تضارب] === */
+// أي حاجة جديدة هنضيفها هنا، مش هتلمس اللي فوق
+function initReactions() {
+    console.log("نظام التفاعلات جاهز..");
+    // هنا هنبرمج اللايكات والنجوم بشكل مستقل لاحقاً
+}
+
+/* === [5. التشغيل عند التحميل] === */
+window.onload = function() {
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'none';
+
+    showSec('homeUI'); // يفتح الرئيسية فوراً
+    startSlider();     // يشغل البانر
+    initReactions();   // يجهز التفاعلات
 };
