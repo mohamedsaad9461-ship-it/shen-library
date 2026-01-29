@@ -87,6 +87,7 @@ function openReader(name, file) {
     window.location.href = `reader.html?book=${fileName}`;
 }
 
+// دالة البحث الحي
 function liveSearch() { 
     let q = document.getElementById('novelSearch').value.toLowerCase(); 
     document.querySelectorAll('.novel-card').forEach(c => {
@@ -94,5 +95,19 @@ function liveSearch() {
     }); 
 }
 
+// دالة رسم الروايات بشكل الـ 3D الجديد
+function renderNovels() {
+    const container = document.getElementById('novelsContainer');
+    if (!container) return;
+    
+    container.innerHTML = novelsData.map(n => `
+        <div class="novel-card" data-name="${n.name}" onclick="${n.available ? `openReader('${n.name}','${n.file}')` : `alert('قريباً')`}">
+            <div class="book-3d">
+                <div class="book-spine"></div>
+                <div class="book-cover-img" style="background-image: url('${n.img}')"></div>
+            </div>
+            <b style="color:white; font-size:13px;">${n.name}</b>
+        </div>`).join('');
+}
 // تشغيل التطبيق
 window.onload = initApp;
