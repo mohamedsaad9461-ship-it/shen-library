@@ -1,5 +1,5 @@
 const novelsData = [
-    { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", file: "tangar.html", available: true },
+    { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", file: "tangar.txt", available: true },
     { id: 1, name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false },
     { id: 2, name: "ممالك القيران", img: "https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png", available: false },
     { id: 3, name: "وباء", img: "https://i.ibb.co/xqfBbZjf/Screenshot-2026-01-28-014331.png", available: false },
@@ -10,12 +10,16 @@ const quotesData = [
     { id: 101, name: "محمد سعد", img: "https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png", text: "هناك، يُنسج لك ثوب أمنياتك، تماماً كما تمنيته، ملائماً لجسدك." }
 ];
 
-let appState = JSON.parse(localStorage.getItem('shain_pro_v1')) || { ratings: {}, votes: {}, qVotes: {} };
-
 function initApp() {
     updateGreeting();
     renderNovels();
     renderQuotes();
+    
+    // إخفاء اللودر بعد التحميل
+    setTimeout(() => {
+        const l = document.getElementById('loader');
+        if (l) l.style.display = 'none';
+    }, 800);
 }
 
 function updateGreeting() {
@@ -56,31 +60,39 @@ function renderNovels() {
 function renderQuotes() {
     const container = document.getElementById('quotesList');
     if (!container) return;
-    container.innerHTML = quotesData.map(q => `<div class="quote-card">
-        <div class="author-info"><div class="author-img" style="background-image:url('${q.img}')"></div><div class="author-name">${q.name}</div></div>
-        <div class="quote-text">"${q.text}"</div>
-        <div class="q-actions"><span onclick="copyQuote('${q.text}')">📋 نسخ</span></div>
-    </div>`).join('');
+    container.innerHTML = quotesData.map(q => `
+        <div class="quote-card">
+            <div class="author-info">
+                <div class="author-img" style="background-image:url('${q.img}')"></div>
+                <div class="author-name">${q.name}</div>
+            </div>
+            <div class="quote-text">"${q.text}"</div>
+            <div class="q-actions"><span onclick="copyQuote('${q.text}')">📋 نسخ</span></div>
+        </div>`).join('');
 }
 
-function copyQuote(text) { navigator.clipboard.writeText(text); alert('تم النسخ!'); }
-function showSec(id) { document.querySelectorAll('#homeUI,#librarySection,#quotesSection').forEach(s=>s.style.display='none'); document.getElementById(id).style.display='block'; }
+function copyQuote(text) { 
+    navigator.clipboard.writeText(text); 
+    alert('تم النسخ!'); 
+}
+
+function showSec(id) { 
+    document.querySelectorAll('#homeUI,#librarySection,#quotesSection').forEach(s => s.style.display = 'none'); 
+    const target = document.getElementById(id);
+    if(target) target.style.display = 'block'; 
+}
+
 function openReader(name, file) {
-    // هنا بنقول للتطبيق: روح لصفحة القارئ الموحد وخد معاك اسم الرواية
-    // لو الملف اسمه tangar.txt هنبعت كلمة tangar
     const fileName = file.replace('.txt', '').replace('.html', '');
     window.location.href = `reader.html?book=${fileName}`;
 }
-function closeReader() { document.getElementById('readerMode').style.display='none'; document.getElementById('bookFrame').src=''; }
+
 function liveSearch() { 
-    let q=document.getElementById('novelSearch').value.toLowerCase(); 
-    document.querySelectorAll('.novel-card').forEach(c=>c.style.display=c.getAttribute('data-name').toLowerCase().includes(q)?'block':'none'); 
+    let q = document.getElementById('novelSearch').value.toLowerCase(); 
+    document.querySelectorAll('.novel-card').forEach(c => {
+        c.style.display = c.getAttribute('data-name').toLowerCase().includes(q) ? 'inline-block' : 'none';
+    }); 
 }
 
-window.onload = function() {
-    initApp();
-    setTimeout(() => {
-        const l = document.getElementById('loader');
-        if (l) l.classList.add('loader-fade-out');
-    }, 500);
-};
+// تشغيل التطبيق
+window.onload = initApp;
