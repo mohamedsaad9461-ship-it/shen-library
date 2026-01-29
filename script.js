@@ -39,11 +39,17 @@ function updateGreeting() {
 function renderNovels() {
     const container = document.getElementById('novelsContainer');
     if (!container) return;
+    
     container.innerHTML = novelsData.map(n => `
-        <div class="novel-card" data-name="${n.name}">
-            <img src="${n.img}">
-            <b style="font-size:14px;">${n.name}</b>
-            <div class="glass-btn" style="margin-top:10px; padding:8px; font-size:11px; width:80%;" onclick="${n.available ? `openReader('${n.name}','${n.file}')` : `alert('قريباً')`}">اقرأ</div>
+        <div class="novel-card" data-name="${n.name}" onclick="${n.available ? `openReader('${n.name}','${n.file}')` : `alert('قريباً')`}">
+            <div class="book-3d">
+                <div class="book-spine"></div>
+                <div class="book-cover-img" style="background-image: url('${n.img}')"></div>
+            </div>
+            <b style="font-size:13px; color:white; display:block; margin-bottom:5px;">${n.name}</b>
+            <span style="font-size:10px; color:${n.available ? '#27ae60' : '#e74c3c'};">
+                ${n.available ? '● متاح الآن' : '● قريباً'}
+            </span>
         </div>`).join('');
 }
 
