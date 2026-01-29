@@ -36,21 +36,10 @@ function renderNovels() {
         <div class="novel-card">
             <img src="${n.img}" alt="${n.name}">
             <h3>${n.name}</h3>
-            <button class="glass-btn" onclick="${n.available ? `openReader('${n.name}', '${n.file}')` : 'alert(\'قريباً!\')'}">
+            ${getSocialHTML(n)} <button class="glass-btn" onclick="${n.available ? `openReader('${n.name}', '${n.file}')` : 'alert(\'قريباً!\')'}">
                 ${n.available ? 'اقرأ الآن' : 'قريباً'}
             </button>
         </div>`).join('');
-}
-
-function openReader(name, file) {
-    showSec('readerMode'); // دي اللي هتخلي القارئ يفتح في صفحة لوحده ويخفي الباقي
-    document.getElementById('bookFrame').src = file;
-    document.getElementById('readerTitle').innerText = name;
-}
-
-function closeReader() {
-    document.getElementById('bookFrame').src = '';
-    showSec('librarySection'); // لما تقفل يرجعك للمكتبة
 }
 /* === [END: LIBRARY_ENGINE] === */
 
