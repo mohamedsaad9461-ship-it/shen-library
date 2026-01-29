@@ -53,3 +53,8 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: linear-gradient(-4
     transition: transform 0.6s ease-in-out;
 }
 /* === [END: FIXES] === */
+.slides {
+    display: flex;
+    width: 400%; /* لأنهم 4 صور وكل واحدة واخدة عرض الشاشة */
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* دي اللي بتخلي القلبة ناعمة */
+}
