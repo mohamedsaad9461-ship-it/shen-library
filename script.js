@@ -128,32 +128,70 @@ function askShainAI() {
     const userGender = localStorage.getItem('userGender') || "ذكر"; 
 
     if (!input) {
-        responseBox.innerHTML = "أنا جاهز لمساعدتك، صف لي ما تبحث عنه...";
+        responseBox.innerHTML = userGender === "أنثى" ? "اكتبي وصفاً لما تبحثين عنه..." : "اكتب وصفاً لما تبحث عنه...";
         return;
     }
 
-    responseBox.innerHTML = `جاري فحص المكتبة الشاملة يا ${userName}...`;
+    responseBox.innerHTML = `جاري فحص أرشيف شين الشامل يا ${userName}...`;
 
     setTimeout(() => {
-        const bigLibrary = [
+        // قاعدة بيانات ذكية (PDF + إلكتروني + وصف أحداث)
+        const libraryDB = [
             {
                 name: "حلم طنجار",
                 author: "محمد فكري",
-                tags: ["صحراء", "قبيلة", "خيال", "أسطورة", "رجل", "حلم"],
-                format: "إلكتروني (تفاعلي)",
+                tags: ["صحراء", "قبيلة", "خيال", "أسطورة", "رجل", "حلم", "مغامرة"],
+                formats: ["إلكتروني تفاعلي", "تطبيق"],
                 status: "مجانية",
-                link: "داخل المكتبة هنا"
+                link: "متوفرة هنا"
             },
             {
                 name: "أرض زيكولا",
                 author: "عمرو عبد الحميد",
-                tags: ["ذكاء", "عملات", "خيال", "قانون", "أسيل"],
-                format: "PDF + ورقي",
+                tags: ["ذكاء", "عملات", "خيال", "قانون", "أسيل", "سرد"],
+                formats: ["PDF", "ورقي"],
                 status: "مدفوعة",
-                link: "عصير الكتب"
+                link: "عصير الكتب / تطبيقات PDF"
+            },
+            {
+                name: "وباء",
+                author: "محمد فكري",
+                tags: ["رعب", "خوف", "مرض", "نهاية العالم", "غموض", "مستشفى"],
+                formats: ["PDF (قريباً)", "ورقي"],
+                status: "قيد التحضير",
+                link: "مكتبة شين"
             }
         ];
 
+        // محرك البحث المرن: يحلل كل كلمة في جملة المستخدم
+        let results = libraryDB.filter(book => {
+            const terms = input.split(' '); 
+            return terms.some(t => 
+                book.tags.some(tag => tag.includes(t)) || 
+                book.name.toLowerCase().includes(t) || 
+                book.author.toLowerCase().includes(t)
+            );
+        });
+
+        if (results.length > 0) {
+            let html = `<div style="text-align:right; direction:rtl;">✨ <b>وجدتها! إليك التفاصيل يا ${userName}:</b><br><br>`;
+            results.forEach(book => {
+                html += `
+                <div style="background: rgba(255,255,255,0.07); padding:12px; border-radius:10px; margin-bottom:12px; border-right:4px solid #e74c3c;">
+                    <b style="color:#e74c3c; font-size:16px;">📖 ${book.name}</b><br>
+                    <small>✍️ للكاتب: ${book.author}</small><br>
+                    <div style="margin-top:5px;">
+                        <span style="font-size:11px; background:#e74c3c; color:white; padding:2px 6px; border-radius:4px; margin-left:5px;">📂 ${book.formats.join(' / ')}</span>
+                        <span style="font-size:12px; color:#27ae60;">📍 ${book.status}</span>
+                    </div>
+                </div>`;
+            });
+            responseBox.innerHTML = html + `</div>`;
+        } else {
+            responseBox.innerHTML = `عفواً يا ${userName}، لم أجد رواية بهذا الوصف (بي دي اف أو إلكتروني). جرب كلمات مثل: رعب، صحراء، أو اسم الكاتب.`;
+        }
+    }, 1200);
+}
         let matches = bigLibrary.filter(book => 
             book.tags.some(t => input.includes(t)) || 
             input.includes(book.name.toLowerCase()) || 
