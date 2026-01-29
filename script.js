@@ -124,55 +124,56 @@ function closeAI() {
 function askShainAI() {
     const input = document.getElementById('userInput').value.trim().toLowerCase();
     const responseBox = document.getElementById('aiResponse');
-    const userName = localStorage.getItem('userName') || "صديقي";
+    const userName = "محمد"; // تم التثبيت بنجاح يا بطل
 
-    if (!input) {
-        responseBox.innerHTML = "أنا رادار شين.. ابحث عن تصنيف (اجتماعي، رعب) أو اسم رواية..";
-        return;
-    }
+    if (!input) return;
 
-    responseBox.innerHTML = `جاري فحص الأرشيف والمنصات الخارجية يا ${userName}...`;
+    // إظهار رسالة المستخدم بتصميم أنيق
+    responseBox.innerHTML += `
+        <div style="align-self: flex-end; background: #00d2ff; color: #000; padding: 10px 15px; border-radius: 15px 15px 0 15px; margin-bottom: 10px; max-width: 80%; font-weight: bold;">
+            ${input}
+        </div>`;
+    
+    responseBox.scrollTop = responseBox.scrollHeight;
 
     setTimeout(() => {
-        // قاعدة بيانات ضخمة (تشمل تصنيفات اجتماعية ومصادر خارجية)
+        // أرشيف الرادار (داخلي + خارجي + معرض الكتاب)
         const megaArchive = [
-            { name: "حلم طنجار", author: "محمد فكري", type: "اجتماعي / خيال", format: "إلكتروني تفاعلي", source: "مكتبة شين (هنا)", link: "#", tags: ["اجتماعي", "خيال", "دراما"] },
-            { name: "أرض زيكولا", author: "عمرو عبد الحميد", type: "اجتماعي / خيال", format: "PDF / ورقي", source: "عصير الكتب", link: "https://www.google.com/search?q=أرض+زيكولا+pdf", tags: ["اجتماعي", "ذكاء"] },
-            { name: "ساق البامبو", author: "سعود السنعوسي", type: "اجتماعي / واقعي", format: "PDF / إلكتروني", source: "منصات خارجية", link: "https://www.google.com/search?q=ساق+البامبو+pdf", tags: ["اجتماعي", "دراما"] },
-            { name: "الأسود يليق بك", author: "أحلام مستغانمي", type: "اجتماعي / رومانسي", format: "PDF / ورقي", source: "مكتبة جرير", link: "https://www.google.com/search?q=الأسود+يليق+بك+pdf", tags: ["اجتماعي", "رومانسي"] }
+            { name: "حلم طنجار", type: "اجتماعي / خيال", format: "إلكتروني تفاعلي", source: "مكتبة شين", link: "#", tags: ["اجتماعي", "خيال", "دراما"] },
+            { name: "أرض زيكولا", type: "اجتماعي / خيال", format: "PDF / ورقي", source: "عصير الكتب", link: "https://www.google.com/search?q=أرض+زيكولا+pdf", tags: ["اجتماعي", "ذكاء"] },
+            { name: "ساق البامبو", type: "اجتماعي / واقعي", format: "PDF / إلكتروني", source: "منصات خارجية", link: "https://www.google.com/search?q=ساق+البامبو+pdf", tags: ["اجتماعي", "دراما"] },
+            { name: "رواية المعرض الجديدة", type: "حصري معرض 2026", format: "ورقي", source: "جناح الجروب - صالة 2", link: "#", tags: ["معرض", "جديد", "حصري"] }
         ];
 
-        // محرك البحث الذكي: بيحلل كل كلمة (لو كتب "رواية اجتماعية" هيلقط كلمة "اجتماعية")
         let matches = megaArchive.filter(book => {
             const terms = input.split(' ');
-            return terms.some(t => 
-                book.tags.some(tag => tag.includes(t)) || 
-                book.type.toLowerCase().includes(t) ||
-                book.name.toLowerCase().includes(t)
-            );
+            return terms.some(t => book.tags.some(tag => tag.includes(t)) || book.name.toLowerCase().includes(t));
         });
 
+        let aiReply = "";
         if (matches.length > 0) {
-            let html = `<div style="text-align:right; direction:rtl;">✅ <b>يا ${userName}، إليك نتائج الرادار:</b><br><br>`;
+            aiReply = `✨ وجدت لك هذه الروايات في راداري يا ${userName}:<br><br>`;
             matches.forEach(book => {
-                html += `
-                <div style="background: rgba(255,255,255,0.08); padding:12px; border-radius:10px; margin-bottom:10px; border-right:4px solid #3498db;">
-                    <b style="color:#3498db; font-size:15px;">📖 ${book.name}</b> <small>(${book.type})</small><br>
-                    <span style="font-size:12px; display:block; margin:4px 0;">📂 الصيغة: <b>${book.format}</b></span>
-                    <span style="font-size:12px; color:#2ecc71;">📍 المصدر: ${book.source}</span>
-                    ${book.link !== "#" ? `<br><a href="${book.link}" target="_blank" style="color:#f1c40f; font-size:11px; text-decoration:none;">🔗 اذهب لمصدر الـ PDF الخارجي</a>` : ""}
+                aiReply += `
+                <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; margin-bottom: 8px; border-right: 4px solid #00d2ff;">
+                    <b style="color: #00d2ff;">📖 ${book.name}</b> (${book.type})<br>
+                    <small>📂 الصيغة: ${book.format}</small><br>
+                    <small>📍 المصدر: ${book.source}</small>
+                    ${book.link !== "#" ? `<br><a href="${book.link}" target="_blank" style="color:#f1c40f; font-size:11px;">🔗 رابط خارجي</a>` : ""}
                 </div>`;
             });
-            responseBox.innerHTML = html + `</div>`;
         } else {
-            // لو مالقاش في الداتابيز، بيقترح بحث جوجل مباشرة
-            responseBox.innerHTML = `
-                <div style="text-align:right;">
-                    ⚠️ لم أجد "${input}" في أرشيفي الخاص، لكن يمكنك إيجادها هنا:<br>
-                    <a href="https://www.google.com/search?q=رواية+${input}+pdf" target="_blank" style="color:#f1c40f;">🔍 ابحث عنها كـ PDF في جوجل</a>
-                </div>`;
+            aiReply = `لم أجد نتائج دقيقة لـ "${input}" في الأرشيف حالياً، لكن يمكنك البحث عنها كـ PDF هنا:<br><br>
+                       <a href="https://www.google.com/search?q=رواية+${input}+pdf" target="_blank" style="display:inline-block; padding:8px 15px; background:#f1c40f; color:#000; border-radius:20px; text-decoration:none; font-weight:bold;">🔍 ابحث في جوجل PDF</a>`;
         }
-    }, 1200);
+
+        responseBox.innerHTML += `
+            <div style="align-self: flex-start; background: rgba(255,255,255,0.05); padding: 12px 18px; border-radius: 0 15px 15px 15px; margin-bottom: 10px; max-width: 85%; border: 1px solid rgba(255,255,255,0.1);">
+                ${aiReply}
+            </div>`;
+        
+        responseBox.scrollTop = responseBox.scrollHeight;
+    }, 1000);
 }
 
 // دالات التحكم وسطر التشغيل (لضمان إخفاء اللودر)
