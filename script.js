@@ -64,20 +64,34 @@ async function askShinAI() {
     
     if (!input) return;
 
-    responseBox.innerHTML = "جاري التفكير في عالم الروايات... ⏳";
+    responseBox.innerHTML = "جاري البحث في رفوف المكتبة... ⏳";
     
     try {
-        // تنبيه: لازم تجيب API Key من Google AI Studio عشان يشتغل
-        const apiKey = "AIzaSyDCJ1mSdT6DA7Ifvzmcjz7cLYYEt-Z9Ozo"; 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+        // حط المفتاح اللي بيبدأ بـ AIza هنا
+        const apiKey = "AIzaSyD7hYs_9VJv7wAM4_e5sAXayeZUjj9LwhE"; 
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 contents: [{
-                    parts: [{ text: `أنت مساعد ذكي خبير في الروايات والأدب فقط اسمك "مساعد شين". وظيفتك ترشيح روايات لمحمد والإجابة على أسئلته الأدبية باحترافية. سؤاله هو: ${input}` }]
+                    parts: [{ text: `أنت مساعد ذكي في مكتبة اسمها "شين". أجب باختصار واحترافية على سؤال المستخدم: ${input}` }]
                 }]
             })
         });
+
+        const data = await response.json();
+        
+        // تعديل طريقة قراءة البيانات لضمان العرض
+        if (data.candidates && data.candidates[0].content) {
+            responseBox.innerHTML = data.candidates[0].content.parts[0].text;
+        } else {
+            responseBox.innerHTML = "حدثت مشكلة في معالجة الرد، حاول مرة أخرى.";
+            console.log(data); // عشان نشوف المشكلة في الـ Console
+        }
+    } catch (error) {
+        responseBox.innerHTML = "تأكد من اتصالك بالإنترنت ومن صحة مفتاح الـ API.";
+    }
+}
 
         const data = await response.json();
         
