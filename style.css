@@ -38,41 +38,64 @@ body {
 .back-circle { width: 35px; height: 35px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 /* تنسيق المكتبة الجديد - 2 جنب بعض */
 #novelsContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* هنا السحر: بيقسم الشاشة نصين */
-    gap: 12px;
-    padding: 15px;
-}
-
-.novel-card { 
-    background: rgba(255,255,255,0.18); 
-    padding: 12px; 
-    border-radius: 20px; 
-    border: 1px solid rgba(255,255,255,0.3); 
-    color: white; 
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.novel-card {
+    perspective: 1000px;
+    width: 140px;
     text-align: center;
-    transition: transform 0.2s;
+    cursor: pointer;
 }
 
-/* حركة بسيطة لما تلمس الرواية */
-.novel-card:active {
-    transform: scale(0.95);
-}
-
-.novel-card img {
-    width: 100%; /* الصورة هتاخد عرض الكارت كله */
-    max-width: 120px;
-    height: auto;
-    border-radius: 12px;
+.book-3d {
+    width: 130px;
+    height: 190px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
     margin-bottom: 10px;
 }
-.star { cursor: pointer; font-size: 20px; color: white; }
-.star.active { color: #FFD700; }
-/* شكل الاقتباس الزجاجي المتطور */
-.quote-card { 
+
+.novel-card:hover .book-3d {
+    transform: rotateY(-25deg) rotateX(5deg);
+}
+
+.book-cover-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    border-radius: 2px 5px 5px 2px;
+    z-index: 2;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+.book-spine {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 25px;
+    height: 100%;
+    background: #222;
+    transform: translateX(-12px) rotateY(-90deg);
+    z-index: 1;
+}
+
+#novelSearch {
+    flex-grow: 1;
+    margin: 0 15px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    outline: none;
+}.quote-card { 
     background: rgba(255, 255, 255, 0.1); 
     backdrop-filter: blur(15px); 
     -webkit-backdrop-filter: blur(15px);
