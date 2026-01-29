@@ -1,78 +1,162 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>شين PRO | حلم طنجار</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root { --bg: #f4f1ea; --text: #2c3e50; --accent: #e67e22; --h-color: #ffeb3b88; --font-f: 'Amiri'; }
+        body.dark { --bg: #1a1a1b; --text: #d5d5d5; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-f), serif; overflow: hidden; transition: 0.3s; }
 
-<style>
-    /* شكل كارت الاقتباس المخفي اللي هيتحول لصورة */
-    #quoteCard {
-        position: fixed; top: -1000px; width: 500px; padding: 40px;
-        background: linear-gradient(135deg, #f4f1ea 0%, #e1dcc5 100%);
-        color: #2c3e50; text-align: center; border: 15px solid #e67e22;
-        font-family: 'Amiri', serif;
-    }
-    .share-btn {
-        position: absolute; background: #e67e22; color: white;
-        padding: 5px 15px; border-radius: 20px; font-family: 'Cairo';
-        font-size: 12px; cursor: pointer; z-index: 2000; display: none;
-    }
-    .audio-btn.playing { color: #27ae60; animation: pulse 1s infinite; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-</style>
+        .header { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: rgba(0,0,0,0.05); backdrop-filter: blur(10px); position: fixed; top: 0; width: 100%; z-index: 1000; box-sizing: border-box; }
+        .progress-container { position: fixed; top: 60px; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.05); z-index: 999; }
+        .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: 0.3s; }
 
-<div id="quoteCard">
-    <i class="fas fa-quote-right" style="font-size: 30px; color: #e67e22; margin-bottom: 20px;"></i>
-    <p id="quoteText" style="font-size: 24px; line-height: 1.8;"></p>
-    <div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 10px;">
-        <strong style="font-size: 18px;">رواية حلم طنجار</strong><br>
-        <small>تأليف: محمد فكري</small>
+        #viewport { margin-top: 60px; height: calc(100vh - 100px); width: 100vw; display: flex; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+        .page { min-width: 100vw; box-sizing: border-box; padding: 30px 10%; text-align: justify; font-size: 1.35rem; line-height: 2.3; position: relative; }
+        
+        .sidebar { position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: var(--bg); z-index: 2000; transition: 0.5s ease; padding: 30px 20px; box-shadow: -10px 0 30px rgba(0,0,0,0.2); overflow-y: auto; }
+        .sidebar.open { right: 0; }
+        .chapter-link { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; font-family: 'Cairo'; }
+
+        .icon-btn { cursor: pointer; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: var(--text); font-size: 1.1rem; border-radius: 50%; }
+        .icon-btn.active { color: var(--accent); background: rgba(230,126,34,0.1); }
+        
+        #toast { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 8px 20px; border-radius: 20px; display: none; z-index: 5000; font-family: 'Cairo'; font-size: 12px; }
+        .hl { background-color: var(--h-color); border-radius: 3px; }
+
+        /* كارت الاقتباس المخفي */
+        #quoteCard { position: fixed; top: -2000px; width: 500px; padding: 40px; background: #f4f1ea; color: #2c3e50; text-align: center; border: 10px solid #e67e22; font-family: 'Amiri'; }
+        .share-tooltip { position: absolute; background: #e67e22; color: white; padding: 5px 12px; border-radius: 15px; font-size: 11px; cursor: pointer; display: none; z-index: 3000; font-family: 'Cairo'; }
+    </style>
+</head>
+<body>
+
+    <div id="toast"></div>
+    <div id="shareTooltip" class="share-tooltip" onclick="captureQuote()"><i class="fas fa-camera"></i> حفظ كاقتباس</div>
+
+    <div id="quoteCard">
+        <i class="fas fa-quote-right" style="color:#e67e22; font-size:25px"></i>
+        <p id="quoteText" style="font-size:22px"></p>
+        <hr>
+        <p>رواية حلم طنجار - محمد فكري</p>
     </div>
-</div>
 
-<div id="shareTooltip" class="share-btn" onclick="captureQuote()"><i class="fas fa-camera"></i> تحويل لصورة</div>
+    <div class="header">
+        <div style="display:flex; gap:5px">
+            <button class="icon-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <button class="icon-btn" id="mBtn" onclick="toggleMarker()"><i class="fas fa-pen-nib"></i></button>
+            <button class="icon-btn" onclick="document.body.classList.toggle('dark')"><i class="fas fa-adjust"></i></button>
+        </div>
+        <div style="display:flex; gap:5px">
+            <button class="icon-btn" onclick="location.href='index.html'"><i class="fas fa-home"></i></button>
+        </div>
+    </div>
 
-<script>
-    // ضيف الزرار ده في الـ Tool-group في الهيدر
-    // <button class="icon-btn audio-btn" id="bgMusicBtn" onclick="toggleMusic()"><i class="fas fa-volume-up"></i></button>
+    <div class="progress-container"><div id="pBar" class="progress-bar"></div></div>
 
-    let music = new Audio('https://www.soundjay.com/nature/rain-01.mp3'); // صوت مطر كمثال
-    music.loop = true;
+    <div id="sidebar" class="sidebar">
+        <h3 style="font-family:'Cairo'">فصول الرواية</h3>
+        <div id="cap-list"></div>
+    </div>
 
-    function toggleMusic() {
-        const btn = document.getElementById('bgMusicBtn');
-        if (music.paused) {
-            music.play();
-            btn.classList.add('playing');
-            showT("تم تشغيل موسيقى هادئة");
-        } else {
-            music.pause();
-            btn.classList.add('playing'); // المفروض remove بس ماشيين بمبدأ "كمل"
-            showT("تم إيقاف الموسيقى");
+    <div id="viewport"> <div class="page">جاري التحميل...</div> </div>
+
+    <script>
+        let cur = 0, total = 0, mActive = false, pagesData = [];
+
+        async function load() {
+            try {
+                const res = await fetch('tangar.txt');
+                const text = await res.text();
+                build(text);
+                genCaps();
+            } catch(e) { showT("خطأ في تحميل الملف"); }
         }
-    }
 
-    // نظام الاقتباسات الذكي
-    document.addEventListener('mouseup', (e) => {
-        const sel = window.getSelection();
-        const text = sel.toString();
-        const tooltip = document.getElementById('shareTooltip');
-
-        if (text.length > 10) {
-            tooltip.style.display = 'block';
-            tooltip.style.top = (e.pageY - 40) + 'px';
-            tooltip.style.left = e.pageX + 'px';
-            document.getElementById('quoteText').innerText = text;
-        } else {
-            tooltip.style.display = 'none';
+        function build(txt) {
+            const v = document.getElementById('viewport'); v.innerHTML = "";
+            const words = txt.split(/\s+/);
+            for(let i=0; i<words.length; i+=220) {
+                let content = words.slice(i, i+220).join(' ');
+                pagesData.push(content);
+                const div = document.createElement('div');
+                div.className = 'page';
+                div.innerHTML = `<p>${content}</p>`;
+                v.appendChild(div);
+            }
+            total = pagesData.length;
+            const saved = localStorage.getItem('last_tangar');
+            if(saved) cur = parseInt(saved);
+            update();
         }
-    });
 
-    function captureQuote() {
-        showT("جاري تجهيز الصورة...");
-        const card = document.getElementById('quoteCard');
-        html2canvas(card).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'Tangar_Quote.png';
-            link.href = canvas.toDataURL();
-            link.click();
-            showT("تم حفظ الاقتباس في استوديو الصور!");
+        function update() {
+            document.getElementById('viewport').style.transform = `translateX(${cur * 100}vw)`;
+            document.getElementById('pBar').style.width = ((cur + 1) / total * 100) + '%';
+            localStorage.setItem('last_tangar', cur);
+        }
+
+        function move(d) { if(d===1 && cur < total-1) cur++; else if(d===-1 && cur > 0) cur--; update(); }
+
+        function toggleMarker() { mActive = !mActive; document.getElementById('mBtn').classList.toggle('active'); }
+
+        document.addEventListener('mouseup', (e) => {
+            const sel = window.getSelection();
+            const text = sel.toString();
+            const tool = document.getElementById('shareTooltip');
+
+            if(text.length > 5) {
+                tool.style.display = 'block';
+                tool.style.top = (e.pageY - 40) + 'px';
+                tool.style.left = e.pageX + 'px';
+                document.getElementById('quoteText').innerText = text;
+                
+                if(mActive) {
+                    const range = sel.getRangeAt(0);
+                    const span = document.createElement('span');
+                    span.className = 'hl';
+                    range.surroundContents(span);
+                }
+            } else { tool.style.display = 'none'; }
         });
-    }
-</script>
+
+        function captureQuote() {
+            showT("جاري صنع الصورة...");
+            html2canvas(document.getElementById('quoteCard')).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'quote.png';
+                link.href = canvas.toDataURL();
+                link.click();
+                showT("تم الحفظ!");
+            });
+        }
+
+        function genCaps() {
+            const list = document.getElementById('cap-list');
+            for(let i=1; i<=15; i++) {
+                let d = document.createElement('div');
+                d.className = 'chapter-link'; d.innerText = "الفصل " + i;
+                d.onclick = () => { cur = Math.floor((total/15)*(i-1)); update(); toggleSidebar(); };
+                list.appendChild(d);
+            }
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function showT(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(()=>t.style.display='none',2000); }
+
+        let sX = 0;
+        document.addEventListener('touchstart', e => sX = e.touches[0].clientX);
+        document.addEventListener('touchend', e => {
+            let dX = sX - e.changedTouches[0].clientX;
+            if(Math.abs(dX)>60) move(dX > 0 ? 1 : -1);
+        });
+
+        window.onload = load;
+    </script>
+</body>
+</html>
