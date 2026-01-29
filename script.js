@@ -123,6 +123,63 @@ function askShainAI() {
     responseBox.innerHTML = `جاري فحص المكتبة الشاملة يا ${userName}...`;
 
     setTimeout(() => {
+        const bigLibrary = [
+            {
+                name: "حلم طنجار",
+                author: "محمد فكري",
+                tags: ["صحراء", "قبيلة", "خيال", "أسطورة", "رجل", "حلم"],
+                format: "إلكتروني (تفاعلي)",
+                status: "مجانية",
+                link: "داخل المكتبة هنا"
+            },
+            {
+                name: "أرض زيكولا",
+                author: "عمرو عبد الحميد",
+                tags: ["ذكاء", "عملات", "خيال", "قانون", "أسيل"],
+                format: "PDF + ورقي",
+                status: "مدفوعة",
+                link: "مكتبة عصير الكتب / تطبيقات الـ PDF"
+            }
+        ];
+
+        let matches = bigLibrary.filter(book => 
+            book.tags.some(t => input.includes(t)) || 
+            input.includes(book.name.toLowerCase()) || 
+            input.includes(book.author.toLowerCase())
+        );
+
+        if (matches.length > 0) {
+            let htmlResult = `✨ <b>وجدتها! إليك النتائج يا ${userName}:</b><br><br>`;
+            matches.forEach(book => {
+                htmlResult += `
+                    <div style="border-bottom:1px solid #444; margin-bottom:10px; padding-bottom:5px; text-align:right; direction:rtl;">
+                        📖 <b>الرواية:</b> ${book.name}<br>
+                        📂 <b>الصيغة:</b> ${book.format}<br>
+                        📍 <b>الحالة:</b> ${book.status}<br>
+                        🛒 <b>المصدر:</b> ${book.link}
+                    </div>`;
+            });
+            responseBox.innerHTML = htmlResult;
+        } else {
+            responseBox.innerHTML = `عفواً يا ${userName}، لم أجد تطابقاً دقيقاً. جرب كلمات أبسط مثل (خيال، رعب، أو اسم الكاتب).`;
+        }
+    }, 1500);
+}
+
+// دالتين التحكم في الواجهة (تأكد من وجودهما مرة واحدة)
+function openShainAI() {
+    document.getElementById('homeUI').style.display = 'none';
+    document.getElementById('aiSection').style.display = 'block';
+}
+
+function closeAI() {
+    document.getElementById('aiSection').style.display = 'none';
+    document.getElementById('homeUI').style.display = 'block';
+}
+
+    responseBox.innerHTML = `جاري فحص المكتبة الشاملة يا ${userName}...`;
+
+    setTimeout(() => {
         // قاعدة بيانات شاملة (PDF + إلكتروني + ورقي)
         const bigLibrary = [
             {
