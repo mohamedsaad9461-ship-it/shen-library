@@ -1,90 +1,30 @@
-/* التنسيق العام */
-body { 
-    margin: 0; padding: 0; overflow-x: hidden; 
-    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); 
-    background-size: 400% 400%; animation: gradientBG 15s ease infinite; 
-    font-family: 'Cairo', sans-serif; 
-}
+/* النسخة الذهبية المصححة لمحمد */
+body { margin: 0; padding: 0; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; font-family: 'Cairo', sans-serif; }
 @keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
-/* المكتبة: روايتين جنب بعض ومقاسات موحدة */
-#novelsContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    padding: 15px;
-}
+/* إظهار الأقسام بشكل صحيح */
+#homeUI { display: block; }
+#librarySection, #quotesSection, #aiSection, #readerMode { display: none; }
 
-.novel-card { 
-    background: rgba(255,255,255,0.18); 
-    padding: 15px; 
-    border-radius: 20px; 
-    border: 1px solid rgba(255,255,255,0.3); 
-    color: white; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    height: 380px; /* طول موحد للكارت */
-    justify-content: space-between;
-}
+/* البانرات والسلايدر (استعادة الشكل الأصلي) */
+.slider-container { width: 100%; height: 200px; overflow: hidden; position: relative; border-radius: 15px; margin-bottom: 20px; }
+.slides { display: flex; transition: transform 0.5s ease; }
+.slide { min-width: 100%; height: 200px; background-size: cover; background-position: center; }
 
-.novel-card img {
-    width: 110px;
-    height: 160px;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-}
+/* المقاسات الموحدة للروايات */
+#novelsContainer { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
+.novel-card { background: rgba(255,255,255,0.18); padding: 15px; border-radius: 20px; text-align: center; height: 350px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; color: white; border: 1px solid rgba(255,255,255,0.3); }
+.novel-card img { width: 110px; height: 160px; object-fit: cover; border-radius: 10px; }
 
-/* صورة صاحب الاقتباس (دايرة منسقة) */
-.author-info img {
-    width: 55px !important;
-    height: 55px !important;
-    border-radius: 50% !important;
-    object-fit: cover !important;
-    border: 2px solid #00d2ff;
-    margin-left: 10px;
-}
+/* صورة الاقتباس (دايرة) */
+.author-info img { width: 55px !important; height: 55px !important; border-radius: 50% !important; border: 2px solid #00d2ff; object-fit: cover; }
 
-/* خانات البحث مع العدسة */
-#novelSearch, #userInput {
-    background-image: url("https://img.icons8.com/ios-filled/50/00d2ff/search--v1.png") !important;
-    background-repeat: no-repeat !important;
-    background-position: 95% center !important;
-    background-size: 18px !important;
-    padding-right: 45px !important;
-    border-radius: 25px;
-    border: 1px solid rgba(0,210,255,0.4);
-    background-color: rgba(255,255,255,0.1);
-    color: white;
-    height: 45px;
-    width: 80%;
-}
-
-/* النجوم واللايكات */
-.star { cursor: pointer; font-size: 20px; color: #ccc; }
-.star.active { color: #FFD700; }
-.active-like { color: #00d2ff; font-weight: bold; transform: scale(1.2); display: inline-block; }
-.active-dislike { color: #ff4d4d; font-weight: bold; transform: scale(1.2); display: inline-block; }
-
-.glass-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    padding: 10px 20px;
-    border-radius: 15px;
-    color: white;
-    cursor: pointer;
-    backdrop-filter: blur(5px);
-}
-/* إصلاحات محمد النهائية - تضاف في آخر الملف */
-.novel-card { height: 380px !important; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
-.novel-card img { width: 110px !important; height: 160px !important; object-fit: cover !important; }
-.author-info img { width: 55px !important; height: 55px !important; border-radius: 50% !important; object-fit: cover !important; border: 2px solid #00d2ff; }
+/* العدسة في البحث */
 #novelSearch, #userInput { 
     background-image: url("https://img.icons8.com/ios-filled/50/00d2ff/search--v1.png") !important;
     background-repeat: no-repeat !important; background-position: 95% center !important;
-    background-size: 18px !important; padding-right: 45px !important; 
+    background-size: 18px !important; padding-right: 45px !important; border-radius: 20px; border: 1px solid #00d2ff; background-color: rgba(255,255,255,0.1); color: white;
 }
-/* التأكد من إخفاء الأقسام في البداية */
-#librarySection, #quotesSection, #aiSection { display: none; }
+
+/* زر الرجوع الشيك */
+.back-circle { background: white; color: #333; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; }
