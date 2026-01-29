@@ -1,78 +1,49 @@
-/* === [TAG: APP_DATA] === */
-const novelsData = [
-    { id: 0, name: "حلم طنجار", img: "https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png", file: "reader.html", available: true },
-    { id: 1, name: "قلب التين", img: "https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png", available: false },
-    { id: 2, name: "ممالك القيران", img: "https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png", available: false },
-    { id: 3, name: "وباء", img: "https://i.ibb.co/xqfBbZjf/Screenshot-2026-01-28-014331.png", available: false },
-    { id: 4, name: "قصص من مصدر", img: "https://i.ibb.co/BHgP5YC6/Screenshot-2026-01-28-014426.png", available: false }
-];
+/* === محرك التطبيق الشامل (إصدار الحماية القصوى) === */
 
-let appState = JSON.parse(localStorage.getItem('shain_pro_v1')) || { ratings: {}, votes: {} };
-/* === [END: APP_DATA] === */
-
-/* === [TAG: UI_NAVIGATION] === */
+// 1. وظيفة التنقل: بتفتح أي قسم بمجرد ما تديها اسمه
 function showSec(id) {
-    // إخفاء كل شيء تماماً
-    const sections = ['homeUI', 'librarySection', 'quotesSection', 'aiSection', 'readerMode'];
-    sections.forEach(s => {
-        const el = document.getElementById(s);
-        if(el) el.style.display = 'none';
-    });
-
+    // بيخفي كل حاجة شاكة إنها صفحة
+    document.querySelectorAll('section, .ui-page, .tab-content').forEach(s => s.style.display = 'none');
+    
     const target = document.getElementById(id);
-    if(target) {
+    if (target) {
         target.style.display = 'block';
-        if(id === 'librarySection') renderNovels();
+        window.scrollTo(0,0);
     }
 }
-/* === [END: UI_NAVIGATION] === */
 
-/* === [TAG: LIBRARY_ENGINE] === */
-function renderNovels() {
-    const container = document.getElementById('novelsContainer');
-    if(!container) return;
-    
-    container.innerHTML = novelsData.map(n => `
-        <div class="novel-card">
-            <img src="${n.img}" alt="${n.name}">
-            <h3>${n.name}</h3>
-            <button class="glass-btn" onclick="${n.available ? `openReader('${n.name}', '${n.file}')` : 'alert(\'قريباً!\')'}">
-                ${n.available ? 'اقرأ الآن' : 'قريباً'}
-            </button>
-        </div>`).join('');
-}
-
+// 2. وظيفة القارئ: بتفتح الملف اللي بتحدده في الزرار
 function openReader(name, file) {
-    showSec('readerMode'); // دي اللي هتخلي القارئ يفتح في صفحة لوحده ويخفي الباقي
-    document.getElementById('bookFrame').src = file;
-    document.getElementById('readerTitle').innerText = name;
+    const reader = document.getElementById('readerMode');
+    const iframe = document.getElementById('bookFrame');
+    const title = document.getElementById('readerTitle');
+
+    if (reader && iframe) {
+        showSec('readerMode'); // اخفي الكل واظهر القارئ
+        iframe.src = file;
+        if(title) title.innerText = name;
+    } else {
+        // لو ملقاش البرواز، يفتح الملف في صفحة جديدة كأمان
+        window.location.href = file;
+    }
 }
 
-function closeReader() {
-    document.getElementById('bookFrame').src = '';
-    showSec('librarySection'); // لما تقفل يرجعك للمكتبة
-}
-/* === [END: LIBRARY_ENGINE] === */
+// 3. تشغيل النظام تلقائياً
+window.onload = function() {
+    // إخفاء اللودر
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'none';
 
-/* === [TAG: SYSTEM_INIT] === */
-let currentSlide = 0;
+    // تشغيل الصفحة الرئيسية
+    showSec('homeUI');
 
-function startBannerSlider() {
+    // تشغيل البانر (الصور اللي بتقلب)
+    let cur = 0;
     const slides = document.querySelector('.slides');
     if (slides) {
         setInterval(() => {
-            currentSlide = (currentSlide + 1) % 4; 
-            // التحريك بالسالب عشان يمشي صح في نظام الـ RTL العربي
-            slides.style.transform = `translateX(-${currentSlide * 25}%)`; 
+            cur = (cur + 1) % 4; 
+            slides.style.transform = `translateX(-${cur * 25}%)`;
         }, 3000);
     }
-}
-
-window.onload = function() {
-    const loader = document.getElementById('loader');
-    if (loader) loader.style.display = 'none';
-    
-    showSec('homeUI');
-    startBannerSlider();
 };
-/* === [END: SYSTEM_INIT] === */
