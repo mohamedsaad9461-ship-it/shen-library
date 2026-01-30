@@ -5,111 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مكتبة شين - النسخة الاحترافية</title>
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=Cairo:wght@600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.2">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body dir="rtl">
-    <div id="loader">
+<body>
+    <div id="loader" class="full-screen-overlay">
         <div class="loader-content">
-            <h1 style="font-family: 'Almarai'; color: white; margin-bottom: 10px;">مكتبة شين</h1>
+            <h1 class="main-title">مكتبة شين</h1>
             <div class="spinner"></div>
-            <p style="color: white; margin-top: 15px; font-size: 14px; opacity: 0.8;">جاري تحضير عالمك الخاص...</p>
+            <p class="loader-text">جاري تحضير عالمك الخاص...</p>
         </div>
     </div>
-
-    <div id="homeUI">
-        <div style="text-align: center; padding: 30px 20px; color: white;">
-            <h1 style="font-family: 'Almarai'; margin: 0; font-size: 2.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.3);">مكتبة شين</h1>
-            <p style="opacity: 0.9; font-size: 1.1rem; margin-top: 5px;">مرحباً بك يا محمد</p>
+    
+    <div id="homeUI" class="app-section">
+        <header class="home-header">
+            <h1 class="main-title">مكتبة شين</h1>
+            <p class="welcome-msg">مرحباً بك يا محمد</p>
+        </header>
         </div>
 
-        <div class="slider-container">
-            <div class="slides">
-                <div class="slide" style="background-image: url('https://i.ibb.co/LDRb8d64/Screenshot-2026-01-27-164026.png');"></div>
-                <div class="slide" style="background-image: url('https://i.ibb.co/9mntZww9/Screenshot-2026-01-28-012416.png');"></div>
-                <div class="slide" style="background-image: url('https://i.ibb.co/tpjZ8bkf/Screenshot-2026-01-28-012315.png');"></div>
-                <div class="slide" style="background-image: url('https://i.ibb.co/5xnfF4MH/Screenshot-2026-01-28-012305.png');"></div>
-            </div>
-        </div>
-
-        <div class="menu-container">
-            <div class="glass-btn" onclick="showSec('librarySection')"> ✨ تابع الدخول للمكتبة</div>
-            <div class="glass-btn" onclick="showSec('aiSection')"> 💡 ترشيحات ومساعد شين</div>
-            <div class="glass-btn" onclick="showSec('quotesSection')"> 🖋️ اقتباسات أدبية</div>
-            
-            <div class="glass-btn" onclick="window.open('https://www.facebook.com/mohamad.saad.656350', '_blank')" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; display: flex; align-items: center; justify-content: center;">
-               <i class="fab fa-facebook" style="margin-left: 10px; color: #1877f2; font-size: 20px;"></i> تواصل معنا
-            </div>
-        </div>
-    </div>
-
-    <div id="librarySection" style="display:none;">
-        <div class="top-bar">
-            <div class="back-circle" onclick="showSec('homeUI')"> ➔ </div>
-            <input type="text" id="novelSearch" placeholder="ابحث عن رواية...">
-        </div>
-        
-        <div id="novelsContainer" class="novels-grid">
-            <div class="novel-card">
-                <img src="https://i.ibb.co/G497YVXL/Screenshot-2026-01-28-014231.png">
-                <h3>حلم طنجار</h3>
-                <div class="interaction-bar">
-                    <span class="stars">★★★★★</span>
-                    <div class="votes">👍 💬 👎</div>
-                </div>
-                <button class="glass-btn" onclick="openReader('حلم طنجار', 'reader.html')">اقرأ الآن</button>
-            </div>
-
-            <div class="novel-card">
-                <img src="https://i.ibb.co/9mntZww9/Screenshot-2026-01-28-012416.png">
-                <h3>رواية وباء</h3>
-                <button class="glass-btn" onclick="openReader('رواية وباء', 'wabaa.html')">اقرأ الآن</button>
-            </div>
-
-            <div class="novel-card">
-                <img src="https://i.ibb.co/MyXwc6TT/Screenshot-2026-01-28-014536.png">
-                <h3>ممالك القيران</h3>
-                <button class="glass-btn" onclick="openReader('ممالك القيران', 'qiran.html')">اقرأ الآن</button>
-            </div>
-
-            <div class="novel-card">
-                <img src="https://i.ibb.co/tpjZ8bkf/Screenshot-2026-01-28-012315.png">
-                <h3>قصص من مصدر رفض ذكر اسمه</h3>
-                <button class="glass-btn" onclick="openReader('قصص من مصدر رفض ذكر اسمه', 'source.html')">اقرأ الآن</button>
-            </div>
-
-            <div class="novel-card">
-                <img src="https://i.ibb.co/v97Ghgy/Screenshot-2026-01-28-043103.png">
-                <h3>قلب التين</h3>
-                <button class="glass-btn" onclick="alert('قريباً!')">قريباً</button>
-            </div>
-        </div>
-    </div>
-
-  <div id="aiSection" style="display:none;">
-        <div class="top-bar">
-            <div class="back-circle" onclick="showSec('homeUI')"> ➔ </div>
-            <div style="flex-grow:1; text-align:center; color:white; font-family: 'Almarai';">مساعد شين الذكي</div>
-        </div>
-        <div class="ai-container" style="padding: 20px;">
-            <div id="aiResponse" class="glass-panel" style="min-height: 150px; color: white; padding: 20px; border-radius: 15px; background: rgba(255,255,255,0.1); margin-bottom: 20px;">
-                مرحباً يا محمد، أنا مساعد شين. اسألني عن أي رواية...
-            </div>
-            <div class="search-box" style="display: flex; gap: 10px;">
-                <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا..." style="flex-grow: 1; padding: 12px; border-radius: 10px; border: none; outline: none;">
-                <button onclick="askShinAI()" class="glass-btn" style="width: auto; padding: 10px 20px;">اسأل</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="readerMode" style="display:none;">
-        <div class="top-bar">
-            <div class="back-circle" onclick="showSec('librarySection')"> ➔ </div>
-            <div id="readerTitle" style="flex-grow:1; text-align:center; color:white;"></div>
-        </div>
-        <iframe id="bookFrame" src="" style="width:100%; height:90vh; border:none;"></iframe>
-    </div>
-
-    <script src="script.js?v=1.3"></script>
+    <script src="script.js"></script>
 </body>
 </html>
